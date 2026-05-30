@@ -12,7 +12,12 @@ Formation pentest avancé — 4 jours (1—4 Juin 2026)
 │   ├── m3-authentification-logique.md ← M3 : Auth & Logique métier
 │   ├── m4-exploitation-pivoting.md ←   M4 : Exploitation & Pivoting
 │   └── m5-scenario-autonome.md     ←   M5 : Scénario autonome
-├── J2-infrastructure-ad/           ← Jour 2 : AD (à venir)
+├── J2-infrastructure-ad/           ← Jour 2 : AD (détaillé)
+│   ├── m6-reconnaissance-reseau.md
+│   ├── m7-active-directory.md
+│   ├── m8-elevation-mouvement-lateral.md
+│   ├── m9-attaques-avancees-ad.md
+│   └── m10-scenario-ad-autonome.md
 ├── J3-mobile-transverse/           ← Jour 3 : Mobile (à venir)
 ├── J4-synthese-restitution/        ← Jour 4 : Rapport (à venir)
 ├── lab/                            ← Lab Docker vulnérable

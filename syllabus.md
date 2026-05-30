@@ -52,7 +52,52 @@ Chaque faille exploitée est taggée `TXXXX` selon MITRE ATT&CK. En fin de forma
 | 14:45—16:15 | M9 — Attaques avancées AD (Kerberos, ACL) | 1h30 |
 | 16:15—17:00 | M10 — Scénario AD autonome | 0h45 |
 
-**Thèmes :** Nmap, BloodHound, Responder, Kerberoasting, AS-REP Roasting, ACL Abuse, DCSync, Pass-the-Hash, Pass-the-Ticket
+**Thèmes :** Nmap avancé (NSE, évasion), Masscan, Rustscan, énumération SMB/SNMP/DNS/LDAP, BloodHound, Responder, CrackMapExec, Impacket, Mimikatz, Pass-the-Hash, Pass-the-Ticket, Overpass-the-Hash, DCSync, Kerberoasting, AS-REP Roasting, Golden/Silver/Diamond Ticket, ACL Abuse, ADCS (ESC1/ESC8), Skeleton Key, DCShadow, Trust Attacks, SIDHistory, Kerberos Delegation
+
+### Détail des modules J2
+
+#### M6 — Reconnaissance & Scanning réseau avancé (T1595, T1046)
+- Nmap avancé : types de scan (TCP SYN, Connect, UDP, NULL, FIN, Xmas), timing, fragmentation, OS detection, NSE scripts, évasion IDS
+- Masscan : scan ultra-rapide, comparaison Nmap
+- Rustscan : scan moderne avec intégration Nmap
+- Énumération de services : SMB (smbclient, enum4linux, CME), SNMP (snmpwalk, onesixtyone), DNS (dig, dnsrecon, dnsenum, zone transfer), LDAP (ldapsearch, ldapdomaindump), NFS
+- OSINT réseau : Shodan, Censys, Certificate Transparency (crt.sh)
+- Énumération Web : ffuf, Gobuster, wfuzz
+
+#### M7 — Attaques Active Directory (T1087, T1557)
+- Concepts AD : domaine, forêt, DC, Kerberos, LDAP, SMB, NTLM
+- Énumération LDAP : ldapsearch, windapsearch, ldapdomaindump
+- BloodHound : installation Neo4j, collecte SharpHound/BloodHound.py, requêtes Cypher (DCSync, GenericAll, WriteDacl), analyses de chemins
+- Responder : empoisonnement LLMNR/NBT-NS/MDNS/WPAD, capture hashs NTLMv2
+- CrackMapExec : modules SMB/LDAP/MSSQL/WinRM, énumération, exécution, SAM dump
+- Impacket : psexec, wmiexec, smbexec, secretsdump, GetADUsers, GetNPUsers
+
+#### M8 — Élévation & Lateral Movement (T1003, T1550, T1558)
+- Credential Dumping : Mimikatz (sekurlsa, lsadump), LaZagne, ProcDump + offline
+- Pass-the-Hash : crackmapexec -H, impacket-psexec -hashes, xfreerdp /pth
+- Pass-the-Ticket : Mimikatz kerberos::ptt, Rubeus ptt, conversion kirbi/ccache
+- Overpass-the-Hash : Rubeus asktgt, impacket getTGT
+- Mouvement latéral : PsExec, WMI, WinRM (evil-winrm), Scheduled Tasks
+- DCSync : secretsdump -just-dc, Mimikatz lsadump::dcsync
+- Kerberoasting : impacket-GetUserSPNs, Rubeus kerberoast, hashcat cracking
+- AS-REP Roasting : impacket-GetNPUsers, Rubeus asreproast
+
+#### M9 — Attaques avancées AD (T1098, T1558, T1484)
+- ACL Abuse : GenericAll/WriteOwner/WriteDACL/ForceChangePassword, PowerView, dacledit.py
+- AdminSDHolder : backdoor persistante via SDProp
+- Golden Ticket : forge TGT avec hash KRBTGT (Mimikatz, ticketer.py)
+- Silver Ticket : forge TGS pour service spécifique
+- Diamond Ticket : modification TGT existant (Rubeus)
+- Skeleton Key : backdoor LSASS sur DC
+- DCShadow : usurpation DC pour modification AD
+- Trust Attacks : SIDHistory injection, inter-forest crossing
+- ADCS Abuse : ESC1 (certificat template), ESC8 (NTLM relay to ADCS Web Enrollment)
+- Kerberos Delegation : Unconstrained/Constrained/RBCD
+
+#### M10 — Scénario AD autonome
+- Contexte CorpShadow, boîte noire, 60 min
+- 6 flags : BloodHound → Responder → secretsdump → PtH → Kerberoasting → DCSync+Golden Ticket
+- Documentation ATT&CK complète
 
 ### Jour 3 — Mobile & Techniques transverses (03/06)
 
