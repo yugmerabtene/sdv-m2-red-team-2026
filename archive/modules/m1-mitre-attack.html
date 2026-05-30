@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M1 — MITRE ATT&CK</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0e14; --bg-card: #131820; --bg-card-hover: #1a2332;
+    --border: #1e2d3d; --accent: #e63946; --accent2: #ff6b6b;
+    --text: #bfc7d5; --text-muted: #6b7a8d; --text-bright: #e6ecf3;
+    --green: #44d7b6; --orange: #ff9f43; --blue: #54a0ff; --purple: #a55eea;
+    --code-bg: #0d1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  .bg-grid { position: fixed; top:0;left:0;right:0;bottom:0; background-image: linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; z-index:0; }
+  .container { max-width: 960px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
+    margin: 30px 0 20px; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent2); }
+
+  .module-hero {
+    background: var(--bg-card); border:1px solid var(--border); border-radius:12px;
+    padding: 40px; margin-bottom: 40px;
+    border-left: 5px solid var(--accent);
+  }
+  .module-hero .tag {
+    font-family: 'Fira Code', monospace; font-size: 0.8rem;
+    background: rgba(230,57,70,0.15); color: var(--accent2);
+    padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 16px;
+  }
+  .module-hero h1 { font-size: 2rem; color: var(--text-bright); font-weight: 700; margin-bottom: 8px; }
+  .module-hero .meta { font-size: 0.9rem; color: var(--text-muted); font-family: 'Fira Code', monospace; }
+  .module-hero .desc { margin-top: 16px; color: var(--text); font-size: 0.95rem; line-height: 1.7; }
+
+  .section { margin-bottom: 40px; }
+  .section h2 {
+    font-size: 1.25rem; color: var(--text-bright); margin-bottom: 16px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section h2 .num {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 600;
+    background: rgba(230,57,70,0.12); color: var(--accent2);
+  }
+
+  .card {
+    background: var(--bg-card); border:1px solid var(--border); border-radius:10px;
+    padding: 24px; margin-bottom: 16px;
+  }
+  .card h3 { font-size: 1.05rem; color: var(--text-bright); margin-bottom: 10px; }
+  .card p, .card li { font-size: 0.93rem; color: var(--text-muted); line-height: 1.7; }
+  .card ul { padding-left: 20px; margin-top: 8px; }
+  .card li { margin-bottom: 6px; }
+
+  /* Grid */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 768px) { .grid-3 { grid-template-columns: 1fr; } }
+
+  .matrix-card {
+    background: var(--bg-card); border:1px solid var(--border); border-radius:10px;
+    padding: 20px; text-align: center;
+  }
+  .matrix-card .ico { font-size: 2rem; margin-bottom: 8px; }
+  .matrix-card h4 { font-size: 0.95rem; color: var(--text-bright); margin-bottom: 6px; }
+  .matrix-card p { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* Comparison table */
+  .cmp-table { width:100%; border-collapse:collapse; margin-top:12px; }
+  .cmp-table th, .cmp-table td {
+    text-align:left; padding:10px 14px; font-size:0.88rem;
+    border-bottom:1px solid var(--border);
+  }
+  .cmp-table th { color:var(--text-bright); font-weight:600; background:rgba(255,255,255,0.02); }
+  .cmp-table td { color:var(--text-muted); }
+  .cmp-table tr:hover td { background:rgba(255,255,255,0.015); }
+
+  /* Code block */
+  .code-block {
+    position: relative; margin: 12px 0; border-radius: 8px;
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .code-block pre {
+    background: var(--code-bg); padding: 18px 20px; overflow-x: auto;
+    font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.6;
+    color: var(--text); margin: 0;
+  }
+  .code-block .lang-tag {
+    position: absolute; top: 8px; right: 100px;
+    font-family: 'Fira Code', monospace; font-size: 0.7rem;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 10px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text-muted); padding: 4px 12px; border-radius: 5px;
+    cursor: pointer; font-family: 'Fira Code', monospace; font-size: 0.75rem;
+    transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+  }
+  .copy-btn:hover { color: var(--text-bright); border-color: var(--accent); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  .highlight { color: var(--accent2); font-weight: 500; }
+  .green { color: var(--green); }
+  .blue { color: var(--blue); }
+
+  .tactic-chain {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 16px 0; padding: 16px;
+    background: rgba(255,255,255,0.02); border-radius: 8px;
+    overflow-x: auto;
+  }
+  .tactic-step {
+    padding: 8px 14px; background: var(--bg-card); border:1px solid var(--border);
+    border-radius: 6px; font-size: 0.8rem; font-family: 'Fira Code', monospace;
+    white-space: nowrap;
+  }
+  .tactic-arrow { color: var(--accent); font-weight: bold; }
+
+  .org-logo {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 0.9rem; color: var(--text-bright); margin: 4px;
+  }
+
+  footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+<a href="../index.html" class="back-link">&larr; Retour au sommaire</a>
+
+<div class="module-hero">
+  <span class="tag">Module 1</span>
+  <h1>MITRE ATT&CK — Le cadre universel</h1>
+  <p class="meta">J1 &middot; 09h30—11h00 &middot; 1h30 &middot; Présentation + Démo live</p>
+  <p class="desc">
+    Le référentiel <strong>MITRE ATT&amp;CK</strong> est le standard de fait pour décrire les comportements adverses. Adopté par le <strong>COMCYBER</strong>, l'<strong>ANSSI</strong> et l'<strong>OTAN</strong>, il sert de langage commun entre red team, blue team, SOC et RSSI. Ce module pose le socle qui structurera toute la formation.
+  </p>
+</div>
+
+<!-- 1. Qu'est-ce que MITRE ATT&CK -->
+<div class="section">
+  <h2><span class="num">1</span> Qu'est-ce que MITRE ATT&CK ?</h2>
+
+  <div class="card">
+    <h3>Origine et philosophie</h3>
+    <p>
+      MITRE Corporation (à but non lucratif, fondée en 1958) développe ATT&amp;CK depuis 2013.
+      Le framework décrit <strong>comment les attaquants opèrent</strong>, pas les outils qu'ils utilisent. C'est un modèle basé sur l'observation de groupes APT réels.
+    </p>
+    <ul>
+      <li><span class="highlight">ATT&amp;CK</span> = Adversarial Tactics, Techniques &amp; Common Knowledge</li>
+      <li>Plus de <span class="highlight">200 techniques</span> et <span class="highlight">400+ sub-techniques</span></li>
+      <li>Documente des <span class="highlight">groupes</span> (APT28, Lazarus, FIN7...), des <span class="highlight">logiciels</span> (Cobalt Strike, Mimikatz...) et des <span class="highlight">mitigations</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Les 3 matrices</h3>
+    <div class="grid-3">
+      <div class="matrix-card">
+        <div class="ico">&#127760;</div>
+        <h4>Enterprise</h4>
+        <p>Windows, macOS, Linux, Cloud (Azure, AWS, GCP), SaaS, réseau.</p>
+      </div>
+      <div class="matrix-card">
+        <div class="ico">&#128241;</div>
+        <h4>Mobile</h4>
+        <p>Android, iOS. Techniques spécifiques aux OS mobiles.</p>
+      </div>
+      <div class="matrix-card">
+        <div class="ico">&#9881;</div>
+        <h4>ICS</h4>
+        <p>Industrial Control Systems. SCADA, PLC, infrastructures critiques.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>ATT&amp;CK vs autres frameworks</h3>
+    <table class="cmp-table">
+      <tr><th>Framework</th><th>Focus</th><th>Granularité</th></tr>
+      <tr><td><strong>MITRE ATT&amp;CK</strong></td><td>Comportements observés (techniques)</td><td>Très fine (sub-techniques)</td></tr>
+      <tr><td>Cyber Kill Chain (Lockheed Martin)</td><td>Phases macro d'une attaque</td><td>Haute (7 phases)</td></tr>
+      <tr><td>PTES</td><td>Méthodologie de pentest</td><td>Moyenne (7 phases)</td></tr>
+      <tr><td>OWASP Top 10</td><td>Risques applicatifs web</td><td>Haute (10 catégories)</td></tr>
+      <tr><td>NIST CSF</td><td>Gouvernance sécurité</td><td>Très haute (fonctions)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 2. Structure -->
+<div class="section">
+  <h2><span class="num">2</span> Structure : Tactiques → Techniques → Sub-techniques</h2>
+
+  <div class="card">
+    <h3>Hiérarchie</h3>
+    <div class="tactic-chain">
+      <span class="tactic-step" style="background:rgba(230,57,70,0.12);color:var(--accent2)">14 Tactiques</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">200+ Techniques</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">400+ Sub-techniques</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">Procédures</span>
+    </div>
+    <ul>
+      <li><strong>Tactique</strong> = l'objectif de l'attaquant (ex: <span class="highlight">Initial Access</span>, <span class="highlight">Credential Access</span>)</li>
+      <li><strong>Technique</strong> = comment il y parvient (ex: <code class="green">T1190</code> Exploit Public-Facing Application)</li>
+      <li><strong>Sub-technique</strong> = variante plus précise (ex: <code class="green">T1505.003</code> Web Shell)</li>
+      <li><strong>Procédure</strong> = implémentation spécifique par un groupe APT</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Les 14 tactiques Enterprise</h3>
+    <p>
+      <span class="highlight">Reconnaissance</span> &rarr; Resource Development &rarr; <span class="highlight">Initial Access</span> &rarr;
+      <span class="highlight">Execution</span> &rarr; Persistence &rarr; <span class="highlight">Privilege Escalation</span> &rarr;
+      Defense Evasion &rarr; <span class="highlight">Credential Access</span> &rarr; Discovery &rarr;
+      <span class="highlight">Lateral Movement</span> &rarr; Collection &rarr;
+      <span class="highlight">Command and Control</span> &rarr; Exfiltration &rarr; Impact
+    </p>
+  </div>
+</div>
+
+<!-- 3. Utilisation militaire & ANSSI -->
+<div class="section">
+  <h2><span class="num">3</span> Utilisation par l'armée française et l'ANSSI</h2>
+
+  <div class="card">
+    <h3>Adoption institutionnelle</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;">
+      <div class="org-logo">&#127466;&#127482; <strong>COMCYBER</strong></div>
+      <div class="org-logo">&#127467;&#127479; <strong>ANSSI</strong></div>
+      <div class="org-logo">&#127462;&#127479;&#127473;&#127466; <strong>OTAN / NATO</strong></div>
+      <div class="org-logo">&#127467;&#127479; <strong>DGA</strong></div>
+      <div class="org-logo">&#127467;&#127479; <strong>CERT-FR</strong></div>
+    </div>
+    <ul>
+      <li><strong>COMCYBER</strong> : ATT&amp;CK est intégré dans la doctrine de <span class="highlight">Lutte Informatique Défensive (LID)</span>. Utilisé pour modéliser les menaces, qualifier les incidents, et planifier les exercices.</li>
+      <li><strong>ANSSI</strong> : Référentiel pour les <span class="highlight">PASSI</span> (Prestataires d'Audit de Sécurité des Systèmes d'Information). Utilisé dans les guides d'hygiène et la qualification des produits de sécurité.</li>
+      <li><strong>OTAN</strong> : Cadre commun de Threat Intelligence partagé entre les pays membres. Permet l'interopérabilité des cellules de cyberdéfense.</li>
+      <li><strong>DGA</strong> : Intègre ATT&amp;CK dans les cahiers des charges des systèmes d'armes pour les exigences de cybersécurité.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Cas d'usage concrets</h3>
+    <ul>
+      <li><strong>Threat Modeling</strong> : cartographier la surface d'attaque d'un système avant déploiement</li>
+      <li><strong>Gap Analysis</strong> : identifier les angles morts de détection d'un SOC</li>
+      <li><strong>Red Teaming</strong> : planifier les TTPs à tester lors d'un exercice</li>
+      <li><strong>Reporting</strong> : produire des rapports structurés et comparables</li>
+      <li><strong>CTI</strong> (Cyber Threat Intelligence) : suivre l'évolution des groupes APT</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 4. Lien avec NIS2 -->
+<div class="section">
+  <h2><span class="num">4</span> Lien avec NIS2</h2>
+
+  <div class="card">
+    <h3>ATT&amp;CK, outil de conformité NIS2</h3>
+    <p>
+      La directive <strong>NIS2 (Directive (UE) 2022/2555)</strong> impose aux entités européennes
+      des obligations renforcées en matière de cybersécurité : modélisation des menaces (<span class="highlight">threat modeling</span>),
+      détection des incidents et notification dans un délai de <span class="highlight">24 heures</span>.
+    </p>
+    <p style="margin-top:10px;">
+      <strong>MITRE ATT&amp;CK</strong> est le framework de référence pour répondre à ces exigences.
+      Il permet notamment de satisfaire :
+    </p>
+    <ul>
+      <li><strong>Article 21</strong> — Mesures de gestion des risques : ATT&amp;CK fournit la base de connaissance pour le threat modeling, la gap analysis et l'évaluation continue de la posture de sécurité.</li>
+      <li><strong>Article 23</strong> — Obligations de signalement : les techniques ATT&amp;CK permettent de qualifier et structurer les rapports d'incidents de manière standardisée et interopérable.</li>
+    </ul>
+    <p style="margin-top:10px;">
+      En France, NIS2 est transposée sous l'égide de l'<strong>ANSSI</strong> et s'applique aux
+      <span class="highlight">Entités Essentielles (EE)</span> et aux <span class="highlight">Entités Importantes (EI)</span>.
+      Le <strong>COMCYBER</strong> utilise ATT&amp;CK pour aligner la doctrine militaire française
+      (LID — Lutte Informatique Défensive) avec les exigences NIS2, assurant une cohérence entre
+      les dimensions civile et militaire de la cyberdéfense nationale.
+    </p>
+  </div>
+</div>
+
+<!-- 5. Application au pentest web -->
+<div class="section">
+  <h2><span class="num">5</span> Application au pentest web — Démo live</h2>
+
+  <div class="card">
+    <h3>Kill chain web type</h3>
+    <p>Voici comment on trace une compromission web complète dans ATT&amp;CK :</p>
+    <div class="tactic-chain">
+      <span class="tactic-step">T1592<br>Gather Victim<br>Host Info</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">T1190<br>Exploit Public-<br>Facing App</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">T1059.003<br>Command & Scripting<br>(Shell)</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">T1505.003<br>Web<br>Shell</span>
+      <span class="tactic-arrow">&rarr;</span>
+      <span class="tactic-step">T1041<br>Exfil Over<br>C2 Channel</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Les techniques ATT&amp;CK clés en pentest web</h3>
+    <p><em>Nous les utiliserons systématiquement dans les modules suivants :</em></p>
+
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'attck-table')">&#128203; Copier</button>
+      <pre id="attck-table">┌──────────────────┬───────────────────────────────────────┐
+│ Technique        │ Application Web                       │
+├──────────────────┼───────────────────────────────────────┤
+│ T1190            │ Exploitation faille web (SQLi, RCE…)  │
+│ T1059.003        │ Web Shell (exec code via HTTP)        │
+│ T1078            │ Valid Accounts (credential stuffing)  │
+│ T1134            │ Token manipulation / session hijack   │
+│ T1548            │ Privilege escalation applicative      │
+│ T1213            │ Data from Info Repositories (IDOR)    │
+│ T1041            │ Exfiltration Over C2 Channel          │
+│ T1071.001        │ Web Protocols (HTTP/HTTPS exfil)      │
+│ T1505.003        │ Web Shell persistence                 │
+│ T1199            │ Trusted Relationship (SSRF)           │
+└──────────────────┴───────────────────────────────────────┘</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Démo live — De la faille au tag ATT&amp;CK</h3>
+    <p>Le formateur montre un scénario réel :</p>
+    <ol style="padding-left:20px;color:var(--text-muted);margin-top:8px;">
+      <li>Reconnaissance sur une app web (<code class="green">T1592</code>)</li>
+      <li>Découverte d'une SQLi (<code class="green">T1190</code>)</li>
+      <li>Extraction de la DB → credentials (<code class="green">T1003</code>)</li>
+      <li>Upload d'un webshell (<code class="green">T1505.003</code>)</li>
+      <li>Exfiltration de données (<code class="green">T1041</code>)</li>
+    </ol>
+    <p style="margin-top:12px;font-family:'Fira Code',monospace;font-size:0.85rem;color:var(--green);">
+      &gt; Chaque étape taggée = matrice complétée en direct = base du rapport.
+    </p>
+  </div>
+</div>
+
+<!-- 5. ATT&CK comme outil de reporting -->
+<div class="section">
+  <h2><span class="num">6</span> ATT&amp;CK comme outil de reporting</h2>
+
+  <div class="card">
+    <h3>Ce qu'on attend en fin de formation (J4)</h3>
+    <ul>
+      <li><strong>Matrice de couverture</strong> : heat map des techniques testées vs détectées</li>
+      <li><strong>Gap analysis</strong> : techniques non couvertes → recommandations</li>
+      <li><strong>Rapport exécutif</strong> : synthèse lisible par un RSSI avec visualisation ATT&amp;CK</li>
+      <li><strong>Rapport technique</strong> : chaque vulnérabilité taggée <code class="green">TXXXX</code>, avec preuve d'exploitation et remédiation</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Outil : ATT&amp;CK Navigator</h3>
+    <p>Installer et utiliser l'ATT&amp;CK Navigator pour créer des heat maps :</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'nav-code')">&#128203; Copier</button>
+      <pre id="nav-code"># Cloner le dépôt officiel
+git clone https://github.com/mitre-attack/attack-navigator
+
+# Lancer avec Docker
+cd attack-navigator
+docker build -t attack_navigator .
+docker run -p 4200:4200 attack_navigator
+
+# Puis ouvrir http://localhost:4200</pre>
+    </div>
+  </div>
+</div>
+
+<footer>
+  M1 — MITRE ATT&CK · Jour 1 &nbsp;|&nbsp; <a href="../index.html" style="color:var(--accent2);text-decoration:none;">&larr; Sommaire</a>
+</footer>
+
+<div class="section">
+  <h2><span class="num">R</span> Références</h2>
+  <div class="card">
+    <ul>
+      <li><a href="https://attack.mitre.org/" target="_blank" style="color:var(--blue);">MITRE ATT&amp;CK Framework</a></li>
+      <li><a href="https://github.com/mitre-attack/attack-navigator" target="_blank" style="color:var(--blue);">ATT&amp;CK Navigator</a></li>
+      <li><a href="https://cyber.gouv.fr/presentations-de-la-qualification-passi" target="_blank" style="color:var(--blue);">ANSSI — Guide PASSI</a></li>
+      <li><a href="https://www.defense.gouv.fr/comcyber" target="_blank" style="color:var(--blue);">COMCYBER</a></li>
+      <li><a href="https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022L2555" target="_blank" style="color:var(--blue);">Directive NIS2 (UE) 2022/2555</a></li>
+      <li><a href="https://cyber.gouv.fr/nis-2" target="_blank" style="color:var(--blue);">ANSSI — NIS2 en France</a></li>
+      <li><a href="https://www.nato.int/cps/en/natohq/topics_78170.htm" target="_blank" style="color:var(--blue);">NATO Cyber Defence</a></li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn, id) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerHTML = '&#10003; Copié !';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '&#128203; Copier';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

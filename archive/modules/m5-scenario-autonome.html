@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M5 — Scénario pratique autonome</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root { --bg:#0a0e14; --bg-card:#131820; --bg-card-hover:#1a2332; --border:#1e2d3d; --accent:#e63946; --accent2:#ff6b6b; --text:#bfc7d5; --text-muted:#6b7a8d; --text-bright:#e6ecf3; --green:#44d7b6; --orange:#ff9f43; --blue:#54a0ff; --purple:#a55eea; --code-bg:#0d1117; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
+  .bg-grid { position:fixed; top:0;left:0;right:0;bottom:0; background-image:linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; z-index:0; }
+  .container { max-width:960px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+  .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--text-muted); text-decoration:none; font-size:0.85rem; margin:30px 0 20px; transition:color 0.2s; }
+  .back-link:hover { color:var(--accent2); }
+
+  .module-hero { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:40px; margin-bottom:40px; border-left:5px solid var(--green); }
+  .module-hero .tag { font-family:'Fira Code',monospace; font-size:0.8rem; background:rgba(68,215,182,0.15); color:var(--green); padding:4px 14px; border-radius:20px; display:inline-block; margin-bottom:16px; }
+  .module-hero h1 { font-size:2rem; color:var(--text-bright); font-weight:700; margin-bottom:8px; }
+  .module-hero .meta { font-size:0.9rem; color:var(--text-muted); font-family:'Fira Code',monospace; }
+  .module-hero .desc { margin-top:16px; color:var(--text); font-size:0.95rem; line-height:1.7; }
+
+  .section { margin-bottom:40px; }
+  .section h2 { font-size:1.25rem; color:var(--text-bright); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+  .section h2 .num { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-family:'Fira Code',monospace; font-size:0.85rem; font-weight:600; background:rgba(68,215,182,0.12); color:var(--green); }
+
+  .card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:24px; margin-bottom:16px; }
+  .card h3 { font-size:1.05rem; color:var(--text-bright); margin-bottom:10px; }
+  .card p, .card li { font-size:0.93rem; color:var(--text-muted); line-height:1.7; }
+  .card ul, .card ol { padding-left:20px; margin-top:8px; }
+  .card li { margin-bottom:6px; }
+
+  .code-block { position:relative; margin:12px 0; border-radius:8px; border:1px solid var(--border); overflow:hidden; }
+  .code-block pre { background:var(--code-bg); padding:18px 20px; overflow-x:auto; font-family:'Fira Code',monospace; font-size:0.85rem; line-height:1.6; color:var(--text); margin:0; }
+  .copy-btn { position:absolute; top:8px; right:10px; background:var(--bg-card); border:1px solid var(--border); color:var(--text-muted); padding:4px 12px; border-radius:5px; cursor:pointer; font-family:'Fira Code',monospace; font-size:0.75rem; transition:all 0.2s; display:flex; align-items:center; gap:5px; }
+  .copy-btn:hover { color:var(--text-bright); border-color:var(--green); }
+  .copy-btn.copied { color:var(--green); border-color:var(--green); }
+
+  .highlight { color:var(--accent2); font-weight:500; }
+  .green { color:var(--green); }
+  .blue { color:var(--blue); }
+  .orange { color:var(--orange); }
+  .attck-tag { font-family:'Fira Code',monospace; font-size:0.75rem; background:rgba(68,215,182,0.1); color:var(--green); padding:2px 8px; border-radius:4px; margin-left:6px; white-space:nowrap; }
+
+  .checklist { list-style:none; }
+  .checklist li { padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); display:flex; align-items:flex-start; gap:10px; }
+  .checklist li .cb { width:20px; height:20px; border:2px solid var(--border); border-radius:4px; flex-shrink:0; margin-top:2px; }
+  .checklist li .cb.done { background:var(--green); border-color:var(--green); display:flex; align-items:center; justify-content:center; color:var(--bg); font-size:0.7rem; }
+
+  .hint-box { background:rgba(255,159,67,0.05); border:1px solid rgba(255,159,67,0.2); border-radius:8px; padding:16px; margin:12px 0; }
+  .hint-box .show-btn { color:var(--orange); cursor:pointer; font-size:0.85rem; font-family:'Fira Code',monospace; background:none; border:none; text-decoration:underline; }
+  .hint-box .hint-content { display:none; margin-top:10px; color:var(--text-muted); font-size:0.88rem; }
+
+  footer { text-align:center; padding:40px 0; color:var(--text-muted); font-size:0.82rem; border-top:1px solid var(--border); margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="container">
+
+<a href="../index.html" class="back-link">&larr; Retour au sommaire</a>
+
+<div class="module-hero">
+  <span class="tag">Module 5</span>
+  <h1>Scénario pratique autonome</h1>
+  <p class="meta">J1 &middot; 16h15—17h00 &middot; 45 min &middot; Mise en situation</p>
+  <p class="desc">
+    Les apprenants travaillent en autonomie sur un lab réaliste contenant plusieurs vulnérabilités à enchaîner. Le formateur circule pour débloquer et guider. Objectif : compromission complète d'un compte administrateur et exfiltration de données. Chaque étape doit être documentée dans une matrice ATT&amp;CK personnalisée.
+  </p>
+</div>
+
+<!-- Mission briefing -->
+<div class="section">
+  <h2><span class="num">1</span> Briefing de mission</h2>
+
+  <div class="card">
+    <h3>Contexte</h3>
+    <p>
+      Vous êtes Red Team pour le compte du groupe <strong>EcoVault</strong>, une startup fintech spécialisée dans le paiement en ligne.
+      Après une suspicion de fuite de données, le RSSI vous mandate pour un <strong>pentest boîte grise</strong> sur leur nouvelle application web.
+    </p>
+    <p style="margin-top:10px;">
+      Vous disposez d'un compte utilisateur standard : <code class="green">user@ecovault.com / User2026!</code>
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Objectifs (par difficulté croissante)</h3>
+    <ol>
+      <li><strong>&#127919; Flag 1</strong> — Trouver et exploiter une faille d'IDOR pour lire le profil d'un autre utilisateur</li>
+      <li><strong>&#127919; Flag 2</strong> — Exploiter une injection SQL pour extraire la table <code>users</code></li>
+      <li><strong>&#127919; Flag 3</strong> — Contourner le mécanisme d'authentification pour devenir administrateur</li>
+      <li><strong>&#127919; Flag 4</strong> — Exploiter une SSTI dans le panneau admin pour obtenir une RCE</li>
+      <li><strong>&#127919; Flag 5 (Bonus)</strong> — Pivoter vers le réseau interne et récupérer un fichier sensible sur un serveur SMTP</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Rules -->
+<div class="section">
+  <h2><span class="num">2</span> Règles de l'exercice</h2>
+
+  <div class="card">
+    <ul>
+      <li>&#9989; <strong>ROE autorisée</strong> : tout le lab (<code>10.0.0.0/24</code>), services HTTP, DB, SMTP</li>
+      <li>&#10060; <strong>Interdit</strong> : DoS, destruction de données, sortir du scope réseau</li>
+      <li>&#128221; <strong>Documentation obligatoire</strong> : chaque vulnérabilité trouvée doit être taggée avec son <code class="green">TXXXX</code> MITRE correspondant</li>
+      <li>&#9200; <strong>Temps</strong> : 45 minutes. Les flags 1-3 sont obligatoires, 4-5 bonus.</li>
+      <li>&#128161; <strong>Indices</strong> : disponibles, mais coûtent du temps (chaque indice = -5 min). Cliquer sur "Afficher l'indice" ci-dessous.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Conformité NIS2 & Rapport de pentest</h3>
+    <p>Le rapport que vous documenterez avec les tags ATT&amp;CK constitue un livrable de conformité NIS2. L'article 21 exige des «&nbsp;politiques de gestion des risques pour la sécurité des systèmes d'information&nbsp;» — votre heat map ATT&amp;CK en est la matérialisation technique. Pensez à cartographier chaque vulnérabilité vers une recommandation actionnable.</p>
+  </div>
+</div>
+
+<!-- Target Info -->
+<div class="section">
+  <h2><span class="num">3</span> Cibles</h2>
+
+  <div class="card">
+    <h3>Environnement de lab</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'targets')">&#128203; Copier</button>
+      <pre id="targets"># Application web principale
+URL:    http://ecovault.local
+Ports:  80 (HTTP), 443 (HTTPS)
+
+# Compte fourni
+Login:  user@ecovault.com
+Pass:   User2026!
+
+# Réseau interne (accessible après compromission initiale)
+Subnet: 10.0.0.0/24
+SMTP:   10.0.0.10:25</pre>
+    </div>
+  </div>
+</div>
+
+<!-- Hints -->
+<div class="section">
+  <h2><span class="num">4</span> Indices (à utiliser avec parcimonie)</h2>
+
+  <div class="hint-box">
+    <button class="show-btn" onclick="toggleHint(this, 'hint1')">&#128161; Afficher l'indice n°1 — IDOR</button>
+    <div class="hint-content" id="hint1">Regarde l'endpoint <code>/api/profile?id=XX</code>. Que se passe-t-il si tu changes l'ID ? Utilise Burp Intruder pour énumérer les IDs de 1 à 100.</div>
+  </div>
+
+  <div class="hint-box">
+    <button class="show-btn" onclick="toggleHint(this, 'hint2')">&#128161; Afficher l'indice n°2 — SQL Injection</button>
+    <div class="hint-content" id="hint2">Le paramètre <code>filter</code> dans <code>/api/transactions?filter=</code> semble vulnérable à une injection SQL. Teste avec <code>filter=' OR '1'='1</code>. Pour l'extraction, utilise sqlmap ou un script time-based.</div>
+  </div>
+
+  <div class="hint-box">
+    <button class="show-btn" onclick="toggleHint(this, 'hint3')">&#128161; Afficher l'indice n°3 — Auth bypass</button>
+    <div class="hint-content" id="hint3">Analyse le JWT après connexion (<a href="https://jwt.io" target="_blank">jwt.io</a>). Le paramètre <code>kid</code> dans le header accepte-t-il une injection de chemin ? Teste <code>"kid":"/dev/null"</code> avec l'algo HS256. Ou teste l'algorithme <code>none</code>.</div>
+  </div>
+
+  <div class="hint-box">
+    <button class="show-btn" onclick="toggleHint(this, 'hint4')">&#128161; Afficher l'indice n°4 — SSTI dans le panel admin</button>
+    <div class="hint-content" id="hint4">Dans le panneau admin (<code>/admin/templates</code>), le champ "Nom du template" est rendu avec Jinja2. Teste <code>{{7*7}}</code>. Si 49 s'affiche, tu as une SSTI. Exploite avec <code>{{lipsum.__globals__.os.popen('id').read()}}</code>.</div>
+  </div>
+
+  <div class="hint-box">
+    <button class="show-btn" onclick="toggleHint(this, 'hint5')">&#128161; Afficher l'indice n°5 — Pivoting (bonus)</button>
+    <div class="hint-content" id="hint5">Depuis le reverse shell, scanne le réseau <code>10.0.0.0/24</code>. Le serveur SMTP en <code>10.0.0.10</code> écoute sur le port 25. Utilise chisel pour créer un tunnel SOCKS et connecte-toi avec <code>proxychains telnet 10.0.0.10 25</code>.</div>
+  </div>
+</div>
+
+<!-- Expected deliverable -->
+<div class="section">
+  <h2><span class="num">5</span> Livrable attendu</h2>
+
+  <div class="card">
+    <h3>Template de documentation ATT&amp;CK à remplir</h3>
+    <p>Pour chaque flag, documentez :</p>
+    <ul>
+      <li><strong>Technique MITRE</strong> : le ou les <code class="green">TXXXX</code> correspondants</li>
+      <li><strong>Étape de la kill chain</strong> : reconnaissance → initial access → execution → etc.</li>
+      <li><strong>Payload utilisée</strong> : copier-coller la charge utile exacte</li>
+      <li><strong>Impact</strong> : ce que la faille a permis d'obtenir</li>
+      <li><strong>Remédiation recommandée</strong> : une phrase</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Checklist</h3>
+    <ul class="checklist">
+      <li><span class="cb"></span> &#127919; Flag 1 — IDOR : profil d'un autre utilisateur lu</li>
+      <li><span class="cb"></span> &#127919; Flag 2 — SQLi : table users extraite</li>
+      <li><span class="cb"></span> &#127919; Flag 3 — Auth bypass : accès admin</li>
+      <li><span class="cb"></span> &#127919; Flag 4 — SSTI → RCE : shell sur le serveur</li>
+      <li><span class="cb"></span> &#127919; Flag 5 — Pivoting : fichier SMTP exfiltré</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  M5 — Scénario pratique autonome · Jour 1 &nbsp;|&nbsp; <a href="../index.html" style="color:var(--green);text-decoration:none;">&larr; Sommaire</a>
+</footer>
+
+<div class="section">
+  <h2><span class="num">R</span> Références</h2>
+
+  <div class="card">
+    <ul>
+      <li>MITRE ATT&amp;CK — <a href="https://attack.mitre.org/" target="_blank">https://attack.mitre.org/</a></li>
+      <li>ATT&amp;CK Navigator — <a href="https://github.com/mitre-attack/attack-navigator" target="_blank">https://github.com/mitre-attack/attack-navigator</a></li>
+      <li>ANSSI — Guide de rédaction de rapport de pentest — <a href="https://cyber.gouv.fr/" target="_blank">https://cyber.gouv.fr/</a></li>
+      <li>Directive NIS2 — Art. 21 (Mesures de gestion des risques) — <a href="https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022L2555" target="_blank">https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022L2555</a></li>
+      <li>OWASP Testing Guide — <a href="https://owasp.org/www-project-web-security-testing-guide/" target="_blank">https://owasp.org/www-project-web-security-testing-guide/</a></li>
+      <li>HackTricks — <a href="https://book.hacktricks.xyz/" target="_blank">https://book.hacktricks.xyz/</a></li>
+      <li>PayloadsAllTheThings — <a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank">https://github.com/swisskyrepo/PayloadsAllTheThings</a></li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn, id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.innerHTML = '&#10003; Copié !';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '&#128203; Copier'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+function toggleHint(btn, id) {
+  const el = document.getElementById(id);
+  if (el.style.display === 'block') {
+    el.style.display = 'none';
+    btn.innerHTML = '&#128161; Afficher l\'indice';
+  } else {
+    el.style.display = 'block';
+    btn.innerHTML = '&#128161; Masquer l\'indice';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+*.pyc
+__pycache__/
+.env
+token.txt
+.DS_Store
+*.log
+node_modules/

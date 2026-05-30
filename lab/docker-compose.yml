@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  # ── MySQL ──────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: lab-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: ecovault
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      lab-net:
+        ipv4_address: 10.0.0.2
+    restart: unless-stopped
+
+  # ── MongoDB ────────────────────────────────
+  mongo:
+    image: mongo:6.0
+    container_name: lab-mongo
+    networks:
+      lab-net:
+        ipv4_address: 10.0.0.3
+    restart: unless-stopped
+
+  # ── Application Web Vulnérable (Flask) ─────
+  webapp:
+    build: ./webapp
+    container_name: lab-webapp
+    ports:
+      - "8080:80"
+    volumes:
+      - ./webapp/app.py:/app/app.py:ro
+      - ./webapp/templates:/app/templates:ro
+    networks:
+      lab-net:
+        ipv4_address: 10.0.0.100
+    depends_on:
+      - db
+      - mongo
+      - internal
+    restart: unless-stopped
+
+  # ── Service Interne (Pivoting) ─────────────
+  internal:
+    build: ./internal
+    container_name: lab-internal
+    networks:
+      lab-net:
+        ipv4_address: 10.0.0.10
+    restart: unless-stopped
+
+networks:
+  lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24

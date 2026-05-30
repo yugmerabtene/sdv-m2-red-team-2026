@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — EcoVault</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:system-ui,sans-serif; background:#f5f6fa; color:#2d3436; }
+  header { background:linear-gradient(135deg, #2d3436, #636e72); color:white; padding:20px; text-align:center; }
+  header a { color:#dfe6e9; text-decoration:none; margin:0 12px; }
+  .container { max-width:900px; margin:30px auto; padding:0 20px; }
+  h2 { margin:25px 0 15px; padding-bottom:8px; border-bottom:2px solid #dfe6e9; }
+  .card { background:white; padding:20px; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); margin-bottom:20px; }
+  label { display:block; font-weight:600; margin-bottom:6px; font-size:0.9rem; }
+  input[type=text], textarea { width:100%; padding:10px; border:2px solid #dfe6e9; border-radius:6px; font-size:0.95rem; margin-bottom:12px; font-family:monospace; }
+  button { padding:10px 20px; background:#d63031; color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; }
+  button:hover { background:#c0392b; }
+  .output { margin-top:15px; padding:15px; background:#f8f9fa; border:1px solid #dfe6e9; border-radius:6px; min-height:40px; }
+  .output h2 { border:none; margin-top:0; font-size:1rem; }
+  .msg { padding:10px; background:#dff9fb; border:1px solid #c7ecee; border-radius:6px; margin:10px 0; }
+  .error { padding:10px; background:#ffeaa7; border:1px solid #fdcb6e; border-radius:6px; margin:10px 0; }
+  .back { margin-top:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#128736; Panel Administration</h1>
+  <a href="/">Accueil</a> | <a href="/admin/debug">Debug</a>
+</header>
+
+<div class="container">
+
+  {% if upload_msg %}
+  <div class="msg">{{ upload_msg }}</div>
+  {% endif %}
+
+  <!-- SSTI Section -->
+  <h2>&#128220; Gestion des Templates</h2>
+  <div class="card">
+    <p style="color:#636e72;font-size:0.9rem;margin-bottom:12px;">
+      Créez et prévisualisez des templates de notification.
+    </p>
+    <form method="POST">
+      <label for="template_name">Nom du template</label>
+      <input type="text" name="template_name" id="template_name"
+             placeholder="Bienvenue {{ '{{ user.name }}' }} - utilisez {{ '{{ ... }}' }} pour les variables"
+             value="{{ request.form.get('template_name', '') }}">
+
+      <label for="template_body">Corps du template (HTML)</label>
+      <textarea name="template_body" id="template_body" rows="6"
+                placeholder="&lt;p&gt;Bonjour, votre commande est confirmee.&lt;/p&gt;">{{ request.form.get('template_body', '') }}</textarea>
+
+      <button type="submit">Prévisualiser</button>
+    </form>
+    {% if ssti_output is not none %}
+    <div class="output">{{ ssti_output | safe }}</div>
+    {% endif %}
+  </div>
+
+  <!-- Upload Section -->
+  <h2>&#128193; Upload de fichiers</h2>
+  <div class="card">
+    <form method="POST" action="/admin/upload" enctype="multipart/form-data">
+      <label for="file">Sélectionner un fichier</label>
+      <input type="file" name="file" id="file" style="margin-bottom:10px;">
+      <button type="submit">Uploader</button>
+    </form>
+  </div>
+
+  <div class="back">
+    <a href="/">&larr; Retour à l'accueil</a>
+  </div>
+</div>
+
+</body>
+</html>

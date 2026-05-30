@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutique — EcoVault</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:system-ui,sans-serif; background:#f5f6fa; color:#2d3436; }
+  header { background:linear-gradient(135deg, #2d3436, #636e72); color:white; padding:20px; text-align:center; }
+  header a { color:#dfe6e9; text-decoration:none; margin:0 12px; }
+  .container { max-width:900px; margin:30px auto; padding:0 20px; }
+  h2 { margin:25px 0 15px; color:#2d3436; }
+  .products { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px; }
+  .product { background:white; padding:20px; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .product h3 { margin-bottom:6px; }
+  .product .price { font-size:1.3rem; font-weight:700; color:#d63031; }
+  .product .desc { font-size:0.85rem; color:#636e72; margin:8px 0; }
+  .product .stock { font-size:0.8rem; color:#00b894; }
+  .comments { margin:20px 0; }
+  .comment { background:white; padding:12px 16px; border-radius:6px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+  .comment .meta { font-size:0.78rem; color:#b2bec3; margin-bottom:4px; }
+  .comment .body { font-size:0.9rem; }
+  form.comment-form { background:white; padding:20px; border-radius:8px; margin:20px 0; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  form.comment-form textarea { width:100%; padding:10px; border:2px solid #dfe6e9; border-radius:6px; font-size:0.9rem; min-height:80px; }
+  form.comment-form select, form.comment-form button { margin-top:10px; padding:8px 16px; }
+  form.comment-form button { background:#d63031; color:white; border:none; border-radius:6px; font-weight:600; cursor:pointer; }
+  .back { margin-top:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#128722; Boutique EcoVault</h1>
+  <a href="/">Accueil</a> | <a href="/search?q=">Recherche</a>
+</header>
+
+<div class="container">
+
+  <h2>Produits disponibles</h2>
+  <div class="products">
+    {% for p in products %}
+    <div class="product">
+      <h3>{{ p.name }}</h3>
+      <div class="price">{{ p.price }}€</div>
+      <div class="desc">{{ p.description }}</div>
+      <div class="stock">Stock : {{ p.stock }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2>&#128172; Avis clients</h2>
+  <div class="comments">
+    {% for c in comments %}
+    <div class="comment">
+      <div class="meta">Par {{ c.email }} — {{ c.created_at }}</div>
+      <div class="body">{{ c.content | safe }}</div>
+      <!-- ⚠️ |safe = pas d'échappement HTML → Stored XSS -->
+    </div>
+    {% endfor %}
+  </div>
+
+  <h3>Laisser un commentaire</h3>
+  <form class="comment-form" method="POST" action="/shop/comment">
+    <select name="product_id">
+      {% for p in products %}
+      <option value="{{ p.id }}">{{ p.name }}</option>
+      {% endfor %}
+    </select>
+    <textarea name="content" placeholder="Votre avis..." required></textarea>
+    <button type="submit">Publier</button>
+  </form>
+
+  <div class="back">
+    <a href="/">&larr; Retour à l'accueil</a>
+  </div>
+</div>
+
+</body>
+</html>

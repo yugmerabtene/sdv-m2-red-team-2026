@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoVault — Lab Pentest</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: system-ui, sans-serif; background: #f5f6fa; color: #2d3436; min-height:100vh; }
+  header { background: linear-gradient(135deg, #2d3436, #636e72); color: white; padding: 30px 0; text-align:center; }
+  header h1 { font-size: 2rem; margin-bottom: 6px; }
+  header p { opacity: 0.8; }
+  .user-bar { background:#dfe6e9; padding:8px 20px; text-align:right; font-size:0.9rem; }
+  .user-bar a { color: #d63031; text-decoration:none; margin-left:15px; }
+  nav { background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.08); padding:0; }
+  nav .inner { max-width:1000px; margin:0 auto; display:flex; gap:0; flex-wrap:wrap; }
+  nav a { padding:14px 20px; text-decoration:none; color:#636e72; font-weight:500; font-size:0.95rem; border-bottom:3px solid transparent; }
+  nav a:hover { color:#d63031; border-color:#d63031; }
+  .container { max-width:1000px; margin:30px auto; padding:0 20px; }
+  h2 { margin:30px 0 15px; color:#2d3436; border-bottom: 2px solid #dfe6e9; padding-bottom:8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:20px; }
+  .card { background:white; border-radius:8px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.06); border-left:4px solid #00b894; }
+  .card.m2 { border-left-color: #0984e3; }
+  .card.m3 { border-left-color: #6c5ce7; }
+  .card.m4 { border-left-color: #e17055; }
+  .card.m5 { border-left-color: #00cec9; }
+  .card h3 { font-size:1.05rem; margin-bottom:8px; color:#2d3436; }
+  .card p { font-size:0.88rem; color:#636e72; line-height:1.5; margin-bottom:10px; }
+  .card code { background:#dfe6e9; padding:2px 6px; border-radius:3px; font-size:0.82rem; }
+  .card a { display:inline-block; margin-top:6px; color:#d63031; font-weight:600; text-decoration:none; font-size:0.9rem; }
+  .card a:hover { text-decoration:underline; }
+  .flag { background:#fff3cd; border:1px solid #ffc107; padding:8px 14px; border-radius:6px; font-family:monospace; font-size:0.85rem; display:inline-block; }
+  footer { text-align:center; padding:30px; color:#b2bec3; font-size:0.82rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#128737; EcoVault — Plateforme de Paiement</h1>
+  <p>Lab SDV M2 — Red Team Advanced 2026</p>
+</header>
+
+<div class="user-bar">
+  {% if user %}
+    Connecté : <strong>{{ user.email }}</strong> ({{ user.role }})
+    <a href="/api/whoami">[JWT Debug]</a>
+    <a href="/api/jwt-info">[Clé publique]</a>
+  {% else %}
+    <a href="/login">[Connexion]</a>
+  {% endif %}
+</div>
+
+<nav>
+  <div class="inner">
+    <a href="/">&#127968; Accueil</a>
+    <a href="/shop">&#128722; Boutique</a>
+    <a href="/search?q=">&#128269; Recherche</a>
+    <a href="/admin/templates">&#128736; Admin</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h2>&#127919; Objectifs — Jour 1</h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>&#127919; Flag 1 — IDOR</h3>
+      <p>Lire le profil d'un autre utilisateur via <code>/api/profile/&lt;id&gt;</code></p>
+      <p><strong>ATT&CK :</strong> T1548, T1134</p>
+      <p><strong>Endpoint :</strong> <code>GET /api/profile/{id}</code></p>
+    </div>
+
+    <div class="card m2">
+      <h3>&#127919; Flag 2 — SQLi</h3>
+      <p>Extraire la table <code>users</code> via l'endpoint transactions</p>
+      <p><strong>ATT&CK :</strong> T1190</p>
+      <p><strong>Endpoint :</strong> <code>GET /api/transactions?filter=</code></p>
+      <a href="/api/transactions?filter=1">[Test GET]</a>
+    </div>
+
+    <div class="card m3">
+      <h3>&#127919; Flag 3 — Auth Bypass</h3>
+      <p>Contourner l'authentification pour devenir admin (JWT flaws)</p>
+      <p><strong>ATT&CK :</strong> T1078, T1134</p>
+      <p><strong>Endpoint :</strong> <code>GET /api/whoami</code> / <code>GET /api/jwt-info</code></p>
+      <a href="/api/jwt-info">[Clé JWT]</a>
+    </div>
+
+    <div class="card m4">
+      <h3>&#127919; Flag 4 — SSTI → RCE</h3>
+      <p>Exploiter le moteur de templates dans le panel admin</p>
+      <p><strong>ATT&CK :</strong> T1190, T1059.003</p>
+      <p><strong>Endpoint :</strong> <code>POST /admin/templates</code></p>
+      <a href="/admin/templates">[Admin Panel]</a>
+    </div>
+
+    <div class="card m5">
+      <h3>&#127919; Flag 5 — Pivoting</h3>
+      <p>Obtenir un shell, pivoter vers le réseau interne (10.0.0.10)</p>
+      <p><strong>ATT&CK :</strong> T1059, T1021, T1041</p>
+      <p><strong>Cible :</strong> 10.0.0.10:8081 (HTTP) / 10.0.0.10:25 (SMTP)</p>
+    </div>
+
+    <div class="card">
+      <h3>&#127919; Bonus — NoSQLi</h3>
+      <p>Exploiter l'injection MongoDB sur l'endpoint d'export</p>
+      <p><strong>ATT&CK :</strong> T1190</p>
+      <p><strong>Endpoint :</strong> <code>POST /api/export</code></p>
+    </div>
+
+    <div class="card">
+      <h3>&#127919; Bonus — XXE</h3>
+      <p>Exploiter l'injection XML externe sur l'upload</p>
+      <p><strong>ATT&CK :</strong> T1190</p>
+      <p><strong>Endpoint :</strong> <code>POST /api/upload-xml</code></p>
+    </div>
+
+    <div class="card">
+      <h3>&#127919; Bonus — Command Injection</h3>
+      <p>Exécuter des commandes système via l'outil de ping</p>
+      <p><strong>ATT&CK :</strong> T1059.004</p>
+      <p><strong>Endpoint :</strong> <code>POST /api/ping</code></p>
+    </div>
+
+  </div>
+
+  <h2>&#128179; Endpoints disponibles</h2>
+  <table style="width:100%;border-collapse:collapse;background:white;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);overflow:hidden;">
+    <thead>
+      <tr style="background:#2d3436;color:white;">
+        <th style="padding:10px;text-align:left;">Méthode</th>
+        <th style="padding:10px;text-align:left;">Endpoint</th>
+        <th style="padding:10px;text-align:left;">Vulnérabilité</th>
+        <th style="padding:10px;text-align:left;">MITRE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/login</code></td><td style="padding:8px;border-bottom:1px solid #eee;">SQL Injection (auth bypass)</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1190</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">GET</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/profile/{id}</code></td><td style="padding:8px;border-bottom:1px solid #eee;">IDOR</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1548</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">GET</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/transactions</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Blind SQLi</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1190</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/export</code></td><td style="padding:8px;border-bottom:1px solid #eee;">NoSQLi (MongoDB)</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1190</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/admin/templates</code></td><td style="padding:8px;border-bottom:1px solid #eee;">SSTI (Jinja2)</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1190</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/ping</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Command Injection</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1059</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/upload-xml</code></td><td style="padding:8px;border-bottom:1px solid #eee;">XXE</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1190</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">GET</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/search?q=</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Reflected XSS</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1189</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/shop/comment</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Stored XSS</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1189</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/transfer</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Race Condition</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1068</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/api/order</code></td><td style="padding:8px;border-bottom:1px solid #eee;">Business Logic</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">-</td></tr>
+      <tr><td style="padding:8px;border-bottom:1px solid #eee;">POST</td><td style="padding:8px;border-bottom:1px solid #eee;"><code>/admin/change-password</code></td><td style="padding:8px;border-bottom:1px solid #eee;">CSRF</td><td style="padding:8px;border-bottom:1px solid #eee;" class="flag">T1539</td></tr>
+      <tr><td style="padding:8px;">POST</td><td style="padding:8px;"><code>/admin/upload</code></td><td style="padding:8px;">File Upload (Webshell)</td><td style="padding:8px;" class="flag">T1505</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  EcoVault Lab v1.0 — SDV M2 Red Team Advanced — Usage interne uniquement
+</footer>
+
+</body>
+</html>
