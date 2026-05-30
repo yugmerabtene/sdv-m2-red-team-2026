@@ -178,34 +178,7 @@ Si `Access-Control-Allow-Origin: *` ET `Access-Control-Allow-Credentials: true`,
 
 ### 1.6 Méthodologie de pentest web
 
-```
-┌─────────────────────────────────────────────────────┐
-│ 1. RECONNAISSANCE                                   │
-│    - Identification des technologies (Wappalyzer)    │
-│    - Scan de ports (nmap)                            │
-│    - DNS / sous-domaines (gobuster, ffuf)            │
-├─────────────────────────────────────────────────────┤
-│ 2. MAPPING                                          │
-│    - Crawl des endpoints (gobuster, dirb)            │
-│    - Cartographie des paramètres                     │
-│    - Identification des points d'injection           │
-├─────────────────────────────────────────────────────┤
-│ 3. IDENTIFICATION                                   │
-│    - Tests d'injection (SQLi, XSS, SSTI, etc.)       │
-│    - Détection de version des frameworks             │
-│    - Analyse des réponses (timing, erreurs, status)  │
-├─────────────────────────────────────────────────────┤
-│ 4. EXPLOITATION                                     │
-│    - Extraction de données                           │
-│    - Escalade de privilèges                          │
-│    - Exécution de code (RCE)                         │
-├─────────────────────────────────────────────────────┤
-│ 5. POST-EXPLOITATION                                │
-│    - Maintien d'accès                               │
-│    - Mouvement latéral                              │
-│    - Dissimulation des traces                       │
-└─────────────────────────────────────────────────────┘
-```
+![Diagram 1 - Méthodologie de pentest web — 5 phases](assets/diagrams/m2_diagram_1.png)
 
 #### Commandes de reconnaissance initiale
 

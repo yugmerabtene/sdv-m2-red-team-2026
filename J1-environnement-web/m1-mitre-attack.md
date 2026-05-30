@@ -67,12 +67,7 @@ MITRE ATT&CK se décline en **trois matrices** distinctes, adaptées à différe
 
 La taxonomie ATT&CK repose sur une hiérarchie à quatre niveaux :
 
-```
-Tactique (le "Pourquoi")
-    └── Technique (le "Quoi")
-            └── Sous-technique (le "Comment" précis)
-                    └── Procédure (l'exemple concret)
-```
+![Diagram 1 — Hiérarchie ATT&CK](assets/diagrams/m1_diagram_1.png)
 
 ### 2.2 Les 14 tactiques Enterprise
 
@@ -112,58 +107,7 @@ Chaque élément possède un identifiant unique :
 
 Prenons l'exemple d'un ransomware ciblant une entreprise :
 
-```
-TA0043 (Reconnaissance)
-    └── T1595 (Active Scanning)
-        └── T1595.001 (Scanning IP Blocks)
-        └── T1595.002 (Vulnerability Scanning)
-
-TA0001 (Initial Access)
-    └── T1566 (Phishing)
-        └── T1566.001 (Spearphishing Attachment)
-            └── Procédure : Email avec macro Office malveillante
-
-TA0002 (Execution)
-    └── T1204 (User Execution)
-        └── T1204.002 (Malicious File)
-
-TA0003 (Persistence)
-    └── T1547 (Boot/Logon Autostart Execution)
-        └── T1547.001 (Registry Run Keys / Startup Folder)
-
-TA0004 (Privilege Escalation)
-    └── T1068 (Exploitation for Privilege Escalation)
-
-TA0005 (Defense Evasion)
-    └── T1055 (Process Injection)
-    └── T1562 (Impair Defenses)
-
-TA0006 (Credential Access)
-    └── T1003 (OS Credential Dumping)
-        └── T1003.001 (LSASS Memory)
-
-TA0007 (Discovery)
-    └── T1018 (Remote System Discovery)
-    └── T1083 (File and Directory Discovery)
-
-TA0008 (Lateral Movement)
-    └── T1021 (Remote Services)
-        └── T1021.001 (Remote Desktop Protocol)
-
-TA0009 (Collection)
-    └── T1560 (Archive Collected Data)
-
-TA0011 (Command and Control)
-    └── T1071 (Application Layer Protocol)
-        └── T1071.001 (Web Protocols)
-
-TA0010 (Exfiltration)
-    └── T1048 (Exfiltration Over Alternative Protocol)
-
-TA0040 (Impact)
-    └── T1486 (Data Encrypted for Impact)
-    └── T1490 (Inhibit System Recovery)
-```
+![Diagram 2 — Chaîne complète ransomware (14 tactiques ATT&CK)](assets/diagrams/m1_diagram_2.png)
 
 Chaque étape correspond à un nœud dans la matrice ATT&CK que l'on peut colorer dans l'ATT&CK Navigator pour visualiser la couverture.
 
@@ -181,11 +125,7 @@ Le **Commandement de la Cyberdéfense (COMCYBER)** est l'organisme militaire fra
 - ATT&CK est utilisé comme **langage commun** entre les différentes entités de défense (COMCYBER, ANSSI, DGSE)
 - Les tactiques ATT&CK sont mappées sur les phases de la LID :
 
-```
-LID - Protection    →  TA0003 (Persistence) → Hardening
-LID - Détection     →  TA0007 (Discovery)  → Logs / SIEM
-LID - Réaction      →  TA0040 (Impact)      → Incident Response
-```
+![Diagram 3 — Mapping LID → Tactiques ATT&CK](assets/diagrams/m1_diagram_3.png)
 
 - **Exercices PEGASE** : exercices interarmées de cyberdéfense où ATT&CK sert de référentiel d'évaluation.
 
@@ -266,15 +206,7 @@ L'article 21 impose aux entités essentielles et importantes de mettre en œuvre
 
 **Exemple de gap analysis avec ATT&CK :**
 
-```
-Exigence NIS2 : "Détection des accès non autorisés"
-    → Techniques ATT&CK concernées :
-        - T1078 (Valid Accounts)
-        - T1133 (External Remote Services)
-        - T1190 (Exploit Public-Facing Application)
-    → Si le SIEM ne couvre que T1190 → gap sur T1078 et T1133
-    → Plan d'action : ajouter des règles de détection sur les authentifications anormales
-```
+![Diagram 4 — Gap Analysis NIS2 avec ATT&CK](assets/diagrams/m1_diagram_4.png)
 
 ### 4.3 Article 23 — Notification des incidents
 
@@ -736,50 +668,11 @@ T1505.003 — SOUS-COUVERTE (gap: 55 pts)
 
 **Structure d'un rapport exécutif avec ATT&CK :**
 
-```
-1. Résumé exécutif
-   - Objectif de l'engagement
-   - Périmètre testé
-   - Score de sécurité global (ex : 62/100)
-
-2. Synthèse visuelle
-   - Heat map ATT&CK Navigator (niveau tactique)
-   - Top 5 des techniques les plus critiques non couvertes
-
-3. Recommandations prioritaires
-   - Par ordre d'impact sur la couverture ATT&CK
-   - Budget estimé
-
-4. Annexes
-   - Heat map détaillée (niveau technique)
-   - Fichier JSON de la couche
-   - Calendrier de remediation
-```
+![Diagram 5 — Structure Rapport Exécutif](assets/diagrams/m1_diagram_5.png)
 
 **Structure d'un rapport technique avec ATT&CK :**
 
-```
-1. Périmètre et méthodologie
-   - Matrice ATT&CK utilisée (Enterprise v14)
-   - Liste des techniques testées avec codes TXXXX
-
-2. Chronologie de l'attaque
-   - Timeline avec les tactiques ATT&CK atteintes
-   - Pour chaque étape : technique, procédure, résultat
-
-3. Détail des techniques exploitées
-   - T1190 : Exploitation SQLi (CVSS 9.8)
-   - T1505.003 : Webshell JSP déposé
-   - T1021.004 : Mouvement latéral SSH
-
-4. Détection et remédiation
-   - Par technique : règles de détection proposées (Sigma, Splunk, KQL)
-   - Configuration de durcissement
-
-5. Fichier de couche ATT&CK
-   - JSON Navigator complet
-   - Instructions d'import
-```
+![Diagram 6 — Structure Rapport Technique](assets/diagrams/m1_diagram_6.png)
 
 ---
 
@@ -799,39 +692,7 @@ T1505.003 — SOUS-COUVERTE (gap: 55 pts)
 
 **Contexte :** Vous êtes Red Team sur l'application **BanX** (banque en ligne). Votre mission est de tester la détection de l'équipe SOC. Voici le déroulé de votre attaque :
 
-```
-Phase 1 — Reconnaissance (Jour 1)
-    → Scan Shodan pour trouver les IPs exposées de BanX
-    → Découverte de : 185.23.45.67 (portail web), 185.23.45.78 (API)
-
-Phase 2 — Initial Access (Jour 2)
-    → SQL Injection sur l'endpoint /api/v1/transfer?account_id=1 UNION SELECT...
-    → Extraction de 12 000 comptes utilisateurs (hashs bcrypt + emails)
-
-Phase 3 — Exécution (Jour 2)
-    → Upload d'un webshell PHP via une faille de téléchargement sur /uploads/profile.php
-    → Commande exécutée : whoami → www-data
-
-Phase 4 — Persistence + Privilege Escalation (Jour 3)
-    → Webshell conservé dans /var/www/html/uploads/shell.php
-    → Exploitation CVE-2024-XXXX sur le kernel → passage root
-
-Phase 5 — Credential Access (Jour 3)
-    → Dump de /etc/shadow (11 comptes root, oracle, admin, backup)
-    → Crack de 3 mots de passe : admin / Pa\$\$w0rd! / backup / B@ckup2024!
-
-Phase 6 — Movement (Jour 4)
-    → Connexion SSH vers le serveur de base de données (10.0.1.50) avec les credentials root
-    → Dump de la base de données : mysqldump --all-databases > dump.sql
-
-Phase 7 — Exfiltration (Jour 4)
-    → Compression du dump : tar czf dump.tar.gz dump.sql (taille : 2.3 Go)
-    → Transfert via scp vers un serveur Cloud external (serveur vps hébergé)
-
-Phase 8 — Nettoyage (Jour 4)
-    → Suppression des logs : rm -rf /var/log/apache2/access.log
-    → Suppression de l'historique bash : history -c
-```
+![Diagram 7 — Scénario de compromission — Opération CaisseNoire](assets/diagrams/m1_diagram_7.png)
 
 ### 8.3 Travail à réaliser
 
@@ -935,12 +796,7 @@ Analysez la heat map obtenue :
 
 ### 8.4 Rendu attendu
 
-```text
-📁 TP_MITRE_ATTACK/
-├── CaisseNoire_heatmap.json     # Fichier de couche ATT&CK Navigator exporté
-├── README_analyse.md            # Analyse de la heat map (5-10 lignes)
-└── screenshot_heatmap.png       # Capture d'écran de la heat map (optionnel)
-```
+![Diagram 8 — Rendu attendu — Structure du livrable](assets/diagrams/m1_diagram_8.png)
 
 ### 8.5 Exemple de fichier JSON de correction
 

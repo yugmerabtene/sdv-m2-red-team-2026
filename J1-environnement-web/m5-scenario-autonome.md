@@ -126,24 +126,7 @@ Conformément à l'**Article 21** de la directive NIS2 (UE 2022/2555), le rappor
 
 ### 3.2 Arbre d'attaque global
 
-```
-user@ecovault.com
-    │
-    ├── Flag 1 — IDOR [T1548]
-    │   └── GET /api/profile/1 → clé API admin
-    │
-    ├── Flag 2 — SQLi [T1190]
-    │   └── GET /api/transactions?filter= → dump users table
-    │
-    ├── Flag 3 — JWT Forge [T1078]
-    │   └── None algorithm / HMAC-RSA confusion → token admin
-    │
-    ├── Flag 4 — SSTI → RCE [T1190 → T1059.003]
-    │   └── POST /admin/templates → reverse shell
-    │
-    └── Flag 5 — Pivoting [T1021] (BONUS)
-        └── Reverse shell → chisel tunnel → fichier SMTP interne
-```
+![Diagram 1 - Global Attack Tree](assets/diagrams/m5_diagram_1.png)
 
 ---
 
@@ -710,14 +693,7 @@ curl -s http://ecovault.local/admin/templates \
 
 **Explication de la chaîne d'accès :**
 
-```
-cycler                    → objet Jinja2 accessible globalement
-  .__init__               → méthode constructeur de l'objet
-    .__globals__          → dictionnaire des globals du module Python
-      .os                 → module 'os' importé dans le module
-        .popen('id')      → exécute la commande 'id'
-          .read()         → lit la sortie de la commande
-```
+![Diagram 2 - SSTI Exploitation Chain](assets/diagrams/m5_diagram_2.png)
 
 **Résultat attendu :** `uid=1000(app) gid=1000(app) groups=1000(app)`
 
@@ -1041,19 +1017,7 @@ Le **pivoting** est une étape clé du Red Teaming qui simule un attaquant réel
 
 **Architecture :**
 
-```
-[Attaquant] ── Port 8080 ──→ [Chisel Server]
-                                  ↑
-                                  │ Tunnel SOCKS5
-                                  ↓
-                            [Chisel Client] ← Serveur Web (10.0.0.5)
-                                  │
-                                  │ Scan / Connexion
-                                  ↓
-                            [Serveur Interne] (10.0.0.10)
-                              Port 8081 (HTTP)
-                              Port 25   (SMTP)
-```
+![Diagram 5 - Chisel Tunnel SOCKS5 Architecture](assets/diagrams/m5_diagram_5.png)
 
 **Proxychains** permet de faire passer les outils (curl, nmap, nc) à travers le tunnel SOCKS5 sans modification.
 
@@ -1073,19 +1037,7 @@ Le **pivoting** est une étape clé du Red Teaming qui simule un attaquant réel
 
 ### 5.2 Matrice de couverture ATT&CK (Heat Map textuelle)
 
-```
-Tactique                  Technique      Score  Couleur
-─────────────────────────────────────────────────────────
-TA0004 (PrivEsc)         T1548 (IDOR)     100%  ████████████ Rouge
-TA0001 (Initial Access)  T1190 (SQLi)      100%  ████████████ Rouge
-TA0005 (Defense Evasion) T1078 (JWT)       100%  ████████████ Rouge
-TA0002 (Execution)       T1059.003 (Shell) 100%  ████████████ Rouge
-TA0008 (Lat Movement)    T1021 (Pivot)     100%  ████████████ Rouge
-TA0007 (Discovery)       T1046 (Scan)       80%  ████████░░░ Orange
-TA0011 (C2)              T1572 (Tunnel)     80%  ████████░░░ Orange
-─────────────────────────────────────────────────────────
-Score de couverture global : 94%
-```
+![Diagram 3 - ATT\&CK Coverage Heat Map](assets/diagrams/m5_diagram_3.png)
 
 ### 5.3 Rapport de conformité NIS2
 
@@ -1461,16 +1413,7 @@ def admin_templates():
 
 **Chaîne d'exploitation :**
 
-```
-{{ cycler.__init__.__globals__.os.popen('commande').read() }}
-    │        │         │         │         │          │
-    │        │         │         │         │          └── lit la sortie
-    │        │         │         │         └── exécute la commande
-    │        │         │         └── module os (système)
-    │        │         └── dictionnaire des globals
-    │        └── constructeur de l'objet
-    └── objet Jinja2 global (toujours disponible)
-```
+![Diagram 4 - SSTI Payload Breakdown](assets/diagrams/m5_diagram_4.png)
 
 #### Comment corriger
 
@@ -1591,47 +1534,7 @@ def detect_tunnels():
 
 ### 6.6 Diagramme de l'attaque complète
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      PARCOURS D'ATTAQUE COMPLET                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  Compte fourni                                                          │
-│  user@ecovault.com                                                      │
-│  User2026!                                                              │
-│       │                                                                 │
-│       ▼                                                                 │
-│  ┌──────────┐                                                           │
-│  │  Flag 1  │ IDOR ──── T1548 ── GET /api/profile/1                    │
-│  │  IDOR    │ ──────────────────────────────────────────────────        │
-│  └──────────┘          └→ Clé API admin récupérée                       │
-│       │                                                                 │
-│       ▼                                                                 │
-│  ┌──────────┐                                                           │
-│  │  Flag 2  │ SQLi ───── T1190 ── GET /api/transactions?filter=        │
-│  │  SQLi    │ ──────────────────────────────────────────────────        │
-│  └──────────┘          └→ Table users extraite (emails, mots de passe)  │
-│       │                                                                 │
-│       ▼                                                                 │
-│  ┌──────────┐                                                           │
-│  │  Flag 3  │ JWT ────── T1078 ── Forge token admin                    │
-│  │  JWT     │ ──────────────────────────────────────────────────        │
-│  └──────────┘          └→ Accès admin à /admin/templates                │
-│       │                                                                 │
-│       ▼                                                                 │
-│  ┌──────────┐                                                           │
-│  │  Flag 4  │ SSTI ───── T1190→T1059.003 ── POST /admin/templates      │
-│  │  RCE     │ ──────────────────────────────────────────────────        │
-│  └──────────┘          └→ Reverse shell (bash -i >& /dev/tcp/...)       │
-│       │                                                                 │
-│       ▼                                                                 │
-│  ┌──────────┐                                                           │
-│  │  Flag 5  │ Pivot ──── T1021 ── Chisel tunnel → 10.0.0.10            │
-│  │  Pivot   │ ──────────────────────────────────────────────────        │
-│  └──────────┘          └→ Fichier récupéré sur serveur SMTP interne     │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Diagram 6 - Complete Attack Path](assets/diagrams/m5_diagram_6.png)
 
 ### 6.7 Tableau récapitulatif des flags
 
