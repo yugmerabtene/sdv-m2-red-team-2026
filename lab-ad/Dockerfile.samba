@@ -1,0 +1,29 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DOMAIN=redteam.lab
+ENV DOMAIN_IP=10.0.1.10
+ENV ADMIN_PASSWORD=Admin123!
+
+RUN apt-get update && apt-get install -y \
+    samba smbclient winbind libnss-winbind libpam-winbind \
+    krb5-user krb5-kdc krb5-admin-server \
+    bind9 bind9utils bind9-dnsutils \
+    ldap-utils \
+    nano vim curl wget netcat dnsutils \
+    python3 python3-pip \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install impacket ldap3
+
+RUN systemctl disable samba-ad-dc 2>/dev/null || true; \
+    systemctl disable bind9 2>/dev/null || true; \
+    systemctl disable krb5-kdc 2>/dev/null || true
+
+COPY provision/ /provision/
+RUN chmod +x /provision/*.sh /provision/*.py 2>/dev/null || true
+
+EXPOSE 53 53/udp 88 88/udp 135 137/udp 138/udp 139 389 389/udp 445 464 464/udp 636 3268 3269
+
+CMD ["/provision/entrypoint.sh"]

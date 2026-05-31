@@ -1,0 +1,45 @@
+{
+  "type": "tree",
+  "width": 960,
+  "height": 420,
+  "title": "Structure d'un Domaine AD",
+  "root": {
+    "label": "sdv-m2.lab",
+    "children": [
+      {
+        "label": "Utilisateurs",
+        "tag": "Users",
+        "children": [
+          {"label": "jdoe"},
+          {"label": "asmith"},
+          {"label": "admin01"}
+        ]
+      },
+      {
+        "label": "Groupes",
+        "tag": "Groups",
+        "children": [
+          {"label": "Domain Admins"},
+          {"label": "Domain Users"},
+          {"label": "Enterprise Admins"}
+        ]
+      },
+      {
+        "label": "Ordinateurs",
+        "tag": "Computers",
+        "children": [
+          {"label": "DC01.sdv-m2.lab"},
+          {"label": "SRV-APP.sdv-m2.lab"}
+        ]
+      },
+      {
+        "label": "Unités d'organisation",
+        "tag": "OUs",
+        "children": [
+          {"label": "OU=Paris"},
+          {"label": "OU=Lyon"}
+        ]
+      }
+    ]
+  }
+}

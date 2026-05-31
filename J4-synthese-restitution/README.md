@@ -18,7 +18,3 @@
 | 13:30—14:30 | M18 — Heat map ATT&CK & Analyse des gaps | 1h00 |
 | 14:45—16:15 | M19 — Restitution orale simulée (client fictif) | 1h30 |
 | 16:15—17:00 | M20 — Débrief collectif & Évaluation des acquis | 0h45 |
-
-## Contenu à venir
-
-> Détail des modules en cours de rédaction.

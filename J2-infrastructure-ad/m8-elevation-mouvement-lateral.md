@@ -43,21 +43,7 @@ Contrairement à une idée reçue, le lateral movement n'est pas une technique e
 
 La chaîne complète d'une attaque avec lateral movement suit généralement ce schéma :
 
-```
-[Poste employé] ──(Phishing)──> [User compromise]
-       │
-       ├── Élévation locale ──> [Admin local]
-       │
-       ├── Credential Dump ──> [Hash NTLM + Tickets Kerberos]
-       │
-       ├── Pass-the-Hash ──> [Serveur Fichier]
-       │       │
-       │       ├── Credential Dump ──> [Hash Admin domaine]
-       │       │
-       │       └── Pass-the-Ticket ──> [Contrôleur de domaine]
-       │
-       └── DCSync ──> [Tous les hashs du domaine]
-```
+![Chaîne de compromission complète](annexes/images/m8_diag_1.svg)
 
 Chaque étape correspond à au moins une technique MITRE ATT&CK :
 
@@ -593,15 +579,7 @@ Le **Pass-the-Hash (PtH)** est une technique qui permet de s'authentifier sur un
 
 **Fonctionnement :**
 
-```
-┌─────────────────────┐                     ┌─────────────────────┐
-│  Machine attaquante │                     │  Machine cible      │
-│                     │                     │                     │
-│  Hash NTLM connu    │  ──── NTLM Auth ──> │  Vérification du   │
-│  (ex: 31d6cfe0...)  │                     │  hash dans SAM/AD  │
-│                     │  <─── Accès ───────  │                     │
-└─────────────────────┘                     └─────────────────────┘
-```
+![Pass-the-Hash](annexes/images/m8_diag_2.svg)
 
 **Pourquoi ça marche ?**
 
@@ -830,24 +808,7 @@ Le **Pass-the-Ticket (PtT)** consiste à utiliser un ticket Kerberos (TGT ou TGS
 
 **Rappel du fonctionnement de Kerberos :**
 
-```
-┌──────────────┐    1. AS-REQ      ┌────────────────┐
-│   Client     │ ────────────────>  │   KDC (DC)     │
-│  (utilisateur)│                   │  (KRBTGT)      │
-│              │ <────────────────  │                │
-│              │   2. AS-REP (TGT)  │                │
-│              │                   │                │
-│              │    3. TGS-REQ     │                │
-│              │ ────────────────>  │                │
-│              │ <────────────────  │                │
-│              │  4. TGS-REP (TGS) │                │
-│              │                   │                │
-│              │   5. AP-REQ (TGS) │                │
-│              │ ────────────────>  │   Service      │
-│              │ <────────────────  │                │
-│              │   6. AP-REP       │                │
-└──────────────┘                   └────────────────┘
-```
+![Authentification Kerberos](annexes/images/m8_diag_9.svg)
 
 **Étapes :**
 1. **AS-REQ** : Le client demande un TGT au KDC avec son hash NTLM
@@ -998,9 +959,7 @@ L'**Overpass-the-Hash** (également appelé Pass-the-Key ou PtH → TGT) est une
 
 **Principe :**
 
-```
-Hash NTLM (RC4) ──> AS-REQ (avec RC4_HMAC) ──> KDC ──> TGT
-```
+![Overpass-the-Hash](annexes/images/m8_diag_3.svg)
 
 ### 5.2 Rubeus : asktgt
 
@@ -1217,13 +1176,7 @@ impacket-psexec -hashes :8846f7eaee8fb117ad06bdd830b7586c -custom-binary powersh
 
 #### Fonctionnement technique de PsExec
 
-1. PsExec se connecte à ADMIN$ via SMB
-2. Upload du binaire PSEXESVC.exe dans ADMIN$
-3. Création d'un service Windows via SC Manager
-4. Le service démarre et crée un pipe nommé
-5. Le client se connecte au pipe
-6. Les commandes sont transmises via le pipe
-7. La sortie est retournée via le pipe
+![Fonctionnement technique de PsExec](annexes/images/m8_diag_4.svg)
 
 ### 6.3 WMI
 
@@ -1372,18 +1325,7 @@ Le **DCSync** est une technique qui permet à un attaquant de se faire passer po
 
 **Fonctionnement :**
 
-```
-┌────────────────┐                    ┌────────────────┐
-│  Attaquant     │  MS-DRSR Request   │  DC Cible      │
-│  (compte avec  │  ────────────────>  │  (ex: DC01)    │
-│   droits de    │                    │                │
-│   réplication) │  <────────────────  │                │
-│                │  Réplication      │                │
-│                │  (hashs NTLM,     │                │
-│                │   clés Kerberos,  │                │
-│                │   secrets LSA)    │                │
-└────────────────┘                    └────────────────┘
-```
+![DCSync](annexes/images/m8_diag_5.svg)
 
 **Pourquoi ça marche ?**
 
@@ -1595,25 +1537,7 @@ Le **Kerberoasting** est une technique qui permet d'obtenir le hash (TGS) d'un c
 
 **Fonctionnement :**
 
-```
-┌────────────────┐                    ┌────────────────┐
-│  Attaquant     │  TGS-REQ           │  KDC (DC)      │
-│  (n'importe    │  (SPN: sql/srv01)  │                │
-│   quel compte  │  ────────────────>  │                │
-│   domaine)     │                    │                │
-│               │  <────────────────  │                │
-│               │  TGS-REP           │                │
-│               │  (hash chiffré     │                │
-│               │   avec clé du      │                │
-│               │   compte service)  │                │
-└────────────────┘                    └────────────────┘
-┌────────────────┐
-│  Offline       │
-│  ────────────  │
-│  TGS cracké   │
-│  avec hashcat  │
-└────────────────┘
-```
+![Kerberoasting](annexes/images/m8_diag_6.svg)
 
 **Pourquoi ça marche ?**
 
@@ -1807,18 +1731,11 @@ L'**AS-REP Roasting** est une technique qui cible les comptes Active Directory p
 
 **Fonctionnement normal :**
 
-```
-1) Client → DC : AS-REQ (timestamp chiffré avec hash NTLM du client)
-2) DC → Client : AS-REP (TGT chiffré avec clé KRBTGT)
-```
+![AS-REP Roasting](annexes/images/m8_diag_7.svg)
 
 **Sans pré-authentification :**
 
-```
-1) Attaquant → DC : AS-REQ (pour le compte cible, sans timestamp)
-2) DC → Attaquant : AS-REP (contient un bloc chiffré avec la clé du compte cible)
-3) Attaquant : cracke le bloc offline (hashcat / john)
-```
+![AS-REP Roasting](annexes/images/m8_diag_7.svg)
 
 **Pourquoi ça marche ?**
 
@@ -1960,25 +1877,7 @@ Ce TP synthétise l'ensemble des techniques vues dans ce module. L'objectif est 
 
 #### Topologie
 
-```
-    Internet
-       |
-       | (Phishing → accès initial)
-       ▼
-┌────────────────┐
-│  CORP-PC01     │  ← Machine cible initiale (admin local acquis)
-│  10.0.1.15     │
-└────────┬───────┘
-         |
-         |  Réseau interne (10.0.1.0/24)
-         |
-┌────────────────┐     ┌────────────────┐     ┌────────────────┐
-│  FILESERVER    │     │  SRV01 (SQL)    │     │  DC01          │
-│  10.0.1.50     │     │  10.0.1.30      │     │  10.0.1.10     │
-│  Partages SMB  │     │  SQL Server     │     │  Contrôleur    │
-└────────────────┘     └────────────────┘     │  de domaine    │
-                                               └────────────────┘
-```
+![Topologie SCAD](annexes/images/m8_diag_8.svg)
 
 #### Objectifs
 

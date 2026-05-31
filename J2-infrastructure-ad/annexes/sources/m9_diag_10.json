@@ -1,0 +1,48 @@
+{
+  "type": "tree",
+  "title": "ADCS Attack Surface — Vecteurs d'attaque",
+  "width": 940,
+  "height": 520,
+  "root": {
+    "label": "ADCS Attack Surface",
+    "children": [
+      {
+        "label": "Templates vulnérables",
+        "tag": "ESC1-4",
+        "children": [
+          {"label": "ESC1: Template + EnrolleeSuppliesSubject"},
+          {"label": "ESC2: Template + Any Purpose EKU"},
+          {"label": "ESC3: Mauvaises permissions Manager CA"},
+          {"label": "ESC4: Accès ACL sur template (Write)"}
+        ]
+      },
+      {
+        "label": "Configurations CA",
+        "tag": "ESC5-7",
+        "children": [
+          {"label": "ESC5: WriteDACL sur CA"},
+          {"label": "ESC6: EDITF_ATTRIBUTESUBJECTALTNAME2"},
+          {"label": "ESC7: ManageCA + ManageCertificate"}
+        ]
+      },
+      {
+        "label": "Web Enrollment & Relais",
+        "tag": "ESC8-11",
+        "children": [
+          {"label": "ESC8: NTLM Relay vers ADCS Web"},
+          {"label": "ESC9: NoSecurityExtension"},
+          {"label": "ESC10: WeakCertificateThumbprint"},
+          {"label": "ESC11: Relative path ICertRequest"}
+        ]
+      },
+      {
+        "label": "Avancé",
+        "tag": "ESC12-13",
+        "children": [
+          {"label": "ESC12: ClientAuth via EKU Mapping"},
+          {"label": "ESC13: Template avec approbation"}
+        ]
+      }
+    ]
+  }
+}

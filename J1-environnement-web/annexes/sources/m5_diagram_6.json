@@ -1,0 +1,14 @@
+{
+  "type": "attack_chain",
+  "title": "Complete Attack Path — Scenario Autonome",
+  "width": 1200,
+  "height": 360,
+  "steps": [
+    { "id": "1", "label": "Flag 1\nIDOR — Profil Admin", "tag": "T1548", "icon": "user" },
+    { "id": "2", "label": "Flag 2\nSQLi — Extract Users", "tag": "T1190", "icon": "db" },
+    { "id": "3", "label": "Flag 3\nJWT Bypass — Admin", "tag": "T1078", "icon": "key" },
+    { "id": "4", "label": "Flag 4\nSSTI → RCE Shell", "tag": "T1059.003", "icon": "terminal" },
+    { "id": "5", "label": "Pivot Setup\nChisel SOCKS5", "tag": "T1572", "icon": "switch" },
+    { "id": "6", "label": "Flag 5 (B)\nExfil SMTP Interne", "tag": "T1021", "icon": "email" }
+  ]
+}

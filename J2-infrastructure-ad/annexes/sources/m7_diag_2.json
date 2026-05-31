@@ -1,0 +1,23 @@
+{
+  "type": "tree",
+  "width": 900,
+  "height": 320,
+  "title": "Forêt Active Directory",
+  "root": {
+    "label": "Forêt: sdv-m2.lab",
+    "children": [
+      {
+        "label": "sdv-m2.lab",
+        "tag": "Racine"
+      },
+      {
+        "label": "europe.sdv-m2.lab",
+        "tag": "Enfant"
+      },
+      {
+        "label": "asia.sdv-m2.lab",
+        "tag": "Enfant"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "type": "attack_chain",
+    "title": "Opération CaisseNoire — Scénario de compromission",
+    "width": 1200,
+    "height": 320,
+    "steps": [
+        {"id": "phase1", "label": "Recon\nShodan", "icon": "globe", "tag": "T1596"},
+        {"id": "phase2", "label": "Initial Access\nSQL Injection", "icon": "attack", "tag": "T1190"},
+        {"id": "phase3", "label": "Execution\nWebshell", "icon": "terminal", "tag": "T1505.003"},
+        {"id": "phase4", "label": "Priv. Escal.\nKernel Exploit", "icon": "lock", "tag": "T1068"},
+        {"id": "phase5", "label": "Cred. Access\nDump /etc/shadow", "icon": "key", "tag": "T1003"},
+        {"id": "phase6", "label": "Lat. Move + Collect\nSSH + mysqldump", "icon": "server", "tag": "T1021"},
+        {"id": "phase7", "label": "Exfiltration\nSCP", "icon": "email", "tag": "T1048"},
+        {"id": "phase8", "label": "Cover Tracks\nLog Wipe", "icon": "shield", "tag": "T1070"}
+    ]
+}

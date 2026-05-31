@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  # ── Contrôleur de Domaine AD (Samba) ─────
+  dc01:
+    build:
+      context: .
+      dockerfile: Dockerfile.samba
+    container_name: lab-dc01
+    hostname: dc01
+    environment:
+      DOMAIN: redteam.lab
+      DOMAIN_IP: 10.0.1.10
+      ADMIN_PASSWORD: "Admin123!"
+    ports:
+      - "53:53/udp"       # DNS
+      - "53:53/tcp"       # DNS TCP
+      - "88:88/udp"       # Kerberos
+      - "88:88/tcp"       # Kerberos TCP
+      - "135:135/tcp"     # RPC
+      - "137:137/udp"     # NetBIOS
+      - "138:138/udp"     # NetBIOS
+      - "139:139/tcp"     # SMB
+      - "389:389/tcp"     # LDAP
+      - "389:389/udp"     # LDAP UDP
+      - "445:445/tcp"     # SMB
+      - "464:464/tcp"     # Kerberos password change
+      - "464:464/udp"     # Kerberos password change
+      - "636:636/tcp"     # LDAPS
+      - "3268:3268/tcp"   # Global Catalog
+      - "3269:3269/tcp"   # Global Catalog SSL
+    volumes:
+      - samba_data:/var/lib/samba
+      - samba_config:/etc/samba
+      - samba_krb5:/etc/krb5.conf
+      - ./provision:/provision:ro
+    networks:
+      lab-ad-net:
+        ipv4_address: 10.0.1.10
+    cap_add:
+      - CAP_SYS_ADMIN
+      - CAP_NET_ADMIN
+      - CAP_NET_BIND_SERVICE
+    restart: unless-stopped
+
+  # ── Workstation simulée Linux ─────────────
+  ws01:
+    build:
+      context: .
+      dockerfile: Dockerfile.workstation
+    container_name: lab-ws01
+    hostname: ws01
+    environment:
+      DOMAIN: redteam.lab
+      DC_IP: 10.0.1.10
+      USER: jdoe
+      PASSWORD: "P@ssw0rd!2025"
+    volumes:
+      - ws01_data:/home/jdoe
+    networks:
+      lab-ad-net:
+        ipv4_address: 10.0.1.100
+    depends_on:
+      - dc01
+    restart: unless-stopped
+
+networks:
+  lab-ad-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
+
+volumes:
+  samba_data:
+  samba_config:
+  samba_krb5:
+  ws01_data:

@@ -1,0 +1,15 @@
+{
+  "type": "attack_chain",
+  "title": "SSTI Exploitation Chain — Jinja2 → RCE",
+  "width": 1100,
+  "height": 360,
+  "steps": [
+    { "id": "1", "label": "JWT Admin\nAcces /admin/templates", "tag": "T1078", "icon": "key" },
+    { "id": "2", "label": "SSTI Detection\n{{ 7*7 }} → 49", "tag": "T1190", "icon": "attack" },
+    { "id": "3", "label": "Object Traversal\n__class__.__mro__", "tag": "Traversal", "icon": "folder" },
+    { "id": "4", "label": "Reach subprocess\n__subclasses__()[...]", "tag": "Enum", "icon": "terminal" },
+    { "id": "5", "label": "Access os.popen\n__globals__.os.popen", "tag": "RCE", "icon": "server" },
+    { "id": "6", "label": "Execute Command\npopen('id').read()", "tag": "T1059.003", "icon": "attack" },
+    { "id": "7", "label": "Reverse Shell\nnc -e /bin/sh", "tag": "Shell", "icon": "globe" }
+  ]
+}

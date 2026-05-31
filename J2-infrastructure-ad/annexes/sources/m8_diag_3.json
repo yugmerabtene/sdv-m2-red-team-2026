@@ -1,0 +1,12 @@
+{
+  "type": "attack_chain",
+  "width": 960,
+  "height": 220,
+  "title": "Overpass-the-Hash",
+  "steps": [
+    {"label": "Hash NTLM\n(RC4)", "icon": "key", "tag": "NTLM"},
+    {"label": "AS-REQ\n(RC4_HMAC)", "icon": "email", "tag": "KDC"},
+    {"label": "KDC\n(DC)", "icon": "server", "tag": "TGS"},
+    {"label": "TGT\nTicket", "icon": "lock", "tag": "T1550.002"}
+  ]
+}

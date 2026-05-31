@@ -1,0 +1,64 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 500' width='960' height='500'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='960' height='500' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Mapping LID → Tactiques ATT&amp;CK</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='390.0' y='30' width='180' height='40' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='480.0' y='54' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='14px'>LID — Lutte Informatique Défensive</text>
+    <line x1='480.0' y1='70' x2='260.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='170.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='260.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Protection</text>
+    <line x1='260.0' y1='150' x2='-10.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='-80.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='-10.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Initial Access (TA0001)</text>
+    <line x1='260.0' y1='150' x2='170.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='100.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='170.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Persistence (TA0003)</text>
+    <line x1='260.0' y1='150' x2='350.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='280.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#a55eea' stroke-width='1' filter='url(#shadow)' />
+    <text x='350.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Privilege Escalation (TA0004)</text>
+    <line x1='260.0' y1='150' x2='530.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='460.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#ff9f43' stroke-width='1' filter='url(#shadow)' />
+    <text x='530.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Defense Evasion (TA0005)</text>
+    <line x1='480.0' y1='70' x2='480.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='390.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='480.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Détection</text>
+    <line x1='480.0' y1='150' x2='210.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='140.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='210.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Discovery (TA0007)</text>
+    <line x1='480.0' y1='150' x2='390.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='320.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='390.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Lateral Movement (TA0008)</text>
+    <line x1='480.0' y1='150' x2='570.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='500.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#a55eea' stroke-width='1' filter='url(#shadow)' />
+    <text x='570.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Collection (TA0009)</text>
+    <line x1='480.0' y1='150' x2='750.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='680.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#ff9f43' stroke-width='1' filter='url(#shadow)' />
+    <text x='750.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Command &amp; Control (TA0011)</text>
+    <line x1='480.0' y1='70' x2='700.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='610.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#a55eea' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='700.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Réaction</text>
+    <line x1='700.0' y1='150' x2='610.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='540.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='610.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Exfiltration (TA0010)</text>
+    <line x1='700.0' y1='150' x2='790.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='720.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='790.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Impact (TA0040)</text>
+</svg>

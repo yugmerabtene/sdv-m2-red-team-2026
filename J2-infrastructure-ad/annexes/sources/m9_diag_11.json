@@ -1,0 +1,19 @@
+{
+  "type": "sequence",
+  "title": "Mécanisme d'authentification PKINIT (ESC1)",
+  "width": 860,
+  "height": 460,
+  "participants": [
+    {"id": "att", "label": "Attaquant\nalice@lab"},
+    {"id": "kdc", "label": "KDC"},
+    {"id": "ca", "label": "CA"}
+  ],
+  "messages": [
+    {"from": "att", "to": "kdc", "label": "1. Demande TGT PKINIT", "type": "request"},
+    {"from": "kdc", "to": "ca", "label": "2. Vérifie certificat", "type": "request"},
+    {"from": "ca", "to": "kdc", "label": "3. Certificat valide", "type": "response"},
+    {"from": "kdc", "to": "att", "label": "4. TGT avec SID Administrator", "type": "response"},
+    {"from": "att", "to": "kdc", "label": "5. TGS-REQ (cifs/dc01)", "type": "request"},
+    {"from": "kdc", "to": "att", "label": "6. TGS — Accès accordé", "type": "response"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "network_topology",
+  "width": 800,
+  "height": 280,
+  "title": "DCSync",
+  "zones": [
+    {"id": "z1", "x": 40, "y": 60, "w": 340, "h": 190, "label": "Attaquant"},
+    {"id": "z2", "x": 420, "y": 60, "w": 340, "h": 190, "label": "Contrôleur de domaine"}
+  ],
+  "nodes": [
+    {"id": "attacker", "zone": "z1", "x": 170, "y": 105, "type": "laptop", "color": "#e63946", "label": "Compte avec droits\nde réplication"},
+    {"id": "dc", "zone": "z2", "x": 170, "y": 105, "type": "server", "color": "#54a0ff", "label": "DC01\n(cible)"}
+  ],
+  "connections": [
+    {"from": "attacker", "to": "dc", "label": "MS-DRSR Request", "style": "solid"},
+    {"from": "dc", "to": "attacker", "label": "Réplication\n(hashs NTLM, clés)", "style": "solid"}
+  ]
+}

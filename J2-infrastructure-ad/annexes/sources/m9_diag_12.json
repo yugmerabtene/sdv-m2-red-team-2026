@@ -1,0 +1,22 @@
+{
+  "type": "network_topology",
+  "title": "ESC8 — NTLM Relay vers ADCS Web Enrollment",
+  "width": 860,
+  "height": 440,
+  "zones": [
+    {"id": "victim", "label": "Victime", "x": 25, "y": 25, "w": 220, "h": 390},
+    {"id": "att", "label": "Attaquant (Kali)", "x": 280, "y": 25, "w": 280, "h": 390},
+    {"id": "adcs", "label": "ADCS (DC01)", "x": 595, "y": 25, "w": 240, "h": 390}
+  ],
+  "nodes": [
+    {"id": "ws01", "zone": "victim", "x": 90, "y": 180, "type": "desktop", "label": "Victime\n(WS01)", "color": "#ff9f43"},
+    {"id": "resp", "zone": "att", "x": 120, "y": 120, "type": "attack", "label": "Responder\n(relais)", "color": "#e63946"},
+    {"id": "kali", "zone": "att", "x": 120, "y": 270, "type": "laptop", "label": "Kali", "color": "#54a0ff"},
+    {"id": "certsrv", "zone": "adcs", "x": 100, "y": 180, "type": "server", "label": "/certsrv/\ncertfnsh.asp", "color": "#a55eea"}
+  ],
+  "connections": [
+    {"from": "ws01", "to": "resp", "style": "solid", "label": "SMB Auth"},
+    {"from": "resp", "to": "certsrv", "style": "solid", "label": "POST /certsrv/"},
+    {"from": "certsrv", "to": "resp", "style": "solid", "label": "Certificat (PFX)"}
+  ]
+}

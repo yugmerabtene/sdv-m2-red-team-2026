@@ -1,0 +1,48 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 280' width='800' height='280'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='800' height='280' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>DCSync</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='40' y='60' width='340' height='190' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <rect x='40' y='60' width='340' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
+    <rect x='40' y='86' width='340' height='164' rx='0' fill='none' stroke='none' stroke-width='0'  />
+    <rect x='40' y='60' width='340' height='190' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <text x='52' y='78' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Attaquant</text>
+    <rect x='420' y='60' width='340' height='190' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <rect x='420' y='60' width='340' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
+    <rect x='420' y='86' width='340' height='164' rx='0' fill='none' stroke='none' stroke-width='0'  />
+    <rect x='420' y='60' width='340' height='190' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <text x='432' y='78' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Contrôleur de domaine</text>
+    <rect x='172' y='127' width='76' height='50' rx='6' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
+    <g transform='translate(193.2, 128.2) scale(0.7)'><rect x="8" y="6" width="32" height="20" rx="2" fill="none" stroke="#e63946" stroke-width="1.2"/><line x1="14" y1="26" x2="34" y2="26" stroke="#e63946" stroke-width="1.2"/><path d="M4 38 L14 26 L34 26 L44 38 Z" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x='210' y='185.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Compte avec droits</text>
+    <text x='210' y='201.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>de réplication</text>
+    <rect x='552' y='127' width='76' height='50' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
+    <g transform='translate(573.2, 128.2) scale(0.7)'><rect x="4" y="4" width="40" height="10" rx="1" fill="none" stroke="#54a0ff" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1" fill="none" stroke="#54a0ff" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1" fill="none" stroke="#54a0ff" stroke-width="1.2"/><circle cx="15" cy="9" r="2" fill="#44d7b6"/><circle cx="15" cy="23" r="2" fill="#44d7b6"/><circle cx="15" cy="37" r="2" fill="#44d7b6"/></g>
+    <text x='590' y='185.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>DC01</text>
+    <text x='590' y='201.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>(cible)</text>
+    <path d='M210,155 Q400.0,135.0 590,155' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
+    <rect x='381.0' y='123.0' width='113' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='385.0' y='138.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>MS-DRSR Request</text>
+    <path d='M590,155 Q400.0,135.0 210,155' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
+    <rect x='381.0' y='123.0' width='218' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='385.0' y='138.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Réplication
+(hashs NTLM, clés)</text>
+</svg>

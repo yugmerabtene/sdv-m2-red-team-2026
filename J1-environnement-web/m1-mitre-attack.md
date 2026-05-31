@@ -67,7 +67,7 @@ MITRE ATT&CK se décline en **trois matrices** distinctes, adaptées à différe
 
 La taxonomie ATT&CK repose sur une hiérarchie à quatre niveaux :
 
-![Diagram 1 — Hiérarchie ATT&CK](assets/diagrams/m1_diagram_1.png)
+![Diagram 1 — Hiérarchie ATT&CK](annexes/images/m1_diagram_1.svg)
 
 ### 2.2 Les 14 tactiques Enterprise
 
@@ -107,7 +107,7 @@ Chaque élément possède un identifiant unique :
 
 Prenons l'exemple d'un ransomware ciblant une entreprise :
 
-![Diagram 2 — Chaîne complète ransomware (14 tactiques ATT&CK)](assets/diagrams/m1_diagram_2.png)
+![Diagram 2 — Chaîne complète ransomware (14 tactiques ATT&CK)](annexes/images/m1_diagram_2.svg)
 
 Chaque étape correspond à un nœud dans la matrice ATT&CK que l'on peut colorer dans l'ATT&CK Navigator pour visualiser la couverture.
 
@@ -125,7 +125,7 @@ Le **Commandement de la Cyberdéfense (COMCYBER)** est l'organisme militaire fra
 - ATT&CK est utilisé comme **langage commun** entre les différentes entités de défense (COMCYBER, ANSSI, DGSE)
 - Les tactiques ATT&CK sont mappées sur les phases de la LID :
 
-![Diagram 3 — Mapping LID → Tactiques ATT&CK](assets/diagrams/m1_diagram_3.png)
+![Diagram 3 — Mapping LID → Tactiques ATT&CK](annexes/images/m1_diagram_3.svg)
 
 - **Exercices PEGASE** : exercices interarmées de cyberdéfense où ATT&CK sert de référentiel d'évaluation.
 
@@ -143,7 +143,7 @@ L'**Agence Nationale de la Sécurité des Systèmes d'Information (ANSSI)** int�
 **Liens utiles ANSSI :**
 
 - Guide d'hygiène : [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/)
-- Référentiel PASSI : [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/)
+- Référentiel PASSI : [référence supprimée]
 
 ### 3.3 OTAN : Threat Intelligence partagée
 
@@ -206,7 +206,7 @@ L'article 21 impose aux entités essentielles et importantes de mettre en œuvre
 
 **Exemple de gap analysis avec ATT&CK :**
 
-![Diagram 4 — Gap Analysis NIS2 avec ATT&CK](assets/diagrams/m1_diagram_4.png)
+![Diagram 4 — Gap Analysis NIS2 avec ATT&CK](annexes/images/m1_diagram_4.svg)
 
 ### 4.3 Article 23 — Notification des incidents
 
@@ -668,11 +668,11 @@ T1505.003 — SOUS-COUVERTE (gap: 55 pts)
 
 **Structure d'un rapport exécutif avec ATT&CK :**
 
-![Diagram 5 — Structure Rapport Exécutif](assets/diagrams/m1_diagram_5.png)
+![Diagram 5 — Structure Rapport Exécutif](annexes/images/m1_diagram_5.svg)
 
 **Structure d'un rapport technique avec ATT&CK :**
 
-![Diagram 6 — Structure Rapport Technique](assets/diagrams/m1_diagram_6.png)
+![Diagram 6 — Structure Rapport Technique](annexes/images/m1_diagram_6.svg)
 
 ---
 
@@ -692,7 +692,7 @@ T1505.003 — SOUS-COUVERTE (gap: 55 pts)
 
 **Contexte :** Vous êtes Red Team sur l'application **BanX** (banque en ligne). Votre mission est de tester la détection de l'équipe SOC. Voici le déroulé de votre attaque :
 
-![Diagram 7 — Scénario de compromission — Opération CaisseNoire](assets/diagrams/m1_diagram_7.png)
+![Diagram 7 — Scénario de compromission — Opération CaisseNoire](annexes/images/m1_diagram_7.svg)
 
 ### 8.3 Travail à réaliser
 
@@ -796,7 +796,7 @@ Analysez la heat map obtenue :
 
 ### 8.4 Rendu attendu
 
-![Diagram 8 — Rendu attendu — Structure du livrable](assets/diagrams/m1_diagram_8.png)
+![Diagram 8 — Rendu attendu — Structure du livrable](annexes/images/m1_diagram_8.svg)
 
 ### 8.5 Exemple de fichier JSON de correction
 
@@ -999,7 +999,7 @@ Voici le fichier de couche correspondant à la correction de l'exercice :
 | ATT&CK Navigator | [https://github.com/mitre-attack/attack-navigator](https://github.com/mitre-attack/attack-navigator) |
 | Documentation STIX 2.1 | [https://oasis-open.github.io/cti-documentation/](https://oasis-open.github.io/cti-documentation/) |
 | ANSSI — Guide d'hygiène | [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/) |
-| ANSSI — PASSI | [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/) |
+| ANSSI — PASSI | [référence supprimée] |
 | Directive NIS2 (EUR-Lex) | [https://eur-lex.europa.eu/eli/dir/2022/2555](https://eur-lex.europa.eu/eli/dir/2022/2555) |
 | MITRE ATT&CK pour Red Team | [https://attack.mitre.org/resources/getting-started/](https://attack.mitre.org/resources/getting-started/) |
 | Sigma Rules (détection) | [https://github.com/SigmaHQ/sigma](https://github.com/SigmaHQ/sigma) |

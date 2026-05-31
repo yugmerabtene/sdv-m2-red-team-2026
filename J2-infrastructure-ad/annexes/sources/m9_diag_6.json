@@ -1,0 +1,23 @@
+{
+  "type": "network_topology",
+  "title": "Skeleton Key — Injection dans LSASS",
+  "width": 880,
+  "height": 500,
+  "zones": [
+    {"id": "dc", "label": "Domain Controller", "x": 31, "y": 25, "w": 460, "h": 450},
+    {"id": "clients", "label": "Clients du domaine", "x": 530, "y": 25, "w": 320, "h": 450}
+  ],
+  "nodes": [
+    {"id": "lsass", "zone": "dc", "x": 200, "y": 100, "type": "server", "label": "LSASS", "color": "#e63946"},
+    {"id": "ntlm", "zone": "dc", "x": 100, "y": 210, "type": "key", "label": "NTLM Provider\nPassword: mimikatz", "color": "#a55eea"},
+    {"id": "kerb", "zone": "dc", "x": 300, "y": 210, "type": "key", "label": "Kerberos\nProvider", "color": "#54a0ff"},
+    {"id": "alice", "zone": "clients", "x": 100, "y": 120, "type": "user", "label": "alice:mimikatz\nvalide ✓", "color": "#44d7b6"},
+    {"id": "bob", "zone": "clients", "x": 100, "y": 280, "type": "user", "label": "bob:P@ssword\nvalide ✓", "color": "#44d7b6"}
+  ],
+  "connections": [
+    {"from": "alice", "to": "ntlm", "style": "solid", "label": "Authentification"},
+    {"from": "bob", "to": "ntlm", "style": "solid", "label": "Authentification"},
+    {"from": "lsass", "to": "ntlm", "style": "dashed", "label": "Contient"},
+    {"from": "lsass", "to": "kerb", "style": "dashed", "label": "Contient"}
+  ]
+}

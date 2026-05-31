@@ -1,0 +1,16 @@
+{
+  "type": "flow_chart",
+  "title": "Nmap — Scan Localhost",
+  "width": 700,
+  "height": 500,
+  "padding_top": 80,
+  "spacing": 90,
+  "step_width": 360,
+  "step_height": 50,
+  "steps": [
+    { "label": "nmap -sS -sV -sC -O -T4 -p-\n--script=vuln localhost", "tag": "T1592" },
+    { "label": "Port 80/tcp — nginx 1.18\nReverse Proxy Frontal", "tag": "OPEN" },
+    { "label": "Port 8080/tcp — Flask 2.3\nApplication Principale (Cible)", "tag": "OPEN" },
+    { "label": "Port 22/tcp — OpenSSH 8.9\nMouvement Lateral Potentiel", "tag": "OPEN" }
+  ]
+}

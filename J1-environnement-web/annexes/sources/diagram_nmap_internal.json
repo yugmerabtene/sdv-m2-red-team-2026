@@ -1,0 +1,17 @@
+{
+  "type": "flow_chart",
+  "title": "Nmap — Scan Serveur Interne 10.0.0.10",
+  "width": 700,
+  "height": 540,
+  "padding_top": 80,
+  "spacing": 90,
+  "step_width": 400,
+  "step_height": 50,
+  "steps": [
+    { "label": "proxychains4 nmap -sT -Pn -p1-10000 10.0.0.10", "tag": "T1021" },
+    { "label": "Port 22/tcp — OpenSSH 8.9\nAcces SSH au serveur interne", "tag": "OPEN" },
+    { "label": "Port 25/tcp — SMTP Postfix\nServeur mail interne", "tag": "OPEN" },
+    { "label": "Port 80/tcp — nginx 1.18\nServeur web interne", "tag": "OPEN" },
+    { "label": "Port 8081/tcp — API Interne\nDonnees sensibles / flag", "tag": "OPEN" }
+  ]
+}

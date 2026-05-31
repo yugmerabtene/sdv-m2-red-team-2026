@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DOMAIN=redteam.lab
+ENV DC_IP=10.0.1.10
+
+RUN apt-get update && apt-get install -y \
+    smbclient krb5-user ldap-utils \
+    python3 python3-pip \
+    curl wget netcat dnsutils \
+    nano vim git \
+    nmap \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install impacket ldap3 crackmapexec bloodhound
+
+COPY provision/ /provision/
+RUN chmod +x /provision/*.py 2>/dev/null || true
+
+CMD ["/provision/ws_entrypoint.sh"]

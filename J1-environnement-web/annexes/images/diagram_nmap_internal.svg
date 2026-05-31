@@ -1,0 +1,51 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 540' width='700' height='540'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='700' height='540' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Nmap — Scan Serveur Interne 10.0.0.10</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='150.0' y='55.0' width='400' height='50' rx='6' fill='#54a0ff15' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='350.0' y='93.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>proxychains4 nmap -sT -Pn -p1-10000 10.0.0.10</text>
+    <line x1='350.0' y1='105.0' x2='350.0' y2='145.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
+    <rect x='90.0' y='70' width='50' height='20' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
+    <text x='115.0' y='85' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1021</text>
+    <rect x='150.0' y='145.0' width='400' height='50' rx='6' fill='#44d7b615' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='350.0' y='183.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Port 22/tcp — OpenSSH 8.9</text>
+    <text x='350.0' y='203.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Acces SSH au serveur interne</text>
+    <line x1='350.0' y1='195.0' x2='350.0' y2='235.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
+    <rect x='90.0' y='160' width='50' height='20' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
+    <text x='115.0' y='175' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>OPEN</text>
+    <rect x='150.0' y='235.0' width='400' height='50' rx='6' fill='#a55eea15' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='350.0' y='273.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Port 25/tcp — SMTP Postfix</text>
+    <text x='350.0' y='293.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Serveur mail interne</text>
+    <line x1='350.0' y1='285.0' x2='350.0' y2='325.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
+    <rect x='90.0' y='250' width='50' height='20' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
+    <text x='115.0' y='265' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>OPEN</text>
+    <rect x='150.0' y='325.0' width='400' height='50' rx='6' fill='#e6394615' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='350.0' y='363.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Port 80/tcp — nginx 1.18</text>
+    <text x='350.0' y='383.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Serveur web interne</text>
+    <line x1='350.0' y1='375.0' x2='350.0' y2='415.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
+    <rect x='90.0' y='340' width='50' height='20' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
+    <text x='115.0' y='355' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>OPEN</text>
+    <rect x='150.0' y='415.0' width='400' height='50' rx='6' fill='#ff9f4315' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='350.0' y='453.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Port 8081/tcp — API Interne</text>
+    <text x='350.0' y='473.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Donnees sensibles / flag</text>
+    <rect x='90.0' y='430' width='50' height='20' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
+    <text x='115.0' y='445' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>OPEN</text>
+</svg>

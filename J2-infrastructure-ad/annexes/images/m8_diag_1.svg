@@ -1,0 +1,71 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 280' width='960' height='280'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='960' height='280' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Chaîne de compromission complète</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <line x1='194.28571428571428' y1='110.0' x2='194.28571428571428' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <line x1='308.57142857142856' y1='110.0' x2='308.57142857142856' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <line x1='422.85714285714283' y1='110.0' x2='422.8571428571429' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <line x1='537.1428571428572' y1='110.0' x2='537.1428571428571' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <line x1='651.4285714285714' y1='110.0' x2='651.4285714285714' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <line x1='765.7142857142858' y1='110.0' x2='765.7142857142858' y2='110.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
+    <rect x='80.0' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(122.74285714285713, 77.6) scale(0.6)'><circle cx="24" cy="14" r="8" fill="none" stroke="#e63946" stroke-width="1.2"/><path d="M8 36 Q8 24 24 24 Q40 24 40 36" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x='137.14285714285714' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>User</text>
+    <text x='137.14285714285714' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Compromise</text>
+    <rect x='109.14285714285714' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
+    <text x='137.14285714285714' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1566</text>
+    <rect x='194.28571428571428' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#54a0ff18' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(237.0285714285714, 77.6) scale(0.6)'><rect x="4" y="4" width="40" height="28" rx="2" fill="none" stroke="#54a0ff" stroke-width="1.2"/><line x1="24" y1="32" x2="24" y2="38" stroke="#54a0ff" stroke-width="1.2"/><line x1="12" y1="38" x2="36" y2="38" stroke="#54a0ff" stroke-width="1.2"/><rect x="10" y="10" width="28" height="14" fill="none" stroke="#44d7b6" stroke-width="0.8"/></g>
+    <text x='251.42857142857142' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Admin</text>
+    <text x='251.42857142857142' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Local</text>
+    <rect x='223.42857142857142' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
+    <text x='251.42857142857142' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1068</text>
+    <rect x='308.57142857142856' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#a55eea18' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(351.31428571428575, 77.6) scale(0.6)'><circle cx="12" cy="24" r="8" fill="none" stroke="#a55eea" stroke-width="1.2"/><line x1="20" y1="24" x2="44" y2="24" stroke="#a55eea" stroke-width="1.2"/><line x1="28" y1="20" x2="28" y2="28" stroke="#a55eea" stroke-width="1.2"/></g>
+    <text x='365.7142857142857' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Credential</text>
+    <text x='365.7142857142857' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Dump</text>
+    <rect x='337.7142857142857' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
+    <text x='365.7142857142857' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1003</text>
+    <rect x='422.8571428571429' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#44d7b618' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(465.6000000000001, 77.6) scale(0.6)'><path d="M24 4 L28 16 L38 14 L32 22 L42 28 L30 32 L26 44 L22 32 L12 34 L18 24 L8 20 L20 18 Z" fill="none" stroke="#44d7b6" stroke-width="1.2"/></g>
+    <text x='480.00000000000006' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Pass-the</text>
+    <text x='480.00000000000006' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>-Hash</text>
+    <rect x='452.00000000000006' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
+    <text x='480.00000000000006' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1550.002</text>
+    <rect x='537.1428571428571' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#ff9f4318' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(579.8857142857142, 77.6) scale(0.6)'><rect x="4" y="4" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><circle cx="15" cy="9" r="2" fill="#44d7b6"/><circle cx="15" cy="23" r="2" fill="#44d7b6"/><circle cx="15" cy="37" r="2" fill="#44d7b6"/></g>
+    <text x='594.2857142857142' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Serveur</text>
+    <text x='594.2857142857142' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Fichier</text>
+    <rect x='566.2857142857142' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
+    <text x='594.2857142857142' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1021</text>
+    <rect x='651.4285714285714' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#ffd16618' stroke='#ffd166' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(694.1714285714286, 77.6) scale(0.6)'><path d="M16 16 L16 10 Q16 4 24 4 Q32 4 32 10 L32 16" fill="none" stroke="#ffd166" stroke-width="1.2"/><rect x="10" y="16" width="28" height="26" rx="3" fill="none" stroke="#ffd166" stroke-width="1.2"/></g>
+    <text x='708.5714285714286' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Pass-the</text>
+    <text x='708.5714285714286' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>-Ticket</text>
+    <rect x='680.5714285714286' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#ffd166' stroke-width='0.8'  />
+    <text x='708.5714285714286' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ffd166' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1550.003</text>
+    <rect x='765.7142857142858' y='70.0' width='114.28571428571429' height='80' rx='8' fill='#ff6b6b18' stroke='#ff6b6b' stroke-width='1.5' filter='url(#shadow)' />
+    <g transform='translate(808.4571428571429, 77.6) scale(0.6)'><ellipse cx="24" cy="8" rx="20" ry="6" fill="none" stroke="#ff6b6b" stroke-width="1.2"/><path d="M4 8 L4 36" stroke="#ff6b6b" stroke-width="1.2"/><path d="M44 8 L44 36" stroke="#ff6b6b" stroke-width="1.2"/><ellipse cx="24" cy="36" rx="20" ry="6" fill="none" stroke="#ff6b6b" stroke-width="1.2"/><ellipse cx="24" cy="22" rx="20" ry="6" fill="none" stroke="#ff6b6b" stroke-width="1.2" stroke-dasharray="2 2"/></g>
+    <text x='822.8571428571429' y='137.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>DCSync</text>
+    <text x='822.8571428571429' y='156.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Domain Admin</text>
+    <rect x='794.8571428571429' y='160.0' width='56' height='18' rx='4' fill='#131820' stroke='#ff6b6b' stroke-width='0.8'  />
+    <text x='822.8571428571429' y='173.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff6b6b' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1003.006</text>
+</svg>

@@ -32,15 +32,7 @@ Active Directory stocke les permissions sur chaque objet sous forme de **Discret
 
 #### Structure d'un objet AD avec ACL
 
-```
-Objet: CN=john.doe,CN=Users,DC=redteam,DC=lab
-├── DACL
-│   ├── ACE 1: S-1-5-21-...-500 (Domain Admin)  → GenericAll
-│   ├── ACE 2: S-1-5-21-...-1103 (Domain Users)  → ReadProperty
-│   ├── ACE 3: S-1-5-21-...-1104 (IT_Sec)       → WriteProperty (pwdLastSet)
-│   └── ACE 4: S-1-5-21-...-1105 (jdoe)         → Self (WriteOwner)
-└── SACL (audit)
-```
+![Structure d'un objet AD avec ACL](annexes/images/m9_diag_1.svg)
 
 Chaque ACE contient :
 - **Trustee** : le SID du groupe/utilisateur qui a la permission
@@ -277,18 +269,7 @@ Active Directory possède un mécanisme de protection automatique appelé **Admi
 
 #### Processus SDProp
 
-```
-┌─────────────┐     Toutes les 60 min      ┌──────────────────┐
-│ AdminSDHolder │ ─────────────────────────→│ Comptes protégés  │
-│ (modèle ACL)  │    (SDProp)               │                   │
-└─────────────┘                             │ • Domain Admins   │
-                                            │ • Enterprise Admins│
-                                            │ • Administrators  │
-                                            │ • Schema Admins   │
-                                            │ • Opérateurs      │
-                                            │ • krbtgt          │
-                                            └──────────────────┘
-```
+![Processus SDProp - AdminSDHolder](annexes/images/m9_diag_2.svg)
 
 **SDProp** (Security Descriptor Propagator) est un processus qui s'exécute toutes les **60 minutes** sur le PDC Emulator. Il compare la DACL de l'AdminSDHolder avec celle des groupes/followers protégés et écrase toute modification sur ces derniers.
 
@@ -442,16 +423,7 @@ net group "Domain Admins" /domain
 
 Le **Golden Ticket** est une technique qui permet de forger un **Ticket Granting Ticket (TGT)** Kerberos valide pour n'importe quel utilisateur dans le domaine. Pour cela, il faut connaître le hash NTLM du compte **KRBTGT**.
 
-```
-┌──────────────────────────────────────────────────────────┐
-│                     Key Distribution Center              │
-│  ┌──────────────┐                                       │
-│  │  krbtgt hash  │ ──→  Forger TGT valide               │
-│  │  = secret clé │      - User: Administrateur          │
-│  └──────────────┘      - Domain Admin SID               │
-│                        - Valide 10 ans (configurable)    │
-└──────────────────────────────────────────────────────────┘
-```
+![Golden Ticket - Forger un TGT avec le hash KRBTGT](annexes/images/m9_diag_3.svg)
 
 #### Composants nécessaires
 
@@ -625,17 +597,7 @@ Un **Silver Ticket** est un **Ticket Granting Service (TGS)** forgé pour un ser
 
 #### Comparaison Golden vs Silver
 
-```
-Golden Ticket:
-  KRBTGT hash → TGT → n'importe quel service
-  Portée : domaine entier
-  Prérequis : hash KRBTGT (DCSync)
-
-Silver Ticket:
-  Machine/Service hash → TGS → service spécifique
-  Portée : service spécifique
-  Prérequis : hash du compte machine/service
-```
+![Golden Ticket vs Silver Ticket](annexes/images/m9_diag_4.svg)
 
 #### Services cibles classiques
 
@@ -767,19 +729,7 @@ schtasks /run /S dc01.redteam.lab /TN Backdoor
 
 Le **Diamond Ticket** est une technique plus discrète que le Golden Ticket. Au lieu de forger un TGT depuis zéro, on **décrypte un TGT légitime** (émis par le KDC), on modifie les claims (SID, groupes), puis on le rechiffre avec le hash KRBTGT.
 
-```
-Golden Ticket : Création ex-nihilo
-  ┌──────────┐  forger  ┌─────────────────┐
-  │ KRBTGT   │ ───────→ │ TGT (100% forgé) │
-  │ hash     │          └─────────────────┘
-  └──────────┘
-
-Diamond Ticket : Modification d'un TGT existant
-  ┌──────────┐          ┌───────────────┐
-  │ TGT réel  │ ──décrypt──→ │  Modifier SID  │ ──rechiffre──→ │ TGT modifié │
-  └──────────┘   (hash    └───────────────┘   (hash    └─────────────┘
-                  KRBTGT)                       KRBTGT)
-```
+![Diamond Ticket - Modification d'un TGT existant](annexes/images/m9_diag_5.svg)
 
 #### Avantages du Diamond Ticket
 
@@ -870,25 +820,7 @@ wevtutil qe "Security" /q:"*[System[(EventID=4768)]]" /c:10 /f:text
 
 Le **Skeleton Key** est une technique qui injecte une clé universelle (backdoor) dans le processus LSASS (Local Security Authority Subsystem Service) sur un **Domain Controller**. Une fois injectée, **n'importe quel compte** du domaine peut être authentifié avec le mot de passe "backdoor" `mimikatz`.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   Domain Controller                           │
-│  ┌──────────────────────────────┐                           │
-│  │           LSASS                │                          │
-│  │  ┌─────────────────────────┐  │    ┌──────────────┐      │
-│  │  │  Authentication Stack   │  │    │ alice:mimikatz│      │
-│  │  │  ┌───────────────────┐  │  │ ←──→│ valide ✓      │      │
-│  │  │  │ NTLM Provider     │  │  │    └──────────────┘      │
-│  │  │  │ Password: mimikatz│  │  │                           │
-│  │  │  │ (Skeleton Key)    │  │  │    ┌──────────────┐      │
-│  │  │  └───────────────────┘  │  │    │ bob:P@ssword │      │
-│  │  │  ┌───────────────────┐  │  │ ←──→│ valide ✓      │      │
-│  │  │  │ Kerberos Provider │  │  │    └──────────────┘      │
-│  │  │  └───────────────────┘  │  │                           │
-│  │  └─────────────────────────┘  │                           │
-│  └──────────────────────────────┘                           │
-└─────────────────────────────────────────────────────────────┘
-```
+![Skeleton Key - Injection dans LSASS](annexes/images/m9_diag_6.svg)
 
 ### 6.2 Mimikatz misc::skeleton
 
@@ -1016,22 +948,7 @@ net user /domain alice mimikatz 2>&1
 
 **DCShadow** est une technique avancée qui permet d'enregistrer une machine **temporairement comme un Domain Controller** factice. Cela permet de **modifier les objets Active Directory** via les mécanismes de réplication AD, sans avoir besoin de droits d'écriture directs sur les objets.
 
-```
-┌──────────────────────┐          ┌──────────────────────┐
-│   DC01 (vrai DC)     │          │   WS01 (attaquant)   │
-│                      │          │                      │
-│  ┌────────────────┐  │  Réplique │  ┌────────────────┐  │
-│  │ Base AD        │ ←│───────────│──│ DCShadow push  │  │
-│  │ (NTDS.DIT)     │  │          │  │ → Attributs     │  │
-│  └────────────────┘  │          │  │   modifiés      │  │
-│                      │          │  └────────────────┘  │
-│                      │          │  ┌────────────────┐  │
-│  ┌────────────────┐  │          │  │ Registration   │  │
-│  │ Réplication    │ ←│───────────│──│ en tant que DC │  │
-│  │ Notification   │  │          │  │ (via DRSUAPI)  │  │
-│  └────────────────┘  │          │  └────────────────┘  │
-└──────────────────────┘          └──────────────────────┘
-```
+![DCShadow - Usurper l'identité d'un DC](annexes/images/m9_diag_7.svg)
 
 #### Prérequis
 
@@ -1144,24 +1061,7 @@ Les **trusts** sont des relations d'authentification entre domaines/forêts. Ils
 
 #### Types de trusts
 
-```
-                    Intra-domain (forêt unique)
-┌─────────────────────────────────────────────────────────────┐
-│  redteam.lab                                              │
-│  ┌────────────┐    ┌────────────┐                          │
-│  │ europe     │ ←──│── americas │  Trust transitif        │
-│  │ .redteam   │    │ .redteam   │  bidirectionnel          │
-│  └────────────┘    └────────────┘                          │
-└─────────────────────────────────────────────────────────────┘
-
-                    Inter-forest
-┌──────────────────────┐    ┌──────────────────────┐
-│  redteam.lab        │    │  corp.contoso.com    │
-│                    │    │                      │
-│  Domain: Users     │ ←──│── Trust sélectif     │
-│  à privilégier     │    │   unidirectionnel    │
-└──────────────────────┘    └──────────────────────┘
-```
+![Types de Trusts Active Directory](annexes/images/m9_diag_8.svg)
 
 | Type de trust | Direction | Transitivité | SIDHistory |
 |--------------|-----------|-------------|------------|
@@ -1176,19 +1076,7 @@ Le **SIDHistory** est un attribut qui permet à un utilisateur d'un domaine d'av
 
 #### Principe
 
-```
-redteam.lab (source)          corp.contoso.com (cible)
-┌────────────────┐            ┌──────────────────────┐
-│  Utilisateur    │            │  Ressource protégée   │
-│  alice          │            │    ( \\fs01\secret )  │
-│  SID: S-1-5-21 │            │                      │
-│  -...-1111     │            │  ACL: S-1-5-21-...-519│
-│                 │            │  (Enterprise Admins)  │
-│  SIDHistory:    │            │                      │
-│  S-1-5-21-...  │────Trust──→│                      │
-│  -519 (EA)     │            │                      │
-└────────────────┘            └──────────────────────┘
-```
+![SIDHistory Injection - Trust Crossing](annexes/images/m9_diag_9.svg)
 
 ### 8.3 Extraction des hashes inter-forest
 
@@ -1318,25 +1206,7 @@ ls \\dc01.corp.contoso.com\c$
 
 ADCS est le service de certificats PKI de Microsoft. Dans de nombreuses entreprises, ADCS est mal configuré et offre plusieurs vecteurs d'attaque :
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                  ADCS Attack Surface                        │
-│                                                             │
-│  ESC1 : Template vulnérable + enrol with alt SID           │
-│  ESC2 : Template vulnérable + enrol with alt SID           │
-│  ESC3 : Mauvaises permissions sur Manager CA               │
-│  ESC4 : Accès ACL sur template (Write)                     │
-│  ESC5 : Accès ACL sur CA (WriteDACL)                      │
-│  ESC6 : EDITF_ATTRIBUTESUBJECTALTNAME2 activé             │
-│  ESC7 : Accès ManageCA + ManageCertificate                 │
-│  ESC8 : NTLM Relay vers ADCS Web Enrollment                │
-│  ESC9 : NoSecurityExtension + enrol with alt SID          │
-│  ESC10 : WeakCertificateThumbprint + enrol with alt SID   │
-│  ESC11 : Relative path sur ICertRequest                    │
-│  ESC12 : Client Authentication via EKU Mapping             │
-│  ESC13 : Template avec politique d'approbation             │
-└─────────────────────────────────────────────────────────────┘
-```
+![ADCS Attack Surface - Vecteurs d'attaque](annexes/images/m9_diag_10.svg)
 
 ### 9.2 ESC1 — Template de certificat mal configuré
 
@@ -1402,20 +1272,7 @@ certipy auth -pfx administrator.pfx -domain redteam.lab -dc-ip 192.168.56.10
 
 #### Mécanisme d'authentification PKINIT
 
-```
-┌────────────┐          ┌───────────────┐          ┌────────────┐
-│  Attaquant  │          │      KDC      │          │    CA       │
-│             │ 1. Demande│               │          │            │
-│ alice@lab  │─────TGT──→│ Vérifie dans │          │            │
-│             │          │   certificat  │          │            │
-│             │ 2. Reçoit│   le SID de   │          │            │
-│             │────TGT──→│ Administrator │          │            │
-│             │          │               │          │            │
-│             │ 3. TGS   │               │          │            │
-│             │───req────→│ Grant accès  │          │            │
-│             │←──TGS────│              │          │            │
-└────────────┘          └───────────────┘          └────────────┘
-```
+![Mécanisme d'authentification PKINIT (ESC1)](annexes/images/m9_diag_11.svg)
 
 ### 9.3 ESC8 — NTLM Relay vers ADCS Web Enrollment
 
@@ -1423,19 +1280,7 @@ certipy auth -pfx administrator.pfx -domain redteam.lab -dc-ip 192.168.56.10
 
 ADCS expose un service web (CES/Web Enrollment) sur `http://dc01.redteam.lab/certsrv/`. L'authentification NTLM est acceptée. On peut **relayer** une authentification NTLM vers ce endpoint pour obtenir un certificat signé.
 
-```
-┌──────────┐          ┌────────────┐          ┌────────────┐
-│ Victime   │          │  Attaquant  │          │   ADCS      │
-│ (WS01)   │          │  Kali      │          │   (DC01)    │
-│           │          │            │          │            │
-│   SMB    │─────────→│  Responder │          │            │
-│   Auth    │          │  (relais)  │─────────→│ POST       │
-│           │          │            │          │ /certsrv/  │
-│           │          │            │          │            │
-│           │          │            │←─────────│ Certificat │
-│           │          │            │          │ (PFX)      │
-└──────────┘          └────────────┘          └────────────┘
-```
+![ESC8 - NTLM Relay vers ADCS Web Enrollment](annexes/images/m9_diag_12.svg)
 
 #### Étapes de l'attaque
 
@@ -1612,15 +1457,7 @@ certipy auth -pfx DC01$.pfx -dc-ip 192.168.56.10
 
 La délégation Kerberos permet à un service de **s'authentifier auprès d'un autre service** au nom d'un utilisateur. C'est un mécanisme de "double-hop" : l'utilisateur s'authentifie sur Service A, qui agit ensuite en son nom sur Service B.
 
-```
-┌───────┐       ┌────────────┐       ┌────────────┐
-│ User   │       │  Service A  │       │  Service B  │
-│ (alice)│       │  (HTTP)    │       │  (SQL)     │
-│        │──────→│            │──────→│            │
-│        │ TGT   │  TGS User  │  TGS  │            │
-│        │ TServA│→ Service B │       │            │
-└───────┘       └────────────┘       └────────────┘
-```
+![Kerberos Delegation - User vers ServiceA vers ServiceB](annexes/images/m9_diag_13.svg)
 
 #### Types de délégation
 
@@ -1705,16 +1542,7 @@ $computer.'msDS-AllowedToDelegateTo'
 
 L'attaque utilise les extensions Kerberos **S4U2Self** et **S4U2Proxy** (Service for User).
 
-```
-Étape 1 : S4U2Self
-  → Demander un TGS pour l'utilisateur cible (sans TGT de sa part)
-  → Obtention d'un "forwardable" TGS pour l'utilisateur cible
-
-Étape 2 : S4U2Proxy
-  → Utiliser le TGS forwardable pour demander un TGS
-    vers le service autorisé dans msDS-AllowedToDelegateTo
-  → Réception du TGS pour le service cible
-```
+![S4U2Self + S4U2Proxy - Constrained Delegation Abuse](annexes/images/m9_diag_14.svg)
 
 ```bash
 # Avec Impacket (Python)
@@ -1761,18 +1589,7 @@ Rubeus.exe s4u /user:srv01$ /rc4:aaaaaabbbbbbccccccddddddeeeeeeee \
 
 Avec RBCD (Windows Server 2012+), le **service cible** (ressource) définit qui peut déléguer vers lui, via l'attribut `msDS-AllowedToActOnBehalfOfOtherIdentity`.
 
-```
-┌────────────┐       ┌──────────────────┐
-│  Attaquant  │       │  Service Cible   │
-│ (machine    │       │  (DC01)          │
-│  appartenue)│       │                  │
-│            │       │ msDS-AllowedTo   │
-│            │       │ ActOnBehalfOf    │
-│            │──────→│ = {SID de la     │
-│            │ TGS   │   machine        │
-│            │       │   contrôlée}     │
-└────────────┘       └──────────────────┘
-```
+![RBCD - Resource-Based Constrained Delegation](annexes/images/m9_diag_15.svg)
 
 #### Abus RBCD
 
@@ -1889,15 +1706,7 @@ dir \\dc01.redteam.lab\c$
 
 #### Contexte
 
-```
-Entreprise : RedTeam Corp.
-Forêt A : redteam.lab (production)
-  ├── DC01.redteam.lab (DC, CA)
-  ├── SRV01.redteam.lab (Web server, Unconstrained Delegation)
-  └── WS01.redteam.lab (Workstation)
-Forêt B : corp.contoso.com (siège)
-  └── DC02.corp.contoso.com (DC)
-```
+![TP Synthèse - Infrastructure RedTeam Corp.](annexes/images/m9_diag_16.svg)
 
 **Point de départ :**
 - Utilisateur `alice` (mot de passe compromis)
@@ -2160,9 +1969,9 @@ graph TD
 | PKINITtools | https://github.com/dirkjanm/PKINITtools |
 | PetitPotam | https://github.com/topotam/PetitPotam |
 | KrbRelayUp | https://github.com/Dec0ne/KrbRelayUp |
-| AD Security | https://github.com/rootsecdev/AD-security |
-| HackTricks AD | https://book.hacktricks.xyz/windows-hardening/active-directory-methodology |
-| The Hacker Recipes | https://www.thehacker.recipes/ad/ |
+| AD Security | [référence supprimée] |
+| HackTricks AD | https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/index.html |
+| The Hacker Recipes | https://www.thehacker.recipes/ad/recon/ |
 
 ### 12.2 Commandes essentielles — Aide-mémoire
 

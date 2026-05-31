@@ -1,0 +1,14 @@
+{
+  "type": "attack_chain",
+  "width": 960,
+  "height": 280,
+  "title": "Kerberoasting",
+  "steps": [
+    {"label": "Attaquant\n(compte domaine)", "icon": "user", "tag": "T1558.003"},
+    {"label": "TGS-REQ\n(SPN: sql/srv01)", "icon": "email", "tag": "KDC"},
+    {"label": "KDC (DC)\nDélivre TGS", "icon": "server", "tag": "DC"},
+    {"label": "TGS-REP\n(hash chiffré)", "icon": "lock", "tag": "TGS"},
+    {"label": "Offline\nCracking", "icon": "terminal", "tag": "hashcat"},
+    {"label": "Mot de passe\nService", "icon": "key", "tag": "Pwned"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "type": "tree",
+  "title": "Structure d'un objet AD avec ACL",
+  "width": 800,
+  "height": 420,
+  "root": {
+    "label": "Objet: CN=john.doe,CN=Users,DC=redteam,DC=lab",
+    "children": [
+      {
+        "label": "DACL",
+        "tag": "Permissions",
+        "children": [
+          {"label": "ACE 1: Domain Admin → GenericAll"},
+          {"label": "ACE 2: Domain Users → ReadProperty"},
+          {"label": "ACE 3: IT_Sec → WriteProperty (pwdLastSet)"},
+          {"label": "ACE 4: jdoe → Self (WriteOwner)"}
+        ]
+      },
+      {
+        "label": "SACL (audit)",
+        "tag": "Audit",
+        "children": []
+      }
+    ]
+  }
+}

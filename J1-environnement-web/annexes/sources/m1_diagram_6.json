@@ -1,0 +1,61 @@
+{
+    "type": "tree",
+    "title": "Structure Rapport Technique",
+    "width": 960,
+    "height": 500,
+    "root": {
+        "label": "Rapport Technique (Analystes SOC, Ingénieurs)",
+        "children": [
+            {
+                "label": "Contexte & Scope",
+                "tag": "",
+                "children": [
+                    {"label": "Périmètre de l'engagement"},
+                    {"label": "Règles d'engagement"}
+                ]
+            },
+            {
+                "label": "Méthodologie",
+                "tag": "",
+                "children": [
+                    {"label": "Framework ATT&CK utilisé"},
+                    {"label": "Outils et techniques employés"}
+                ]
+            },
+            {
+                "label": "TTPs Observées",
+                "tag": "",
+                "children": [
+                    {"label": "Liste exhaustive par tactique"},
+                    {"label": "Mapping technique / code"},
+                    {"label": "Niveau de criticité"}
+                ]
+            },
+            {
+                "label": "Gap Analysis",
+                "tag": "",
+                "children": [
+                    {"label": "Comparaison baseline / cible"},
+                    {"label": "Score par technique"}
+                ]
+            },
+            {
+                "label": "Recommandations",
+                "tag": "",
+                "children": [
+                    {"label": "Règles de détection Sigma"},
+                    {"label": "Mitigations spécifiques"}
+                ]
+            },
+            {
+                "label": "Annexes techniques",
+                "tag": "",
+                "children": [
+                    {"label": "Fichier JSON Navigator"},
+                    {"label": "Règles Sigma détaillées"},
+                    {"label": "Logs et captures"}
+                ]
+            }
+        ]
+    }
+}

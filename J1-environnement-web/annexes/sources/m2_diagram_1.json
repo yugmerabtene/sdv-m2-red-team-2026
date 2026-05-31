@@ -1,0 +1,17 @@
+{
+  "type": "flow_chart",
+  "width": 960,
+  "height": 540,
+  "title": "Methodologie de pentest web — 5 phases",
+  "padding_top": 80,
+  "spacing": 85,
+  "step_width": 320,
+  "step_height": 48,
+  "steps": [
+    { "label": "1. Reconnaissance\nScan ports, endpoints, technologies", "tag": "Recon" },
+    { "label": "2. Mapping\nAnalyse de surface d'attaque", "tag": "Map" },
+    { "label": "3. Discovery\nTest injections, auth, logique", "tag": "Discover" },
+    { "label": "4. Exploitation\nExploit des vulns identifiees", "tag": "Exploit" },
+    { "label": "5. Reporting\nRapport + recommendations", "tag": "Report" }
+  ]
+}

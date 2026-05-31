@@ -1,0 +1,42 @@
+{
+    "type": "flow_chart",
+    "title": "Gap Analysis NIS2 avec ATT&CK",
+    "width": 800,
+    "height": 520,
+    "padding_top": 60,
+    "spacing": 80,
+    "step_width": 320,
+    "step_height": 50,
+    "steps": [
+        {
+            "label": "Exigences NIS2 (Art. 21)",
+            "type": "box",
+            "tag": "NIS2",
+            "icon": ""
+        },
+        {
+            "label": "Mapping vers les TTPs ATT&CK",
+            "type": "box",
+            "tag": "Txxxx",
+            "icon": ""
+        },
+        {
+            "label": "Évaluation de la couverture actuelle",
+            "type": "box",
+            "tag": "",
+            "icon": ""
+        },
+        {
+            "label": "Identification des gaps de sécurité",
+            "type": "decision",
+            "tag": "",
+            "icon": ""
+        },
+        {
+            "label": "Plan de remédiation et mitigation",
+            "type": "box",
+            "tag": "Mxxxx",
+            "icon": ""
+        }
+    ]
+}

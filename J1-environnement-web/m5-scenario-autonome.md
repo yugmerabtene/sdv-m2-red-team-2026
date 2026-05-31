@@ -126,7 +126,7 @@ Conformément à l'**Article 21** de la directive NIS2 (UE 2022/2555), le rappor
 
 ### 3.2 Arbre d'attaque global
 
-![Diagram 1 - Global Attack Tree](assets/diagrams/m5_diagram_1.png)
+![Diagram 1 - Global Attack Tree](annexes/images/m5_diagram_1.svg)
 
 ---
 
@@ -693,7 +693,7 @@ curl -s http://ecovault.local/admin/templates \
 
 **Explication de la chaîne d'accès :**
 
-![Diagram 2 - SSTI Exploitation Chain](assets/diagrams/m5_diagram_2.png)
+![Diagram 2 - SSTI Exploitation Chain](annexes/images/m5_diagram_2.svg)
 
 **Résultat attendu :** `uid=1000(app) gid=1000(app) groups=1000(app)`
 
@@ -1017,7 +1017,7 @@ Le **pivoting** est une étape clé du Red Teaming qui simule un attaquant réel
 
 **Architecture :**
 
-![Diagram 5 - Chisel Tunnel SOCKS5 Architecture](assets/diagrams/m5_diagram_5.png)
+![Diagram 5 - Chisel Tunnel SOCKS5 Architecture](annexes/images/m5_diagram_5.svg)
 
 **Proxychains** permet de faire passer les outils (curl, nmap, nc) à travers le tunnel SOCKS5 sans modification.
 
@@ -1037,7 +1037,7 @@ Le **pivoting** est une étape clé du Red Teaming qui simule un attaquant réel
 
 ### 5.2 Matrice de couverture ATT&CK (Heat Map textuelle)
 
-![Diagram 3 - ATT\&CK Coverage Heat Map](assets/diagrams/m5_diagram_3.png)
+![Diagram 3 - ATT\&CK Coverage Heat Map](annexes/images/m5_diagram_3.svg)
 
 ### 5.3 Rapport de conformité NIS2
 
@@ -1413,7 +1413,7 @@ def admin_templates():
 
 **Chaîne d'exploitation :**
 
-![Diagram 4 - SSTI Payload Breakdown](assets/diagrams/m5_diagram_4.png)
+![Diagram 4 - SSTI Payload Breakdown](annexes/images/m5_diagram_4.svg)
 
 #### Comment corriger
 
@@ -1470,7 +1470,7 @@ def admin_templates():
 
 #### Références
 
-- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection)
+- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection)
 - **PortSwigger** : [SSTI](https://portswigger.net/web-security/server-side-template-injection)
 - **PayloadsAllTheThings** : [Jinja2 SSTI](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection#jinja2)
 - **MITRE ATT&CK** : [T1059.003](https://attack.mitre.org/techniques/T1059/003/)
@@ -1534,7 +1534,7 @@ def detect_tunnels():
 
 ### 6.6 Diagramme de l'attaque complète
 
-![Diagram 6 - Complete Attack Path](assets/diagrams/m5_diagram_6.png)
+![Diagram 6 - Complete Attack Path](annexes/images/m5_diagram_6.svg)
 
 ### 6.7 Tableau récapitulatif des flags
 

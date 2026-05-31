@@ -1,0 +1,64 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 420' width='1000' height='420'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='1000' height='420' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>SSTI Payload Breakdown — Jinja2 Exploitation</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='410.0' y='30' width='180' height='40' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='500.0' y='54' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='14px'>render_template_string() → Jinja2 SSTI</text>
+    <line x1='500.0' y1='70' x2='170.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='80.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='170.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Expression {{ ... }}</text>
+    <line x1='170.0' y1='150' x2='80.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='10.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='80.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>{{ 7*7 }} → 49</text>
+    <line x1='170.0' y1='150' x2='260.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='190.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='260.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Injection confirmee</text>
+    <line x1='500.0' y1='70' x2='390.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='300.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='390.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Access Python Objects</text>
+    <line x1='390.0' y1='150' x2='210.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='140.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='210.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>cycler (objet Jinja2)</text>
+    <line x1='390.0' y1='150' x2='390.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='320.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='390.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>__init__</text>
+    <line x1='390.0' y1='150' x2='570.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='500.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#a55eea' stroke-width='1' filter='url(#shadow)' />
+    <text x='570.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>__globals__</text>
+    <line x1='500.0' y1='70' x2='610.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='520.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#a55eea' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='610.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Build Payload</text>
+    <line x1='610.0' y1='150' x2='520.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='450.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='520.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>os.popen('id')</text>
+    <line x1='610.0' y1='150' x2='700.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='630.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='700.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>.read()</text>
+    <line x1='500.0' y1='70' x2='830.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='740.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#ff9f43' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='830.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>RCE → Shell</text>
+    <line x1='830.0' y1='150' x2='740.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='670.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='740.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>nc reverse shell</text>
+    <line x1='830.0' y1='150' x2='920.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='850.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='920.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Flag 4 obtenu</text>
+</svg>

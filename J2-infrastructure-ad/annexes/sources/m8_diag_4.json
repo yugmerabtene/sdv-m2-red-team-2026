@@ -1,0 +1,19 @@
+{
+  "type": "flow_chart",
+  "width": 800,
+  "height": 620,
+  "title": "Fonctionnement technique de PsExec",
+  "padding_top": 60,
+  "spacing": 72,
+  "step_width": 380,
+  "step_height": 44,
+  "steps": [
+    {"label": "PsExec se connecte à ADMIN$ via SMB", "tag": "1"},
+    {"label": "Upload du binaire PSEXESVC.exe dans ADMIN$", "tag": "2"},
+    {"label": "Création d'un service Windows via SC Manager", "tag": "3"},
+    {"label": "Le service démarre et crée un pipe nommé", "tag": "4"},
+    {"label": "Le client se connecte au pipe", "tag": "5"},
+    {"label": "Les commandes sont transmises via le pipe", "tag": "6"},
+    {"label": "La sortie est retournée via le pipe", "tag": "7"}
+  ]
+}

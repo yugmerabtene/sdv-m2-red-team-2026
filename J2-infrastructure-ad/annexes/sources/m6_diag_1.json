@@ -1,0 +1,27 @@
+{
+  "type": "flow_chart",
+  "width": 960,
+  "height": 540,
+  "title": "Phase de Reconnaissance",
+  "padding_top": 60,
+  "spacing": 80,
+  "step_width": 360,
+  "step_height": 50,
+  "steps": [
+    {
+      "label": "Discovery\nPing sweep · Port scan · DNS lookup",
+      "tag": "T1595"
+    },
+    {
+      "label": "Fingerprinting\nBanner grab · OS detection · Version detection · NSE",
+      "tag": "T1592"
+    },
+    {
+      "label": "Énumération\nPartage SMB · Utilisateurs LDAP · DNS · SNMP",
+      "tag": "T1046"
+    },
+    {
+      "label": "Carte réseau complète\nVecteurs d'attaque · Priorisation"
+    }
+  ]
+}

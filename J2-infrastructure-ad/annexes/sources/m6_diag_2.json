@@ -1,0 +1,15 @@
+{
+  "type": "sequence",
+  "width": 700,
+  "height": 350,
+  "title": "TCP SYN Scan Handshake",
+  "participants": [
+    {"id": "client", "label": "Client"},
+    {"id": "server", "label": "Serveur"}
+  ],
+  "messages": [
+    {"from": "client", "to": "server", "label": "SYN"},
+    {"from": "server", "to": "client", "label": "SYN-ACK (port ouvert)", "type": "response"},
+    {"from": "client", "to": "server", "label": "RST (fermeture sans handshake)"}
+  ]
+}

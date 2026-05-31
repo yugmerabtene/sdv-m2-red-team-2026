@@ -1,0 +1,13 @@
+{
+  "type": "attack_chain",
+  "title": "CSRF Attack — Account Takeover",
+  "width": 900,
+  "height": 340,
+  "steps": [
+    { "id": "1", "label": "Attacker\nForge HTML malicieuse", "icon": "attack" },
+    { "id": "2", "label": "Victim\nNavigateur connecte", "icon": "user" },
+    { "id": "3", "label": "Server Ecovault\nPas de token CSRF", "icon": "server" },
+    { "id": "4", "label": "Cookie Auto-Envoye\nPOST /change-password", "icon": "key" },
+    { "id": "5", "label": "Password Change\nATO Reussi", "icon": "lock" }
+  ]
+}

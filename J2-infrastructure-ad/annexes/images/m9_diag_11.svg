@@ -1,0 +1,51 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 860 460' width='860' height='460'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='860' height='460' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Mécanisme d'authentification PKINIT (ESC1)</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='180.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='235.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>Attaquant
+alice@lab</text>
+    <line x1='235.0' y1='66' x2='235.0' y2='430' stroke='#e63946' stroke-width='0.8' stroke-dasharray='4,4' />
+    <rect x='375.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='430.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>KDC</text>
+    <line x1='430.0' y1='66' x2='430.0' y2='430' stroke='#54a0ff' stroke-width='0.8' stroke-dasharray='4,4' />
+    <rect x='570.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='625.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>CA</text>
+    <line x1='625.0' y1='66' x2='625.0' y2='430' stroke='#44d7b6' stroke-width='0.8' stroke-dasharray='4,4' />
+    <line x1='235.0' y1='95' x2='430.0' y2='95' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
+    <rect x='288.5' y='77' width='155' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='292.5' y='92' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>1. Demande TGT PKINIT</text>
+    <line x1='430.0' y1='140' x2='625.0' y2='140' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
+    <rect x='483.5' y='122' width='155' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='487.5' y='137' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>2. Vérifie certificat</text>
+    <line x1='625.0' y1='185' x2='430.0' y2='185' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
+    <rect x='483.5' y='167' width='148' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='487.5' y='182' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>3. Certificat valide</text>
+    <line x1='430.0' y1='230' x2='235.0' y2='230' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
+    <rect x='288.5' y='212' width='211' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='292.5' y='227' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>4. TGT avec SID Administrator</text>
+    <line x1='235.0' y1='275' x2='430.0' y2='275' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
+    <rect x='288.5' y='257' width='162' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='292.5' y='272' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>5. TGS-REQ (cifs/dc01)</text>
+    <line x1='430.0' y1='320' x2='235.0' y2='320' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
+    <rect x='288.5' y='302' width='162' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='292.5' y='317' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>6. TGS — Accès accordé</text>
+</svg>

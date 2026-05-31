@@ -1,0 +1,55 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 420' width='960' height='420'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='960' height='420' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Unités d'Organisation (OU)</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='390.0' y='30' width='180' height='40' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
+    <text x='480.0' y='54' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='14px'>sdv-m2.lab</text>
+    <line x1='480.0' y1='70' x2='260.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='170.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='260.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>OU=Utilisateurs</text>
+    <rect x='310.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
+    <text x='337.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>OU</text>
+    <line x1='260.0' y1='150' x2='80.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='10.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='80.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>OU=Direction</text>
+    <line x1='260.0' y1='150' x2='260.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='190.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='260.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>OU=IT</text>
+    <line x1='260.0' y1='150' x2='440.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='370.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#a55eea' stroke-width='1' filter='url(#shadow)' />
+    <text x='440.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>OU=Comptabilite</text>
+    <line x1='480.0' y1='70' x2='480.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='390.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='480.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>OU=Ordinateurs</text>
+    <rect x='530.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
+    <text x='557.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>OU</text>
+    <line x1='480.0' y1='150' x2='390.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='320.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
+    <text x='390.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>OU=Postes</text>
+    <line x1='480.0' y1='150' x2='570.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
+    <rect x='500.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
+    <text x='570.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>OU=Serveurs</text>
+    <line x1='480.0' y1='70' x2='700.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
+    <rect x='610.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#a55eea' stroke-width='1.2' filter='url(#shadow)' />
+    <text x='700.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>OU=Groupes</text>
+    <rect x='750.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
+    <text x='777.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>OU</text>
+</svg>

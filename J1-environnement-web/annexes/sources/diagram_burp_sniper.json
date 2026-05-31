@@ -1,0 +1,13 @@
+{
+  "type": "attack_chain",
+  "title": "Burp Intruder — Mode Sniper",
+  "width": 800,
+  "height": 340,
+  "steps": [
+    { "id": "1", "label": "Request Capturee\nGET /api/profile/1", "icon": "globe" },
+    { "id": "2", "label": "Payload Position\n/id/§1§", "icon": "attack", "tag": "Sniper" },
+    { "id": "3", "label": "Wordlist\n1,2,3,4,5...", "icon": "folder" },
+    { "id": "4", "label": "Iteration 1 a N\nTeste chaque ID", "icon": "terminal" },
+    { "id": "5", "label": "Resultats\nIDOR detecte", "icon": "key" }
+  ]
+}

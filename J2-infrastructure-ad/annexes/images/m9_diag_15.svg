@@ -1,0 +1,46 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 380' width='800' height='380'>
+  <defs>
+    
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
+        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
+        </marker>
+        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
+        </marker>
+        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
+        </marker>
+        
+  </defs>
+  <rect width='800' height='380' fill='#0a0e14' rx='12'/>
+  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>RBCD — Resource-Based Constrained Delegation</text>
+    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
+    <rect x='25' y='25' width='340' height='330' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <rect x='25' y='25' width='340' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
+    <rect x='25' y='51' width='340' height='304' rx='0' fill='none' stroke='none' stroke-width='0'  />
+    <rect x='25' y='25' width='340' height='330' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <text x='37' y='43' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Attaquant</text>
+    <rect x='405' y='25' width='370' height='330' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <rect x='405' y='25' width='370' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
+    <rect x='405' y='51' width='370' height='304' rx='0' fill='none' stroke='none' stroke-width='0'  />
+    <rect x='405' y='25' width='370' height='330' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
+    <text x='417' y='43' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Service Cible</text>
+    <rect x='137' y='147' width='76' height='50' rx='6' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
+    <g transform='translate(158.2, 148.2) scale(0.7)'><rect x="8" y="6" width="32" height="20" rx="2" fill="none" stroke="#e63946" stroke-width="1.2"/><line x1="14" y1="26" x2="34" y2="26" stroke="#e63946" stroke-width="1.2"/><path d="M4 38 L14 26 L34 26 L44 38 Z" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x='175' y='205.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Attaquant</text>
+    <text x='175' y='221.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>(machine controlee)</text>
+    <rect x='527' y='147' width='76' height='50' rx='6' fill='#131820' stroke='#ff9f43' stroke-width='1.2' filter='url(#shadow)' />
+    <g transform='translate(548.2, 148.2) scale(0.7)'><rect x="4" y="4" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1" fill="none" stroke="#ff9f43" stroke-width="1.2"/><circle cx="15" cy="9" r="2" fill="#44d7b6"/><circle cx="15" cy="23" r="2" fill="#44d7b6"/><circle cx="15" cy="37" r="2" fill="#44d7b6"/></g>
+    <text x='565' y='205.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Service Cible (DC01)</text>
+    <text x='565' y='221.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>msDS-AllowedTo</text>
+    <text x='565' y='237.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>ActOnBehalfOf</text>
+    <text x='565' y='253.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>= {SID machine controlee}</text>
+    <path d='M175,175 Q370.0,155.0 565,175' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
+    <rect x='351.0' y='143.0' width='204' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
+    <text x='355.0' y='158.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>TGS → Acces au service cible</text>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "type": "attack_chain",
+  "title": "Kill Chain ATT&CK — Internet → DMZ → Interne",
+  "width": 1100,
+  "height": 380,
+  "steps": [
+    { "id": "1", "label": "Reconnaissance\nGather Host Info", "tag": "T1592", "icon": "globe" },
+    { "id": "2", "label": "XSS Drive-by\nSteal Session", "tag": "T1189", "icon": "attack" },
+    { "id": "3", "label": "Cookie Theft\nSession Hijack", "tag": "T1539", "icon": "key" },
+    { "id": "4", "label": "CSRF → ATO\nChange Password", "tag": "T1190", "icon": "user" },
+    { "id": "5", "label": "Web Shell\nPHP Upload", "tag": "T1505.003", "icon": "terminal" },
+    { "id": "6", "label": "Reverse Shell\nTCP Connect-Back", "tag": "T1059.003", "icon": "server" },
+    { "id": "7", "label": "Pivoting\nSOCKS Tunnel", "tag": "T1021.001", "icon": "switch" },
+    { "id": "8", "label": "Exfiltration\nOver C2 Channel", "tag": "T1041", "icon": "db" }
+  ]
+}

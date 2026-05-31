@@ -40,23 +40,7 @@ Pour un attaquant Red Team, AD est **la cible centrale** de tout engagement en e
 
 Un **domaine** est l'unité administrative principale d'AD. Il s'agit d'un ensemble d'objets (utilisateurs, groupes, ordinateurs) qui partagent une base de données d'annuaire commune, stockée sur les contrôleurs de domaine.
 
-```
-Exemple : sdv-m2.lab
-├── Utilisateurs
-│   ├── jdoe
-│   ├── asmith
-│   └── admin01
-├── Groupes
-│   ├── Domain Admins
-│   ├── Domain Users
-│   └── Enterprise Admins
-├── Ordinateurs
-│   ├── DC01.sdv-m2.lab
-│   └── SRV-APP.sdv-m2.lab
-└── Unités d'organisation (OU)
-    ├── OU=Paris
-    └── OU=Lyon
-```
+![Structure d'un Domaine AD](annexes/images/m7_diag_1.svg)
 
 Le nom de domaine complet (FQDN) d'un domaine AD suit la syntaxe DNS : `sdv-m2.lab`. Le **NetBIOS** est généralement la partie gauche avant le premier point : `SDV-M2`.
 
@@ -68,12 +52,7 @@ Une **forêt** est la frontière de sécurité supérieure dans AD. Elle contien
 - Une configuration commune
 - Des relations de confiance transitives automatiques entre les domaines
 
-```
-Forêt: sdv-m2.lab
-├── Domaine: sdv-m2.lab (domaine racine)
-├── Domaine: europe.sdv-m2.lab
-└── Domaine: asia.sdv-m2.lab
-```
+![Forêt Active Directory](annexes/images/m7_diag_2.svg)
 
 Les administrateurs **Enterprise Admins** (domaine racine) ont des privilèges sur **tous les domaines** de la forêt.
 
@@ -92,17 +71,7 @@ Les OU sont des conteneurs hiérarchiques qui permettent d'organiser les objets 
 - Déléguer des droits d'administration
 - Organiser logiquement les ressources
 
-```
-sdv-m2.lab
-├── OU=Utilisateurs
-│   ├── OU=Direction
-│   ├── OU=IT
-│   └── OU=Comptabilite
-├── OU=Ordinateurs
-│   ├── OU=Postes
-│   └── OU=Serveurs
-└── OU=Groupes
-```
+![Unités d'Organisation (OU)](annexes/images/m7_diag_3.svg)
 
 #### Relations de confiance (Trusts)
 
@@ -3644,8 +3613,8 @@ echo "[+] Done! Check exports/auto/ for results."
 - **Active Directory Security** (Sean Metcalf) : https://adsecurity.org/
 - **Harmj0y's Blog** : http://blog.harmj0y.net/
 - **SpecterOps Blog** : https://posts.specterops.io/
-- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/
-- **NIS2 Directive** : https://www.enisa.europa.eu/topics/cybersecurity-policy/nis2-directive
+- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview
+- **NIS2 Directive** : https://digital-strategy.ec.europa.eu/en/policies/nis2-directive
 
 #### Wordlists recommandées
 - `rockyou.txt` : `/usr/share/wordlists/rockyou.txt`

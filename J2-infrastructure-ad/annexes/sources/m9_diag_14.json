@@ -1,0 +1,12 @@
+{
+  "type": "attack_chain",
+  "title": "S4U2Self + S4U2Proxy — Constrained Delegation Abuse",
+  "width": 920,
+  "height": 360,
+  "steps": [
+    {"label": "S4U2Self\nDemander TGS pour\nl'utilisateur cible\n(sans TGT de sa part)", "icon": "user", "tag": "Étape 1"},
+    {"label": "Obtention TGS\nforwardable\npour utilisateur cible", "icon": "key", "tag": ""},
+    {"label": "S4U2Proxy\nUtiliser le TGS\npour demander TGS\nvers service autorisé", "icon": "attack", "tag": "Étape 2"},
+    {"label": "Réception TGS\npour le service cible\n→ Accès obtenu", "icon": "server", "tag": ""}
+  ]
+}

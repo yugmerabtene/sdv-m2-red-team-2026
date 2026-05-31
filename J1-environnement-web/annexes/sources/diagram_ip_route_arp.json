@@ -1,0 +1,16 @@
+{
+  "type": "flow_chart",
+  "title": "Reseau — ip a / ip route / arp",
+  "width": 700,
+  "height": 540,
+  "padding_top": 80,
+  "spacing": 100,
+  "step_width": 450,
+  "step_height": 50,
+  "steps": [
+    { "label": "ip a\neth0: 172.17.0.2/16 (DMZ, interface publique)", "tag": "iface" },
+    { "label": "ip a\neth1: 10.0.0.5/24 (Reseau interne cache)", "tag": "iface" },
+    { "label": "ip route\ndefault via 172.17.0.1 (Gateway DMZ)", "tag": "route" },
+    { "label": "arp -a\n10.0.0.10 → MAC xx:xx (Serveur cible)", "tag": "arp" }
+  ]
+}

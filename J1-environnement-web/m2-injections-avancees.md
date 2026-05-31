@@ -178,7 +178,7 @@ Si `Access-Control-Allow-Origin: *` ET `Access-Control-Allow-Credentials: true`,
 
 ### 1.6 Méthodologie de pentest web
 
-![Diagram 1 - Méthodologie de pentest web — 5 phases](assets/diagrams/m2_diagram_1.png)
+![Diagram 1 - Méthodologie de pentest web — 5 phases](annexes/images/m2_diagram_1.svg)
 
 #### Commandes de reconnaissance initiale
 
