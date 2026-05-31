@@ -1,6 +1,15 @@
 # SDV M2 — Red Team Advanced 2026
 
-Formation pentest avancé — 4 jours (1—4 Juin 2026)
+Formation pentest avancé — 4 jours (1—4 Juin 2026) — **40 078 lignes de contenu**
+
+## État : ✅ Testé et validé
+
+| Composant | Statut |
+|-----------|--------|
+| J1 Lab Docker (EcoVault) | ✅ 19/19 vulnérabilités testées |
+| J2 Lab Docker (Samba AD) | ✅ Build OK |
+| Python / SQL / Markdown | ✅ Syntaxe validée |
+| Références externes | ✅ 181 URLs vérifiées |
 
 ## Structure
 
