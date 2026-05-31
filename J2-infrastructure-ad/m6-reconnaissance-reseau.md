@@ -35,7 +35,26 @@ La phase de reconnaissance est la **première étape** de toute opération Red T
 
 Ces trois phases sont **itératives** : chaque découverte alimente la suivante et affine le périmètre d'attaque.
 
-![Phase de Reconnaissance](annexes/images/m6_diag_1.svg)
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    PHASE DE RECONNAISSANCE                    │
+├──────────────┬──────────────────┬────────────────────────────┤
+│  Discovery   │  Fingerprinting  │      Énumération           │
+│  (hôtes)     │  (OS/services)   │      (détails)             │
+├──────────────┼──────────────────┼────────────────────────────┤
+│  Ping sweep  │  Banner grab     │  Partage SMB              │
+│  Port scan   │  OS detection    │  Utilisateurs LDAP        │
+│  DNS lookup  │  Version detection│  Enregistrements DNS      │
+│              │  NSE scripts     │  OID SNMP                 │
+└──────────────┴──────────────────┴────────────────────────────┘
+                              │
+                              ▼
+                ┌─────────────────────────┐
+                │  Carte réseau complète  │
+                │  Vecteurs d'attaque     │
+                │  Priorisation           │
+                └─────────────────────────┘
+```
 
 ### 1.2 NIS2 — Cartographie des actifs (Article 21)
 
@@ -129,7 +148,11 @@ nmap --script-help smb-enum-shares.nse
 
 Le SYN scan envoie un paquet SYN, analyse la réponse, puis envoie un RST pour ne pas terminer la connexion.
 
-![TCP SYN Scan Handshake](annexes/images/m6_diag_2.svg)
+```
+Client → Serveur : SYN
+Serveur → Client : SYN-ACK  (port ouvert)
+Client → Serveur : RST     (fermeture sans handshake complet)
+```
 
 ```bash
 # SYN scan basique (root requis)
@@ -3060,6 +3083,6 @@ Chaque étudiant doit remplir ce tableau pendant le TP :
 | SecLists | https://github.com/danielmiessler/SecLists |
 | NIS2 Directive | https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022L2555 |
 | enum4linux-ng | https://github.com/cddmp/enum4linux-ng |
-| windapsearch | https://github.com/ropnop/go-windapsearch |
+| windapsearch | https://github.com/ropnop/windapsearch |
 | ldapdomaindump | https://github.com/dirkjanm/ldapdomaindump |
 | nmap-bootstrap-xsl | https://github.com/honze-net/nmap-bootstrap-xsl |

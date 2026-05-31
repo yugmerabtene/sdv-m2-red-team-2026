@@ -25,7 +25,10 @@
 
 **Principe :** L'attaquant modifie un paramètre dans la requête (URL, body JSON, cookie) pour accéder à une ressource qui ne lui appartient pas.
 
-![Diagram 1 - IDOR Access — Modification du paramètre ID](annexes/images/m3_diagram_01.svg)
+```
+GET /api/profile/2  →  profil de l'utilisateur courant (autorisé)
+GET /api/profile/1  →  profil de l'admin (NON autorisé → IDOR !)
+```
 
 **Tag MITRE ATT&CK :**
 
@@ -382,7 +385,14 @@ if header.get('alg') == 'none':
 
 **Principe :** Le serveur utilise normalement une paire de clés RSA (publique/privée). L'attaquant récupère la clé publique (souvent exposée via un endpoint) et l'utilise comme secret HMAC pour signer un nouveau token avec l'algorithme `HS256`.
 
-![Diagram 2 - HMAC/RSA Confusion — Principe de l'attaque](annexes/images/m3_diagram_02.svg)
+```
+Scénario normal :
+  Serveur signe avec clé privée (RS256) → Client vérifie avec clé publique
+
+Attaque :
+  Attaquant signe avec clé publique (HS256) → Serveur vérifie avec clé publique
+  (Confusion entre asymétrique et symétrique)
+```
 
 **Étape 1 — Récupérer la clé publique RSA**
 
@@ -901,13 +911,23 @@ def admin_templates():
 
 **Principe :** La vulnérabilité TOCTOU survient lorsqu'il y a un délai entre la **vérification** d'une condition (Time-of-Check) et l'**utilisation** du résultat (Time-of-Use). Pendant ce délai, l'état du système peut changer.
 
-![Diagram 3 - TOCTOU — Time-of-Check vs Time-of-Use](annexes/images/m3_diagram_03.svg)
+```
+Time-of-Check (TOC) : Vérifier que le coupon n'a pas été utilisé
+         │
+         │   ← DÉLAI (vulnérable aux interférences)
+         │
+Time-of-Use (TOU)  : Marquer le coupon comme utilisé
+```
 
 Si l'attaquant envoie **plusieurs requêtes simultanément** pendant ce délai, toutes les vérifications passent avant qu'aucune n'ait marqué le coupon comme utilisé.
 
 **Diagramme de l'attaque :**
 
-![Diagram 4 - Race Condition — Requêtes simultanées](annexes/images/m3_diagram_04.svg)
+```
+Requête 1 ──→ TOC (coupon valide ✅) ──→ ... délai ... ──→ TOU (marquer utilisé)
+Requête 2 ──→ TOC (coupon valide ✅) ──→ ... délai ... ──→ TOU (marquer utilisé)
+Requête 3 ──→ TOC (coupon valide ✅) ──→ ... délai ... ──→ TOU (marquer utilisé)
+```
 
 Les trois requêtes passent le TOC avant qu'aucune n'ait atteint le TOU.
 
@@ -1027,7 +1047,12 @@ for _ in range(100):
 
 **Scénario :** L'application vérifie le code 2FA et marque la session comme vérifiée. Si le marquage n'est pas atomique :
 
-![Diagram 5 - 2FA Bypass — Race Condition sur la vérification](annexes/images/m3_diagram_05.svg)
+```
+Time 0  : Requête 1 → vérification code (en cours)
+Time +1ms: Requête 2 → vérification code (en cours) — session PAS ENCORE marquée
+Time +2ms: Requête 1 → marquage session ✅
+Time +3ms: Requête 2 → marquage session ✅ (contournement !)
+```
 
 ### 4.4 Analyse du code vulnérable
 
@@ -1265,7 +1290,16 @@ if price <= 0:
 
 **Exemple :**
 
-![Diagram 6 - Workflow Abuse — Saut d'étapes](annexes/images/m3_diagram_06.svg)
+```
+Étapes normales :
+  POST /cart/checkout         → 200 (total calculé)
+  POST /checkout/address      → 200 (adresse validée)
+  POST /checkout/payment      → 200 (paiement validé)
+  POST /checkout/confirm      → 200 (commande créée)
+
+Attaque (saut d'étapes) :
+  POST /checkout/confirm      → 200 (commande créée sans passer par le paiement !)
+```
 
 **Détection :**
 
@@ -1417,7 +1451,23 @@ python3 overflow_exploit.py
 
 **Déroulement :**
 
-![Diagram 7 - Parcours d'attaque complet — Arbre des vulnérabilités](annexes/images/m3_diagram_07.svg)
+```
+user@ecovault.com
+    │
+    ├── 1. IDOR (T1548)
+    │   └── GET /api/profile/1 → flag{admin_api_key_4a7b9c}
+    │
+    ├── 2. JWT Forge (T1078 / T1134)
+    │   ├── Option A: None algorithm
+    │   ├── Option B: HMAC/RSA confusion
+    │   └── Option C: Kid injection (/dev/null)
+    │   └── Résultat: Token admin → accès /admin/debug
+    │
+    ├── 3. Business Logic Overflow (T1068)
+    │   └── POST /api/order → flag{business_logic_overflow_2026}
+    │
+    └── Objectif atteint : 2 flags récupérés
+```
 
 **Script de synthèse :**
 
@@ -1506,7 +1556,24 @@ python3 tp_synthese.py
 
 ### 6.3 Heat map ATT&CK (Module 3)
 
-![Diagram 8 - Heat Map ATT&CK — Couverture des techniques exploitées](annexes/images/m3_diagram_08.svg)
+```
+Techniques exploitées dans ce module :
+
+T1548 ─ Abuse Elevation Control Mechanism
+├── T1548.002 ─ IDOR ──── ████████████ 100%
+
+T1134 ─ Access Token Manipulation
+├── T1134.003 ─ JWT None ── ████████████ 100%
+├── T1134.003 ─ JWT Confusion ████████████ 100%
+└── T1134.003 ─ Kid Inject ─ ████████████ 100%
+
+T1078 ─ Valid Accounts
+├── T1078.001 ─ Credentials ████████░░░ 80%
+
+T1068 ─ Exploitation for Privilege Escalation
+├── Race Condition ─────── ████████████ 100%
+└── Business Logic ─────── ████████████ 100%
+```
 
 ### 6.4 Recommendations de remédiation
 
@@ -1532,7 +1599,7 @@ python3 tp_synthese.py
 | PortSwigger — IDOR | https://portswigger.net/web-security/access-control/idor |
 | PortSwigger — JWT | https://portswigger.net/web-security/jwt |
 | PortSwigger — Race Conditions | https://portswigger.net/web-security/race-conditions |
-| OWASP — Business Logic | [référence supprimée] |
+| OWASP — Business Logic | https://owasp.org/www-community/vulnerabilities/Business_Logic_Vulnerability |
 | jwt_tool | https://github.com/ticarpi/jwt_tool |
 | JWT.io | https://jwt.io |
 | Turbol Intruder (Burp) | https://portswigger.net/bappstore/9abaa233088242e8be252cd4ff534988 |

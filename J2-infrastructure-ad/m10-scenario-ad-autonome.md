@@ -117,7 +117,36 @@ Conformément à la directive **NIS2 (Network and Information Security Directive
 
 ### 3.1 Schéma logique
 
-![Topologie reseau CorpShadow - 10.10.10.0/24](annexes/images/m10_diag_1.svg)
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Réseau 10.10.10.0/24                     │
+│                                                                  │
+│   ┌──────────────────┐      ┌──────────────────┐                │
+│   │   DC01            │      │   FS01            │               │
+│   │   Contrôleur      │      │   File Server     │               │
+│   │   de domaine      │      │   Windows Server  │               │
+│   │   Windows 2022    │      │   Windows 2022    │               │
+│   │   10.10.10.10     │      │   10.10.10.20     │               │
+│   └────────┬─────────┘      └────────┬──────────┘               │
+│            │                          │                          │
+│            └──────────┬───────────────┘                          │
+│                       │                                          │
+│              ┌────────┴──────────┐                               │
+│              │   WS01             │                               │
+│              │   Workstation      │                               │
+│              │   Windows 11       │                               │
+│              │   10.10.10.100     │                               │
+│              │   ★ POSTE DE       │                               │
+│              │     DÉPART         │                               │
+│              └───────────────────┘                               │
+│                                                                  │
+│   ┌─────────────────────────────────────────────┐                │
+│   │   Kali Attacker (VM)                         │               │
+│   │   10.10.10.200                                │               │
+│   │   ★ POSTE DE L'OPÉRATEUR                     │               │
+│   └─────────────────────────────────────────────┘                │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### 3.2 Machines et rôles
 
@@ -722,7 +751,18 @@ Get-ItemProperty "HKLM:\Software\Policies\Microsoft Services\AdmPwd"
 
 **Fonctionnement de Kerberos (rappel simplifié) :**
 
-![Flow Kerberos - TGT et TGS](annexes/images/m10_diag_4.svg)
+```
+1. Le client demande un TGT (Ticket-Granting Ticket) au KDC (DC)
+   → Authentification avec le hash du mot de passe du client
+2. Le client demande un TGS (Ticket-Granting Service) pour un service spécifique
+   → Fournit le SPN du service cible
+3. Le KDC génère un TGS chiffré avec le HASH du MOT DE PASSE du compte de service
+4. Le TGS est renvoyé au client
+5. Le client présente le TGS au service
+
+→ ÉTAPE CLÉ : Le TGS (étape 3) est chiffré avec le hash du service
+→ L'attaquant peut tenter de casser ce TGS hors ligne (offline)
+```
 
 **Attaque Kerberoasting :**
 
@@ -1111,11 +1151,65 @@ Set-ItemProperty `
 
 ### 6.1 Chaîne d'attaque (Kill Chain)
 
-![Kill Chain ATT&CK - Compromission CorpShadow](annexes/images/m10_diag_2.svg)
+```
+Phase 1 : Reconnaissance
+├── T1087.002 ── Account Discovery: Domain Account
+│   └── bloodhound-python → Flag 1
+│
+Phase 2 : Accès initial (Credential Access)
+├── T1557.001 ── LLMNR/NBT-NS Poisoning
+├── T1110.002 ── Password Cracking
+│   └── Responder + john → Flag 2
+│
+Phase 3 : Dump d'identifiants
+├── T1003.002 ── SAM Dumping
+│   └── impacket-secretsdump → Flag 3
+│
+Phase 4 : Mouvement latéral
+├── T1550.002 ── Pass-the-Hash
+│   └── impacket-wmiexec → Flag 4
+│
+Phase 5 : Élévation de privilèges
+├── T1558.003 ── Kerberoasting
+│   └── impacket-GetUserSPNs + john → Flag 5
+│
+Phase 6 : Persistance (Bonus)
+├── T1003.006 ── DCSync
+├── T1558.001 ── Golden Ticket
+│   └── impacket-secretsdump -just-dc + impacket-ticketer → Flag 6
+```
 
 ### 6.2 Carte mentale des dépendances
 
-![Carte de dependances - Flags CorpShadow](annexes/images/m10_diag_3.svg)
+```
+Flag 1 (BloodHound)
+    │
+    ▼
+Flag 2 (Responder) ← nécessaire : réseau local
+    │
+    ▼
+Identifiants jdoe:P@ssw0rd!2025
+    │
+    ├────────────────────────────────┐
+    ▼                                ▼
+Flag 3 (secretsdump)            Flag 5 (Kerberoasting)
+    │                                │
+    ▼                                ▼
+Hash admin local              Mot de passe svc_backup
+    │                                │
+    ▼                                ▼
+Flag 4 (Pass-the-Hash) ←─────┐       │
+    │                         │       │
+    ▼                         │       │
+Accès FS01 + admin domaine    │       │
+    │                         │       │
+    ▼                         │       │
+Flag 6 (DCSync + Golden       │       │
+       Ticket) ←──────────────┘       │
+    │                                  │
+    ▼                                  │
+Persistance totale                   ──┘
+```
 
 ### 6.3 Tableau de bord ATT&CK
 
@@ -1845,13 +1939,13 @@ if ($vulnerable) {
 
 | Guide | URL |
 |-------|-----|
-| Microsoft — Securing Active Directory | [référence supprimée] |
-| ANSSI — Guide d'administration sécurisée d'Active Directory | [référence supprimée] |
-| ANSSI — Guide NIS2 | https://cyber.gouv.fr/reglementation/cybersecurite-systemes-dinformation/directives-nis-nis2-et-dispositif-saiv/directive-nis-2/ |
+| Microsoft — Securing Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices |
+| ANSSI — Guide d'administration sécurisée d'Active Directory | https://www.ssi.gouv.fr/guide/recommandations-de-securite-relatives-a-active-directory/ |
+| ANSSI — Guide NIS2 | https://www.ssi.gouv.fr/entreprise/reglementation/nis-2/ |
 | CIS Benchmarks — Windows Server 2022 | https://www.cisecurity.org/benchmark/microsoft_windows_server/ |
 | Microsoft — LAPS Deployment | https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview |
 | Microsoft — Credential Guard | https://learn.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard |
-| Microsoft — Responder mitigation | [référence supprimée] |
+| Microsoft — Responder mitigation | https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/llmnr-not-supported-in-domain-environment |
 
 ### 10.4 Outils complémentaires pour l'approfondissement
 
@@ -1864,7 +1958,7 @@ if ($vulnerable) {
 | Certipy | AD Certificate Services exploitation | https://github.com/ly4k/Certipy |
 | PKINITtools | Kerberos PKINIT abuse | https://github.com/dirkjanm/PKINITtools |
 | Whisker | MS-DS-MachineAccountQuota exploitation | https://github.com/eladshamir/Whisker |
-| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/leoloobeek/LAPSToolkit |
+| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/n00py/LAPSToolkit |
 
 ### 10.5 Laboratoires et plateformes d'entraînement
 
