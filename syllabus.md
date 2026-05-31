@@ -109,7 +109,37 @@ Chaque faille exploitée est taggée `TXXXX` selon MITRE ATT&CK. En fin de forma
 | 14:45—16:15 | M14 — Synthèse & CTF encadré | 1h30 |
 | 16:15—17:00 | M15 — Débrief CTF & Corrections | 0h45 |
 
-**Thèmes :** Android APK analysis, Objection, Frida, Burp Mobile, Obfuscation, Anti-VM, Persistence mechanisms
+**Thèmes :** APK analysis, Jadx, Smali, Frida, Objection, Burp Mobile, SSL Pinning bypass, AMSI bypass, obfuscation PowerShell/payload, persistance WMI/Scheduled Tasks, rootkit detection, CTF mobile
+
+#### M11 — Introduction au pentest mobile (T1426)
+- Architecture APK, AndroidManifest, classes.dex, sandboxing
+- Setup lab : Android Studio + AVD, adb, apktool, jadx, dex2jar
+- Burp Suite proxy pour mobile, certificat CA, interception HTTPS
+- Analyse statique : décompilation, strings, secrets hardcodés
+
+#### M12 — Reverse engineering & Analyse dynamique (T1407, T1406)
+- Smali : lecture et modification de bytecode Dalvik
+- Recompilation APK modifiée (apktool b → signer → installer)
+- Frida : hooking Java, bypass SSL Pinning, root detection, emulator detection
+- Objection : analyse runtime automatisée
+- Analyse stockage local : SharedPreferences, SQLite, fichiers internes
+
+#### M13 — Évasion, Persistance & Obfuscation (T1562, T1027, TA0003)
+- AV/Defender bypass : registre, GPO, exclusions dossiers
+- AMSI bypass PowerShell, AppLocker bypass, sandbox detection
+- Obfuscation payload : XOR, AES, shikata_ga_nai, ScareCrow, Donut
+- Persistance : RunOnce, Scheduled Tasks, WMI Event Subscription, DLL/COM Hijacking
+- Rootkits (aperçu), entropie et détection
+
+#### M14 — Synthèse & CTF encadré
+- Scénario : application mobile "PayVault" + backend API
+- 5 flags : credentials hardcodés → SSL Pinning → IDOR → SQLi → APK patching
+- 90 minutes d'autonomie avec indices disponibles
+
+#### M15 — Débrief CTF & Corrections
+- Solution détaillée des 5 flags avec commandes exactes
+- Remédiation pour chaque vulnérabilité
+- Tableau synthèse ATT&CK du CTF
 
 ### Jour 4 — Synthèse & Restitution (04/06)
 
@@ -121,7 +151,37 @@ Chaque faille exploitée est taggée `TXXXX` selon MITRE ATT&CK. En fin de forma
 | 14:45—16:15 | M19 — Restitution orale simulée (client fictif) | 1h30 |
 | 16:15—17:00 | M20 — Débrief collectif & Évaluation des acquis | 0h45 |
 
-**Thèmes :** Structure de rapport exécutif/technique, Heat map ATT&CK, Recommandations NIS2, Soutenance orale
+**Thèmes :** Rapport exécutif/technique, CVSS, DREAD, heat map ATT&CK, gap analysis, restitution orale, NIS2, certifications
+
+#### M16 — Structuration du rapport de pentest
+- Normes PTES, OSSTMM, CREST
+- Rapport exécutif (COMEX) vs rapport technique (IT)
+- Fiche par vulnérabilité : CVSS, PoC, impact, remédiation, TXXXX
+- Outils : SysReptor, Dradis, LaTeX, Pandoc
+
+#### M17 — Atelier rédactionnel sur cas d'étude
+- Cas SOGETEL fourni : outputs bruts (nmap, sqlmap, BloodHound, secretsdump)
+- Rédiger rapport exécutif (1 page) + 3 fiches techniques + heat map
+- Grille d'évaluation sur 50 points
+- Correction détaillée
+
+#### M18 — Heat map ATT&CK & Gap Analysis
+- Construction de heat map : code couleur (rouge/orange/gris)
+- Gap analysis : identification des angles morts
+- Mapping NIS2 ↔ ATT&CK (art. 21, art. 23)
+- Outils : ATT&CK Navigator, DeTT&CT, VECTR
+
+#### M19 — Restitution orale simulée
+- Techniques de communication COMEX
+- Vulgarisation technique, storytelling (kill chain)
+- Gestion des questions difficiles
+- Mise en situation : présentation 10 min + feedback
+
+#### M20 — Débrief collectif & Évaluation
+- Quiz 20 questions (QCM) couvrant les 4 jours
+- Checklist des compétences acquises
+- Certifications recommandées : OSCP, CRTP, CRTE, OSEP
+- Ressources pour continuer : HTB, TryHackMe, GOAD, Atomic Red Team
 
 ---
 

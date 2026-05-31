@@ -18,8 +18,18 @@ Formation pentest avancé — 4 jours (1—4 Juin 2026)
 │   ├── m8-elevation-mouvement-lateral.md
 │   ├── m9-attaques-avancees-ad.md
 │   └── m10-scenario-ad-autonome.md
-├── J3-mobile-transverse/           ← Jour 3 : Mobile (à venir)
-├── J4-synthese-restitution/        ← Jour 4 : Rapport (à venir)
+├── J3-mobile-transverse/           ← Jour 3 : Mobile (détaillé)
+│   ├── m11-intro-pentest-mobile.md
+│   ├── m12-reverse-engineering-dynamique.md
+│   ├── m13-evasion-persistance-obfuscation.md
+│   ├── m14-synthese-ctf-encadre.md
+│   └── m15-debrief-ctf-corrections.md
+├── J4-synthese-restitution/        ← Jour 4 : Rapport (détaillé)
+│   ├── m16-structuration-rapport-pentest.md
+│   ├── m17-atelier-redactionnel.md
+│   ├── m18-heatmap-attack-gap-analysis.md
+│   ├── m19-restitution-orale-simulee.md
+│   └── m20-debrief-evaluation-acquis.md
 ├── lab/                            ← Lab Docker vulnérable
 │   ├── docker-compose.yml
 │   ├── webapp/app.py               ← Application Flask vulnérable
