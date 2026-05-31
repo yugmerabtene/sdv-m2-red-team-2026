@@ -1,52 +1,43 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 540' width='960' height='540'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='960' height='540' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Methodologie de pentest web — 5 phases</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='320.0' y='56.0' width='320' height='48' rx='6' fill='#54a0ff15' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='480.0' y='93.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>1. Reconnaissance</text>
-    <text x='480.0' y='113.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Scan ports, endpoints, technologies</text>
-    <line x1='480.0' y1='104.0' x2='480.0' y2='141.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='260.0' y='70' width='50' height='20' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='285.0' y='85' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Recon</text>
-    <rect x='320.0' y='141.0' width='320' height='48' rx='6' fill='#44d7b615' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='480.0' y='178.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>2. Mapping</text>
-    <text x='480.0' y='198.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Analyse de surface d'attaque</text>
-    <line x1='480.0' y1='189.0' x2='480.0' y2='226.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='260.0' y='155' width='50' height='20' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='285.0' y='170' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Map</text>
-    <rect x='320.0' y='226.0' width='320' height='48' rx='6' fill='#a55eea15' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='480.0' y='263.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>3. Discovery</text>
-    <text x='480.0' y='283.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Test injections, auth, logique</text>
-    <line x1='480.0' y1='274.0' x2='480.0' y2='311.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='260.0' y='240' width='50' height='20' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
-    <text x='285.0' y='255' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Discover</text>
-    <rect x='320.0' y='311.0' width='320' height='48' rx='6' fill='#e6394615' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='480.0' y='348.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>4. Exploitation</text>
-    <text x='480.0' y='368.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Exploit des vulns identifiees</text>
-    <line x1='480.0' y1='359.0' x2='480.0' y2='396.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='260.0' y='325' width='50' height='20' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
-    <text x='285.0' y='340' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Exploit</text>
-    <rect x='320.0' y='396.0' width='320' height='48' rx='6' fill='#ff9f4315' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='480.0' y='433.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>5. Reporting</text>
-    <text x='480.0' y='453.8' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Rapport + recommendations</text>
-    <rect x='260.0' y='410' width='50' height='20' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
-    <text x='285.0' y='425' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Report</text>
+  <rect width='960' height='540' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Methodologie de pentest web — 5 phases</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="320.0" y="56.0" width="320" height="48" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="480.0" y="80.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">1. Reconnaissance</text>
+    <text x="480.0" y="98.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Scan ports, endpoints, technologies</text>
+    <rect x="264.0" y="70" width="48" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="288.0" y="83" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">Recon</text>
+    <line x1="480.0" y1="104.0" x2="480.0" y2="141.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <rect x="320.0" y="141.0" width="320" height="48" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="480.0" y="165.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">2. Mapping</text>
+    <text x="480.0" y="183.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Analyse de surface d'attaque</text>
+    <rect x="264.0" y="155" width="48" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="288.0" y="168" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">Map</text>
+    <line x1="480.0" y1="189.0" x2="480.0" y2="226.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aB)" />
+    <rect x="320.0" y="226.0" width="320" height="48" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="480.0" y="250.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">3. Discovery</text>
+    <text x="480.0" y="268.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Test injections, auth, logique</text>
+    <rect x="264.0" y="240" width="48" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="288.0" y="253" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">Discover</text>
+    <line x1="480.0" y1="274.0" x2="480.0" y2="311.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aO)" />
+    <rect x="320.0" y="311.0" width="320" height="48" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="480.0" y="335.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">4. Exploitation</text>
+    <text x="480.0" y="353.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Exploit des vulns identifiees</text>
+    <rect x="264.0" y="325" width="48" height="18" rx="4" fill="#131820" stroke="#e63946" stroke-width="0.8"/>
+    <text x="288.0" y="338" text-anchor="middle" font-family='monospace' fill="#e63946" font-size="9px">Exploit</text>
+    <line x1="480.0" y1="359.0" x2="480.0" y2="396.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aG)" />
+    <rect x="320.0" y="396.0" width="320" height="48" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="480.0" y="420.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">5. Reporting</text>
+    <text x="480.0" y="438.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Rapport + recommendations</text>
+    <rect x="264.0" y="410" width="48" height="18" rx="4" fill="#131820" stroke="#ff9f43" stroke-width="0.8"/>
+    <text x="288.0" y="423" text-anchor="middle" font-family='monospace' fill="#ff9f43" font-size="9px">Report</text>
 </svg>

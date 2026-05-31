@@ -1,80 +1,71 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 420' width='1000' height='420'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='1000' height='420' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Arbre d'Attaque Global — 5 Flags</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='410.0' y='30' width='180' height='40' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='500.0' y='54' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='14px'>EcoVault — Scenario Attack Tree (120 pts)</text>
-    <line x1='500.0' y1='70' x2='60.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
-    <rect x='-30.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='60.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Flag 1 — IDOR</text>
-    <rect x='110.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='137.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>T1548</text>
-    <line x1='60.0' y1='150' x2='-30.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='-100.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
-    <text x='-30.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Lire profil admin</text>
-    <line x1='60.0' y1='150' x2='150.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='80.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
-    <text x='150.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>id=1 → API</text>
-    <line x1='500.0' y1='70' x2='280.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
-    <rect x='190.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='280.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Flag 2 — SQLi</text>
-    <rect x='330.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='357.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>T1190</text>
-    <line x1='280.0' y1='150' x2='190.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='120.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
-    <text x='190.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Extract users</text>
-    <line x1='280.0' y1='150' x2='370.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='300.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
-    <text x='370.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>UNION SELECT</text>
-    <line x1='500.0' y1='70' x2='500.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
-    <rect x='410.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#a55eea' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='500.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Flag 3 — JWT Bypass</text>
-    <rect x='550.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
-    <text x='577.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>T1078</text>
-    <line x1='500.0' y1='150' x2='410.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='340.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
-    <text x='410.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>alg:none</text>
-    <line x1='500.0' y1='150' x2='590.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='520.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
-    <text x='590.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Forge token admin</text>
-    <line x1='500.0' y1='70' x2='720.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
-    <rect x='630.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#ff9f43' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='720.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Flag 4 — SSTI → RCE</text>
-    <rect x='770.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
-    <text x='797.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>T1059.003</text>
-    <line x1='720.0' y1='150' x2='630.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='560.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
-    <text x='630.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Jinja2 injection</text>
-    <line x1='720.0' y1='150' x2='810.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='740.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
-    <text x='810.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Reverse shell</text>
-    <line x1='500.0' y1='70' x2='940.0' y2='106' stroke='#1e2d3d' stroke-width='1.2'  />
-    <rect x='850.0' y='110' width='180' height='40' rx='8' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='940.0' y='136' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Flag 5 (B) — Pivoting</text>
-    <rect x='990.0' y='112' width='55' height='16' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
-    <text x='1017.0' y='124' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='8px' font-family='Ubuntu Mono,Fira Code,monospace'>T1021</text>
-    <line x1='940.0' y1='150' x2='850.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='780.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1' filter='url(#shadow)' />
-    <text x='850.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Chisel SOCKS5</text>
-    <line x1='940.0' y1='150' x2='1030.0' y2='202' stroke='#1e2d3d' stroke-width='1'  />
-    <rect x='960.0' y='206' width='140' height='28' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1' filter='url(#shadow)' />
-    <text x='1030.0' y='225' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Exfil SMTP</text>
+  <rect width='1000' height='420' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Arbre d'Attaque Global — 5 Flags</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="400.0" y="45" width="200" height="44" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="500.0" y="72" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight='600' fill="#e6ecf3" font-size="14px">EcoVault — Scenario Attack Tree (120 pts)</text>
+    <line x1="500.0" y1="89" x2="140.0" y2="138" stroke="#1e2d3d" stroke-width="1.2" />
+    <rect x="50.0" y="140" width="180" height="40" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="140.0" y="165" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Flag 1 — IDOR</text>
+    <rect x="190.0" y="142" width="55" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="217.5" y="155" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">T1548</text>
+    <line x1="140.0" y1="180" x2="105.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="37.0" y="238" width="136" height="26" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="105.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Lire profil admin</text>
+    <line x1="140.0" y1="180" x2="175.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="107.0" y="238" width="136" height="26" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="175.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">id=1 → API</text>
+    <line x1="500.0" y1="89" x2="320.0" y2="138" stroke="#1e2d3d" stroke-width="1.2" />
+    <rect x="230.0" y="140" width="180" height="40" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="320.0" y="165" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Flag 2 — SQLi</text>
+    <rect x="370.0" y="142" width="55" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="397.5" y="155" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">T1190</text>
+    <line x1="320.0" y1="180" x2="285.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="217.0" y="238" width="136" height="26" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="285.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Extract users</text>
+    <line x1="320.0" y1="180" x2="355.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="287.0" y="238" width="136" height="26" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="355.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">UNION SELECT</text>
+    <line x1="500.0" y1="89" x2="500.0" y2="138" stroke="#1e2d3d" stroke-width="1.2" />
+    <rect x="410.0" y="140" width="180" height="40" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="500.0" y="165" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Flag 3 — JWT Bypass</text>
+    <rect x="550.0" y="142" width="55" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="577.5" y="155" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">T1078</text>
+    <line x1="500.0" y1="180" x2="465.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="397.0" y="238" width="136" height="26" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="465.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">alg:none</text>
+    <line x1="500.0" y1="180" x2="535.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="467.0" y="238" width="136" height="26" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="535.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Forge token admin</text>
+    <line x1="500.0" y1="89" x2="680.0" y2="138" stroke="#1e2d3d" stroke-width="1.2" />
+    <rect x="590.0" y="140" width="180" height="40" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="680.0" y="165" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Flag 4 — SSTI → RCE</text>
+    <rect x="730.0" y="142" width="55" height="18" rx="4" fill="#131820" stroke="#ff9f43" stroke-width="0.8"/>
+    <text x="757.5" y="155" text-anchor="middle" font-family='monospace' fill="#ff9f43" font-size="9px">T1059.003</text>
+    <line x1="680.0" y1="180" x2="645.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="577.0" y="238" width="136" height="26" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="645.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Jinja2 injection</text>
+    <line x1="680.0" y1="180" x2="715.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="647.0" y="238" width="136" height="26" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="715.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Reverse shell</text>
+    <line x1="500.0" y1="89" x2="860.0" y2="138" stroke="#1e2d3d" stroke-width="1.2" />
+    <rect x="770.0" y="140" width="180" height="40" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="860.0" y="165" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Flag 5 (B) — Pivoting</text>
+    <rect x="910.0" y="142" width="55" height="18" rx="4" fill="#131820" stroke="#e63946" stroke-width="0.8"/>
+    <text x="937.5" y="155" text-anchor="middle" font-family='monospace' fill="#e63946" font-size="9px">T1021</text>
+    <line x1="860.0" y1="180" x2="825.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="757.0" y="238" width="136" height="26" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="825.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Chisel SOCKS5</text>
+    <line x1="860.0" y1="180" x2="895.0" y2="234" stroke="#1e2d3d" stroke-width="1" />
+    <rect x="827.0" y="238" width="136" height="26" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="895.0" y="256" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="10px">Exfil SMTP</text>
 </svg>

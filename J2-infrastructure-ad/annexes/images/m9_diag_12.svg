@@ -1,62 +1,50 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 860 440' width='860' height='440'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='860' height='440' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>ESC8 — NTLM Relay vers ADCS Web Enrollment</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='25' y='25' width='220' height='390' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <rect x='25' y='25' width='220' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
-    <rect x='25' y='51' width='220' height='364' rx='0' fill='none' stroke='none' stroke-width='0'  />
-    <rect x='25' y='25' width='220' height='390' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <text x='37' y='43' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Victime</text>
-    <rect x='280' y='25' width='280' height='390' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <rect x='280' y='25' width='280' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
-    <rect x='280' y='51' width='280' height='364' rx='0' fill='none' stroke='none' stroke-width='0'  />
-    <rect x='280' y='25' width='280' height='390' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <text x='292' y='43' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>Attaquant (Kali)</text>
-    <rect x='595' y='25' width='240' height='390' rx='10' fill='rgba(19,24,32,0.5)' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <rect x='595' y='25' width='240' height='26' rx='10' fill='#131820' stroke='none' stroke-width='0'  />
-    <rect x='595' y='51' width='240' height='364' rx='0' fill='none' stroke='none' stroke-width='0'  />
-    <rect x='595' y='25' width='240' height='390' rx='10' fill='none' stroke='rgba(30,45,61,0.8)' stroke-width='1.2'  />
-    <text x='607' y='43' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='12px'>ADCS (DC01)</text>
-    <rect x='77' y='167' width='76' height='50' rx='6' fill='#131820' stroke='#ff9f43' stroke-width='1.2' filter='url(#shadow)' />
-    <g transform='translate(98.2, 168.2) scale(0.7)'><rect x="4" y="4" width="40" height="28" rx="2" fill="none" stroke="#ff9f43" stroke-width="1.2"/><line x1="24" y1="32" x2="24" y2="38" stroke="#ff9f43" stroke-width="1.2"/><line x1="12" y1="38" x2="36" y2="38" stroke="#ff9f43" stroke-width="1.2"/><rect x="10" y="10" width="28" height="14" fill="none" stroke="#44d7b6" stroke-width="0.8"/></g>
-    <text x='115' y='225.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Victime</text>
-    <text x='115' y='241.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>(WS01)</text>
-    <rect x='362' y='107' width='76' height='50' rx='6' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
-    <g transform='translate(383.2, 108.2) scale(0.7)'><path d="M24 4 L28 16 L38 14 L32 22 L42 28 L30 32 L26 44 L22 32 L12 34 L18 24 L8 20 L20 18 Z" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
-    <text x='400' y='165.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Responder</text>
-    <text x='400' y='181.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>(relais)</text>
-    <rect x='362' y='257' width='76' height='50' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
-    <g transform='translate(383.2, 258.2) scale(0.7)'><rect x="8" y="6" width="32" height="20" rx="2" fill="none" stroke="#54a0ff" stroke-width="1.2"/><line x1="14" y1="26" x2="34" y2="26" stroke="#54a0ff" stroke-width="1.2"/><path d="M4 38 L14 26 L34 26 L44 38 Z" fill="none" stroke="#54a0ff" stroke-width="1.2"/></g>
-    <text x='400' y='315.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>Kali</text>
-    <rect x='657' y='167' width='76' height='50' rx='6' fill='#131820' stroke='#a55eea' stroke-width='1.2' filter='url(#shadow)' />
-    <g transform='translate(678.2, 168.2) scale(0.7)'><rect x="4" y="4" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><circle cx="15" cy="9" r="2" fill="#44d7b6"/><circle cx="15" cy="23" r="2" fill="#44d7b6"/><circle cx="15" cy="37" r="2" fill="#44d7b6"/></g>
-    <text x='695' y='225.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>/certsrv/</text>
-    <text x='695' y='241.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='10px'>certfnsh.asp</text>
-    <path d='M115,195 Q257.5,145.0 400,135' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
-    <rect x='238.5' y='133.0' width='64' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='242.5' y='148.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>SMB Auth</text>
-    <path d='M400,135 Q547.5,145.0 695,195' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
-    <rect x='528.5' y='133.0' width='106' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='532.5' y='148.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>POST /certsrv/</text>
-    <path d='M695,195 Q547.5,145.0 400,135' fill='none' stroke='#e63946' stroke-width='1.8' marker-end='url(#arrR)'/>
-    <rect x='528.5' y='133.0' width='120' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='532.5' y='148.0' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>Certificat (PFX)</text>
+  <rect width='860' height='440' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">ESC8 — NTLM Relay vers ADCS Web Enrollment</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="25" y="77" width="220" height="390" rx="10" fill="#131820" fill-opacity="0.5" stroke="#1e2d3d" stroke-width="1.2"/>
+    <rect x="25" y="77" width="220" height="24" rx="10" fill="#131820"/>
+    <rect x="25" y="77+24" width="220" height="390-24" rx="0" fill="none"/>
+    <text x="35" y="94" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="11px">Victime   </text>
+    <rect x="280" y="77" width="280" height="390" rx="10" fill="#131820" fill-opacity="0.5" stroke="#1e2d3d" stroke-width="1.2"/>
+    <rect x="280" y="77" width="280" height="24" rx="10" fill="#131820"/>
+    <rect x="280" y="77+24" width="280" height="390-24" rx="0" fill="none"/>
+    <text x="290" y="94" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="11px">Attaquant (Kali)   </text>
+    <rect x="595" y="77" width="240" height="390" rx="10" fill="#131820" fill-opacity="0.5" stroke="#1e2d3d" stroke-width="1.2"/>
+    <rect x="595" y="77" width="240" height="24" rx="10" fill="#131820"/>
+    <rect x="595" y="77+24" width="240" height="390-24" rx="0" fill="none"/>
+    <text x="605" y="94" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#6b7a8d" font-size="11px">ADCS (DC01)   </text>
+    <rect x="73" y="217" width="84" height="60" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(99.4,217.4) scale(0.65)"><rect x="4" y="4" width="40" height="28" rx="2" fill="none" stroke="#ff9f43" stroke-width="1.2"/><line x1="24" y1="32" x2="24" y2="40" stroke="#ff9f43" stroke-width="1.2"/><line x1="10" y1="40" x2="38" y2="40" stroke="#ff9f43" stroke-width="1.2"/></g>
+    <text x="115" y="263.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">Victime</text>
+    <text x="115" y="278.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">(WS01)</text>
+    <rect x="358" y="157" width="84" height="60" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(384.4,157.4) scale(0.65)"><path d="M24 4 L28 16 L38 14 L32 22 L42 28 L30 32 L26 44 L22 32 L12 34 L18 24 L8 20 L20 18 Z" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x="400" y="203.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">Responder</text>
+    <text x="400" y="218.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">(relais)</text>
+    <rect x="358" y="307" width="84" height="60" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(384.4,307.4) scale(0.65)"><rect x="6" y="6" width="36" height="22" rx="2" fill="none" stroke="#54a0ff" stroke-width="1.2"/><path d="M2 40 L12 28 L36 28 L46 40 Z" fill="none" stroke="#54a0ff" stroke-width="1.2"/></g>
+    <text x="400" y="360.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">Kali</text>
+    <rect x="653" y="217" width="84" height="60" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(679.4,217.4) scale(0.65)"><rect x="4" y="4" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><circle cx="14" cy="9" r="2" fill="#44d7b6"/><circle cx="14" cy="23" r="2" fill="#44d7b6"/><circle cx="14" cy="37" r="2" fill="#44d7b6"/></g>
+    <text x="695" y="263.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">/certsrv/</text>
+    <text x="695" y="278.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="10px">certfnsh.asp</text>
+    <path d="M115,247 Q115,197.0 400,187" fill="none" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)"/>
+    <rect x="224.5" y="187.0" width="66" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="257.5" y="200.0" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">SMB Auth</text>
+    <path d="M400,187 Q400,197.0 695,247" fill="none" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)"/>
+    <rect x="493.5" y="187.0" width="108" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="547.5" y="200.0" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">POST /certsrv/</text>
+    <path d="M695,247 Q695,197.0 400,187" fill="none" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)"/>
+    <rect x="486.5" y="187.0" width="122" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="547.5" y="200.0" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">Certificat (PFX)</text>
 </svg>

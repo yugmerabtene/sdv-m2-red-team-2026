@@ -1,57 +1,48 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 240' width='960' height='240'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='960' height='240' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>AS-REP Roasting</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <line x1='236.66666666666669' y1='90.0' x2='253.33333333333331' y2='90.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <line x1='393.3333333333333' y1='90.0' x2='410.0' y2='90.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <line x1='550.0' y1='90.0' x2='566.6666666666666' y2='90.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <line x1='706.6666666666666' y1='90.0' x2='723.3333333333333' y2='90.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <rect x='96.66666666666667' y='50.0' width='140' height='80' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(152.26666666666668, 57.6) scale(0.6)'><circle cx="24" cy="14" r="8" fill="none" stroke="#e63946" stroke-width="1.2"/><path d="M8 36 Q8 24 24 24 Q40 24 40 36" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
-    <text x='166.66666666666669' y='117.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Attaquant</text>
-    <text x='166.66666666666669' y='136.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>(sans auth)</text>
-    <rect x='138.66666666666669' y='140.0' width='56' height='18' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
-    <text x='166.66666666666669' y='153.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1558.004</text>
-    <rect x='253.33333333333331' y='50.0' width='140' height='80' rx='8' fill='#54a0ff18' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(308.93333333333334, 57.6) scale(0.6)'><rect x="4" y="4" width="40" height="32" rx="4" fill="none" stroke="#54a0ff" stroke-width="1.2"/><path d="M6 6 L24 22 L42 6" fill="none" stroke="#54a0ff" stroke-width="1.2"/></g>
-    <text x='323.3333333333333' y='117.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>AS-REQ</text>
-    <text x='323.3333333333333' y='136.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>(sans timestamp)</text>
-    <rect x='295.3333333333333' y='140.0' width='56' height='18' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='323.3333333333333' y='153.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>KDC</text>
-    <rect x='410.0' y='50.0' width='140' height='80' rx='8' fill='#a55eea18' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(465.6, 57.6) scale(0.6)'><rect x="4" y="4" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1" fill="none" stroke="#a55eea" stroke-width="1.2"/><circle cx="15" cy="9" r="2" fill="#44d7b6"/><circle cx="15" cy="23" r="2" fill="#44d7b6"/><circle cx="15" cy="37" r="2" fill="#44d7b6"/></g>
-    <text x='480.0' y='117.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>AS-REP</text>
-    <text x='480.0' y='136.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>(bloc chiffré)</text>
-    <rect x='452.0' y='140.0' width='56' height='18' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
-    <text x='480.0' y='153.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>DC</text>
-    <rect x='566.6666666666666' y='50.0' width='140' height='80' rx='8' fill='#44d7b618' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(622.2666666666667, 57.6) scale(0.6)'><rect x="4" y="4" width="40" height="40" rx="4" fill="none" stroke="#44d7b6" stroke-width="1.2"/><text x="10" y="20" fill="#44d7b6" font-size="10" font-family="monospace">&gt;_</text><text x="10" y="34" fill="#44d7b6" font-size="8" font-family="monospace">sh</text></g>
-    <text x='636.6666666666666' y='117.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Offline</text>
-    <text x='636.6666666666666' y='136.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Cracking</text>
-    <rect x='608.6666666666666' y='140.0' width='56' height='18' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='636.6666666666666' y='153.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>hashcat</text>
-    <rect x='723.3333333333333' y='50.0' width='140' height='80' rx='8' fill='#ff9f4318' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(778.9333333333333, 57.6) scale(0.6)'><circle cx="12" cy="24" r="8" fill="none" stroke="#ff9f43" stroke-width="1.2"/><line x1="20" y1="24" x2="44" y2="24" stroke="#ff9f43" stroke-width="1.2"/><line x1="28" y1="20" x2="28" y2="28" stroke="#ff9f43" stroke-width="1.2"/></g>
-    <text x='793.3333333333333' y='117.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Mot de passe</text>
-    <text x='793.3333333333333' y='136.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Utilisateur</text>
-    <rect x='765.3333333333333' y='140.0' width='56' height='18' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
-    <text x='793.3333333333333' y='153.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Pwned</text>
+  <rect width='960' height='240' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">AS-REP Roasting</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <line x1="216.0" y1="102.0" x2="246.0" y2="102.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <line x1="382.0" y1="102.0" x2="412.0" y2="102.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aB)" />
+    <line x1="548.0" y1="102.0" x2="578.0" y2="102.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aO)" />
+    <line x1="714.0" y1="102.0" x2="744.0" y2="102.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aG)" />
+    <rect x="80.0" y="62.0" width="136.0" height="78" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(134.8,66.8) scale(0.55)"><circle cx="24" cy="12" r="8" fill="none" stroke="#e63946" stroke-width="1.2"/><path d="M8 38 Q8 22 24 22 Q40 22 40 38" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x="148.0" y="112.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Attaquant</text>
+    <text x="148.0" y="128.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">(sans auth)</text>
+    <rect x="112.5" y="148.0" width="71" height="18" rx="4" fill="#131820" stroke="#e63946" stroke-width="0.8"/>
+    <text x="148.0" y="161.0" text-anchor="middle" font-family='monospace' fill="#e63946" font-size="9px">T1558.004</text>
+    <rect x="246.0" y="62.0" width="136.0" height="78" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(300.8,66.8) scale(0.55)"><rect x="4" y="6" width="40" height="32" rx="4" fill="none" stroke="#54a0ff" stroke-width="1.2"/><path d="M6 8 L24 24 L42 8" fill="none" stroke="#54a0ff" stroke-width="1.2"/></g>
+    <text x="314.0" y="112.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">AS-REQ</text>
+    <text x="314.0" y="128.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">(sans timestamp)</text>
+    <rect x="292.0" y="148.0" width="44" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="314.0" y="161.0" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">KDC</text>
+    <rect x="412.0" y="62.0" width="136.0" height="78" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(466.8,66.8) scale(0.55)"><rect x="4" y="4" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="18" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="4" y="32" width="40" height="10" rx="1.5" fill="none" stroke="#a55eea" stroke-width="1.2"/><circle cx="14" cy="9" r="2" fill="#44d7b6"/><circle cx="14" cy="23" r="2" fill="#44d7b6"/><circle cx="14" cy="37" r="2" fill="#44d7b6"/></g>
+    <text x="480.0" y="112.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">AS-REP</text>
+    <text x="480.0" y="128.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">(bloc chiffré)</text>
+    <rect x="458.0" y="148.0" width="44" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="480.0" y="161.0" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">DC</text>
+    <rect x="578.0" y="62.0" width="136.0" height="78" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(632.8,66.8) scale(0.55)"><rect x="4" y="4" width="40" height="40" rx="4" fill="none" stroke="#44d7b6" stroke-width="1.2"/><text x="10" y="20" fill="#44d7b6" font-size="10" font-family="monospace">&gt;_</text><text x="10" y="34" fill="#44d7b6" font-size="8" font-family="monospace">~$</text></g>
+    <text x="646.0" y="112.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Offline</text>
+    <text x="646.0" y="128.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Cracking</text>
+    <rect x="617.5" y="148.0" width="57" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="646.0" y="161.0" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">hashcat</text>
+    <rect x="744.0" y="62.0" width="136.0" height="78" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(798.8,66.8) scale(0.55)"><circle cx="12" cy="24" r="8" fill="none" stroke="#ff9f43" stroke-width="1.2"/><line x1="20" y1="24" x2="44" y2="24" stroke="#ff9f43" stroke-width="1.2"/><line x1="28" y1="20" x2="28" y2="28" stroke="#ff9f43" stroke-width="1.2"/></g>
+    <text x="812.0" y="112.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Mot de passe</text>
+    <text x="812.0" y="128.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Utilisateur</text>
+    <rect x="790.0" y="148.0" width="44" height="18" rx="4" fill="#131820" stroke="#ff9f43" stroke-width="0.8"/>
+    <text x="812.0" y="161.0" text-anchor="middle" font-family='monospace' fill="#ff9f43" font-size="9px">Pwned</text>
 </svg>

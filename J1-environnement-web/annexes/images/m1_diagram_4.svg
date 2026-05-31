@@ -1,43 +1,34 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 520' width='800' height='520'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='800' height='520' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Gap Analysis NIS2 avec ATT&amp;CK</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='240.0' y='35.0' width='320' height='50' rx='6' fill='#54a0ff15' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='73.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Exigences NIS2 (Art. 21)</text>
-    <line x1='400.0' y1='85.0' x2='400.0' y2='115.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='180.0' y='50' width='50' height='20' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='205.0' y='65' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>NIS2</text>
-    <rect x='240.0' y='115.0' width='320' height='50' rx='6' fill='#44d7b615' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='153.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Mapping vers les TTPs ATT&amp;CK</text>
-    <line x1='400.0' y1='165.0' x2='400.0' y2='195.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='180.0' y='130' width='50' height='20' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='205.0' y='145' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Txxxx</text>
-    <rect x='240.0' y='195.0' width='320' height='50' rx='6' fill='#a55eea15' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='233.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Évaluation de la couverture actuelle</text>
-    <line x1='400.0' y1='245.0' x2='400.0' y2='275.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <path d='M400.0,270 460.0,300 400.0,330 340.0,300 Z' fill='none' stroke='#e63946' stroke-width='1.5' />
-    <text x='400.0' y='313.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Identification des gaps de sécurité</text>
-    <line x1='400.0' y1='325.0' x2='400.0' y2='355.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='240.0' y='355.0' width='320' height='50' rx='6' fill='#ff9f4315' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='393.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Plan de remédiation et mitigation</text>
-    <rect x='180.0' y='370' width='50' height='20' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
-    <text x='205.0' y='385' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>Mxxxx</text>
+  <rect width='800' height='520' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Gap Analysis NIS2 avec ATT&amp;CK</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="240.0" y="35.0" width="320" height="50" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="69.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Exigences NIS2 (Art. 21)</text>
+    <rect x="184.0" y="50" width="48" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="208.0" y="63" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">NIS2</text>
+    <line x1="400.0" y1="85.0" x2="400.0" y2="115.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <rect x="240.0" y="115.0" width="320" height="50" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="149.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Mapping vers les TTPs ATT&amp;CK</text>
+    <rect x="184.0" y="130" width="48" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="208.0" y="143" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">Txxxx</text>
+    <line x1="400.0" y1="165.0" x2="400.0" y2="195.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aB)" />
+    <rect x="240.0" y="195.0" width="320" height="50" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="229.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Évaluation de la couverture actuelle</text>
+    <line x1="400.0" y1="245.0" x2="400.0" y2="275.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aO)" />
+    <polygon points="400.0,260 440.0,300 400.0,340 360.0,300" fill="#e63946" fill-opacity="0.1" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="308.25" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Identification des gaps de sécurité</text>
+    <line x1="400.0" y1="325.0" x2="400.0" y2="355.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aG)" />
+    <rect x="240.0" y="355.0" width="320" height="50" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="389.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Plan de remédiation et mitigation</text>
+    <rect x="184.0" y="370" width="48" height="18" rx="4" fill="#131820" stroke="#ff9f43" stroke-width="0.8"/>
+    <text x="208.0" y="383" text-anchor="middle" font-family='monospace' fill="#ff9f43" font-size="9px">Mxxxx</text>
 </svg>

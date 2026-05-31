@@ -1,48 +1,40 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 420' width='960' height='420'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='960' height='420' fill='#0a0e14' rx='12'/>
-  <line x1='268.0' y1='180.0' x2='316.0' y2='180.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <line x1='456.0' y1='180.0' x2='504.0' y2='180.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <line x1='644.0' y1='180.0' x2='692.0' y2='180.0' stroke='#e63946' stroke-width='2'  marker-end='url(#arrR)'/>
-    <rect x='128.0' y='140.0' width='140' height='80' rx='8' fill='#e6394618' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(183.6, 147.6) scale(0.6)'><circle cx="24" cy="14" r="8" fill="none" stroke="#e63946" stroke-width="1.2"/><path d="M8 36 Q8 24 24 24 Q40 24 40 36" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
-    <text x='198.0' y='207.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>User A</text>
-    <text x='198.0' y='226.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>profile?id=42</text>
-    <rect x='170.0' y='230.0' width='56' height='18' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
-    <text x='198.0' y='243.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1548</text>
-    <rect x='316.0' y='140.0' width='140' height='80' rx='8' fill='#54a0ff18' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(371.6, 147.6) scale(0.6)'><circle cx="12" cy="24" r="8" fill="none" stroke="#54a0ff" stroke-width="1.2"/><line x1="20" y1="24" x2="44" y2="24" stroke="#54a0ff" stroke-width="1.2"/><line x1="28" y1="20" x2="28" y2="28" stroke="#54a0ff" stroke-width="1.2"/></g>
-    <text x='386.0' y='207.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Modification</text>
-    <text x='386.0' y='226.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>profile?id=17</text>
-    <rect x='358.0' y='230.0' width='56' height='18' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='386.0' y='243.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1134</text>
-    <rect x='504.0' y='140.0' width='140' height='80' rx='8' fill='#a55eea18' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(559.6, 147.6) scale(0.6)'><path d="M16 16 L16 10 Q16 4 24 4 Q32 4 32 10 L32 16" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="10" y="16" width="28" height="26" rx="3" fill="none" stroke="#a55eea" stroke-width="1.2"/></g>
-    <text x='574.0' y='207.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Acces</text>
-    <text x='574.0' y='226.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>non autorise</text>
-    <rect x='546.0' y='230.0' width='56' height='18' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
-    <text x='574.0' y='243.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>IDOR</text>
-    <rect x='692.0' y='140.0' width='140' height='80' rx='8' fill='#44d7b618' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <g transform='translate(747.6, 147.6) scale(0.6)'><path d="M6 10 L18 10 L22 16 L42 16 L42 38 L6 38 Z" fill="none" stroke="#44d7b6" stroke-width="1.2"/></g>
-    <text x='762.0' y='207.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>Exfiltration</text>
-    <text x='762.0' y='226.2' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='12px'>donnees User B</text>
-    <rect x='734.0' y='230.0' width='56' height='18' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='762.0' y='243.0' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>T1560</text>
+  <rect width='960' height='420' fill='#0a0e14' rx='10'/>
+  
+    <line x1="295.0" y1="192.0" x2="325.0" y2="192.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <line x1="465.0" y1="192.0" x2="495.0" y2="192.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aB)" />
+    <line x1="635.0" y1="192.0" x2="665.0" y2="192.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aO)" />
+    <rect x="155.0" y="152.0" width="140" height="78" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(211.8,156.8) scale(0.55)"><circle cx="24" cy="12" r="8" fill="none" stroke="#e63946" stroke-width="1.2"/><path d="M8 38 Q8 22 24 22 Q40 22 40 38" fill="none" stroke="#e63946" stroke-width="1.2"/></g>
+    <text x="225.0" y="202.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">User A</text>
+    <text x="225.0" y="218.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">profile?id=42</text>
+    <rect x="203.0" y="238.0" width="44" height="18" rx="4" fill="#131820" stroke="#e63946" stroke-width="0.8"/>
+    <text x="225.0" y="251.0" text-anchor="middle" font-family='monospace' fill="#e63946" font-size="9px">T1548</text>
+    <rect x="325.0" y="152.0" width="140" height="78" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(381.8,156.8) scale(0.55)"><circle cx="12" cy="24" r="8" fill="none" stroke="#54a0ff" stroke-width="1.2"/><line x1="20" y1="24" x2="44" y2="24" stroke="#54a0ff" stroke-width="1.2"/><line x1="28" y1="20" x2="28" y2="28" stroke="#54a0ff" stroke-width="1.2"/></g>
+    <text x="395.0" y="202.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Modification</text>
+    <text x="395.0" y="218.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">profile?id=17</text>
+    <rect x="373.0" y="238.0" width="44" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="395.0" y="251.0" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">T1134</text>
+    <rect x="495.0" y="152.0" width="140" height="78" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(551.8,156.8) scale(0.55)"><path d="M16 16 L16 10 Q16 4 24 4 Q32 4 32 10 L32 16" fill="none" stroke="#a55eea" stroke-width="1.2"/><rect x="10" y="16" width="28" height="26" rx="3" fill="none" stroke="#a55eea" stroke-width="1.2"/></g>
+    <text x="565.0" y="202.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Acces</text>
+    <text x="565.0" y="218.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">non autorise</text>
+    <rect x="543.0" y="238.0" width="44" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="565.0" y="251.0" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">IDOR</text>
+    <rect x="665.0" y="152.0" width="140" height="78" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <g transform="translate(721.8,156.8) scale(0.55)"><path d="M6 10 L18 10 L22 16 L42 16 L42 38 L6 38 Z" fill="none" stroke="#44d7b6" stroke-width="1.2"/></g>
+    <text x="735.0" y="202.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Exfiltration</text>
+    <text x="735.0" y="218.5" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">donnees User B</text>
+    <rect x="713.0" y="238.0" width="44" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="735.0" y="251.0" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">T1560</text>
 </svg>

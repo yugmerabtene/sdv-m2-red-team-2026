@@ -1,53 +1,44 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 880 520' width='880' height='520'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='880' height='520' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Authentification Kerberos</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='185.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#e63946' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='240.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>Client
+  <rect width='880' height='520' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Authentification Kerberos</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="185.0" y="55" width="110" height="34" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="240.0" y="77" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Client
 (Utilisateur)</text>
-    <line x1='240.0' y1='66' x2='240.0' y2='490' stroke='#e63946' stroke-width='0.8' stroke-dasharray='4,4' />
-    <rect x='385.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#54a0ff' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='440.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>KDC (DC)
+    <line x1="240.0" y1="89" x2="240.0" y2="490" stroke="#e63946" stroke-width="0.8" stroke-dasharray="4 4" />
+    <rect x="385.0" y="55" width="110" height="34" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="440.0" y="77" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">KDC (DC)
 (KRBTGT)</text>
-    <line x1='440.0' y1='66' x2='440.0' y2='490' stroke='#54a0ff' stroke-width='0.8' stroke-dasharray='4,4' />
-    <rect x='585.0' y='30' width='110' height='36' rx='6' fill='#131820' stroke='#44d7b6' stroke-width='1.2' filter='url(#shadow)' />
-    <text x='640.0' y='52' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='11px'>Service
+    <line x1="440.0" y1="89" x2="440.0" y2="490" stroke="#54a0ff" stroke-width="0.8" stroke-dasharray="4 4" />
+    <rect x="585.0" y="55" width="110" height="34" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="640.0" y="77" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="11px">Service
 (Serveur)</text>
-    <line x1='640.0' y1='66' x2='640.0' y2='490' stroke='#44d7b6' stroke-width='0.8' stroke-dasharray='4,4' />
-    <line x1='240.0' y1='95' x2='440.0' y2='95' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
-    <rect x='296.0' y='77' width='169' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='300.0' y='92' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>1. AS-REQ (demande TGT)</text>
-    <line x1='440.0' y1='140' x2='240.0' y2='140' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
-    <rect x='296.0' y='122' width='211' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='300.0' y='137' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>2. AS-REP (TGT + session key)</text>
-    <line x1='240.0' y1='185' x2='440.0' y2='185' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
-    <rect x='296.0' y='167' width='162' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='300.0' y='182' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>3. TGS-REQ (TGT + SPN)</text>
-    <line x1='440.0' y1='230' x2='240.0' y2='230' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
-    <rect x='296.0' y='212' width='176' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='300.0' y='227' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>4. TGS-REP (TGS service)</text>
-    <line x1='240.0' y1='275' x2='640.0' y2='275' stroke='#e63946' stroke-width='1.5'  marker-end='url(#arrR)'/>
-    <rect x='396.0' y='257' width='204' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='400.0' y='272' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>5. AP-REQ (TGS vers service)</text>
-    <line x1='640.0' y1='320' x2='240.0' y2='320' stroke='#44d7b6' stroke-width='1.5'  marker-end='url(#arrG)'/>
-    <rect x='396.0' y='302' width='204' height='20' rx='4' fill='#0a0e14' stroke='#1e2d3d' stroke-width='0.8'  />
-    <text x='400.0' y='317' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#6b7a8d' font-size='10px'>6. AP-REP (authentification)</text>
+    <line x1="640.0" y1="89" x2="640.0" y2="490" stroke="#44d7b6" stroke-width="0.8" stroke-dasharray="4 4" />
+    <line x1="240.0" y1="110" x2="440.0" y2="110" stroke="#e63946" stroke-width="1.5" marker-end="url(#aR)" />
+    <rect x="254.5" y="86" width="171" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="340.0" y="99" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">1. AS-REQ (demande TGT)</text>
+    <line x1="440.0" y1="155" x2="240.0" y2="155" stroke="#44d7b6" stroke-width="1.5" marker-end="url(#aG)" />
+    <rect x="233.5" y="131" width="213" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="340.0" y="144" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">2. AS-REP (TGT + session key)</text>
+    <line x1="240.0" y1="200" x2="440.0" y2="200" stroke="#e63946" stroke-width="1.5" marker-end="url(#aR)" />
+    <rect x="258.0" y="176" width="164" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="340.0" y="189" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">3. TGS-REQ (TGT + SPN)</text>
+    <line x1="440.0" y1="245" x2="240.0" y2="245" stroke="#44d7b6" stroke-width="1.5" marker-end="url(#aG)" />
+    <rect x="251.0" y="221" width="178" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="340.0" y="234" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">4. TGS-REP (TGS service)</text>
+    <line x1="240.0" y1="290" x2="640.0" y2="290" stroke="#e63946" stroke-width="1.5" marker-end="url(#aR)" />
+    <rect x="337.0" y="266" width="206" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="440.0" y="279" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">5. AP-REQ (TGS vers service)</text>
+    <line x1="640.0" y1="335" x2="240.0" y2="335" stroke="#44d7b6" stroke-width="1.5" marker-end="url(#aG)" />
+    <rect x="337.0" y="311" width="206" height="18" rx="4" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.8"/>
+    <text x="440.0" y="324" text-anchor="middle" font-family='monospace' fill="#6b7a8d" font-size="9px">6. AP-REP (authentification)</text>
 </svg>

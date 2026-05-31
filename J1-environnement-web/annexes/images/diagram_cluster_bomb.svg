@@ -1,73 +1,64 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400' width='800' height='400'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='800' height='400' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Cluster Bomb — Produit Cartesien</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='40.0' y='60' width='240.0' height='36' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='1'  />
-    <text x='160.0' y='84' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='13px' font-weight='600'>Payload Set 1
+  <rect width='800' height='400' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Cluster Bomb — Produit Cartesien</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="30.0" y="70" width="246.66666666666666" height="32" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="153.33333333333331" y="92" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight='600' fill="#e6ecf3" font-size="12px">Payload Set 1
 (Emails)</text>
-    <rect x='280.0' y='60' width='240.0' height='36' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='1'  />
-    <text x='400.0' y='84' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='13px' font-weight='600'>Payload Set 2
+    <rect x="276.66666666666663" y="70" width="246.66666666666666" height="32" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="399.99999999999994" y="92" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight='600' fill="#e6ecf3" font-size="12px">Payload Set 2
 (Passwords)</text>
-    <rect x='520.0' y='60' width='240.0' height='36' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='1'  />
-    <text x='640.0' y='84' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='13px' font-weight='600'>Combinaisons</text>
-    <rect x='40' y='96' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='119' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin@ecovault.com</text>
-    <rect x='280.0' y='96' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='119' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>Admin2024!</text>
-    <rect x='520.0' y='96' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='119' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin:Admin2024!</text>
-    <rect x='40' y='130' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='153' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin@ecovault.com</text>
-    <rect x='280.0' y='130' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='153' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>password123</text>
-    <rect x='520.0' y='130' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='153' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin:password123</text>
-    <rect x='40' y='164' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='187' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin@ecovault.com</text>
-    <rect x='280.0' y='164' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='187' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>ecovault2024</text>
-    <rect x='520.0' y='164' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='187' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>admin:ecovault2024</text>
-    <rect x='40' y='198' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='221' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user@ecovault.com</text>
-    <rect x='280.0' y='198' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='221' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>Admin2024!</text>
-    <rect x='520.0' y='198' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='221' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user:Admin2024!</text>
-    <rect x='40' y='232' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='255' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user@ecovault.com</text>
-    <rect x='280.0' y='232' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='255' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>password123</text>
-    <rect x='520.0' y='232' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='255' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user:password123</text>
-    <rect x='40' y='266' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='289' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user@ecovault.com</text>
-    <rect x='280.0' y='266' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='289' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>ecovault2024</text>
-    <rect x='520.0' y='266' width='240.0' height='34' rx='0' fill='none' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='289' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>user:ecovault2024</text>
-    <rect x='40' y='300' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='160.0' y='323' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>...</text>
-    <rect x='280.0' y='300' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='400.0' y='323' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>...</text>
-    <rect x='520.0' y='300' width='240.0' height='34' rx='0' fill='#131820' stroke='#1e2d3d' stroke-width='0.5'  />
-    <text x='640.0' y='323' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#bfc7d5' font-size='11px'>... N×M requetes</text>
+    <rect x="523.3333333333333" y="70" width="246.66666666666666" height="32" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="646.6666666666666" y="92" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight='600' fill="#e6ecf3" font-size="12px">Combinaisons</text>
+    <rect x="30.0" y="102" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="123" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin@ecovault.com</text>
+    <rect x="276.66666666666663" y="102" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="123" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">Admin2024!</text>
+    <rect x="523.3333333333333" y="102" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="123" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin:Admin2024!</text>
+    <rect x="30.0" y="134" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="155" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin@ecovault.com</text>
+    <rect x="276.66666666666663" y="134" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="155" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">password123</text>
+    <rect x="523.3333333333333" y="134" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="155" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin:password123</text>
+    <rect x="30.0" y="166" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="187" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin@ecovault.com</text>
+    <rect x="276.66666666666663" y="166" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="187" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">ecovault2024</text>
+    <rect x="523.3333333333333" y="166" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="187" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">admin:ecovault2024</text>
+    <rect x="30.0" y="198" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="219" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user@ecovault.com</text>
+    <rect x="276.66666666666663" y="198" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="219" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">Admin2024!</text>
+    <rect x="523.3333333333333" y="198" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="219" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user:Admin2024!</text>
+    <rect x="30.0" y="230" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="251" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user@ecovault.com</text>
+    <rect x="276.66666666666663" y="230" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="251" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">password123</text>
+    <rect x="523.3333333333333" y="230" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="251" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user:password123</text>
+    <rect x="30.0" y="262" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="283" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user@ecovault.com</text>
+    <rect x="276.66666666666663" y="262" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="283" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">ecovault2024</text>
+    <rect x="523.3333333333333" y="262" width="246.66666666666666" height="32" fill="#0a0e14" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="283" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">user:ecovault2024</text>
+    <rect x="30.0" y="294" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="153.33333333333331" y="315" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">...</text>
+    <rect x="276.66666666666663" y="294" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="399.99999999999994" y="315" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">...</text>
+    <rect x="523.3333333333333" y="294" width="246.66666666666666" height="32" fill="#131820" stroke="#1e2d3d" stroke-width="0.5"/>
+    <text x="646.6666666666666" y="315" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#bfc7d5" font-size="11px">... N×M requetes</text>
 </svg>

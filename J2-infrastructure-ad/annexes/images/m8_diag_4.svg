@@ -1,57 +1,48 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 620' width='800' height='620'>
   <defs>
+    <filter id="sd"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/></filter>
+    <marker id="aR" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#e63946"/></marker>
+    <marker id="aB" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#54a0ff"/></marker>
+    <marker id="aO" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ff9f43"/></marker>
+    <marker id="aG" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#44d7b6"/></marker>
+    <marker id="aP" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="8" markerHeight="6" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#a55eea"/></marker>
     
-        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
-        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#e63946" flood-opacity="0.4"/></filter>
-        <marker id="arrR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#e63946"/>
-        </marker>
-        <marker id="arrB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#54a0ff"/>
-        </marker>
-        <marker id="arrO" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#ff9f43"/>
-        </marker>
-        <marker id="arrG" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#44d7b6"/>
-        </marker>
-        
   </defs>
-  <rect width='800' height='620' fill='#0a0e14' rx='12'/>
-  <text x='40' y='36' text-anchor='start' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='20px' font-weight='600'>Fonctionnement technique de PsExec</text>
-    <line x1='40' y1='48' x2='320' y2='48' stroke='#e63946' stroke-width='2'  />
-    <rect x='210.0' y='38.0' width='380' height='44' rx='6' fill='#54a0ff15' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='73.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>PsExec se connecte à ADMIN$ via SMB</text>
-    <line x1='400.0' y1='82.0' x2='400.0' y2='110.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='50' width='50' height='20' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='175.0' y='65' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>1</text>
-    <rect x='210.0' y='110.0' width='380' height='44' rx='6' fill='#44d7b615' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='145.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Upload du binaire PSEXESVC.exe dans ADMIN$</text>
-    <line x1='400.0' y1='154.0' x2='400.0' y2='182.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='122' width='50' height='20' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='175.0' y='137' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>2</text>
-    <rect x='210.0' y='182.0' width='380' height='44' rx='6' fill='#a55eea15' stroke='#a55eea' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='217.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Création d'un service Windows via SC Manager</text>
-    <line x1='400.0' y1='226.0' x2='400.0' y2='254.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='194' width='50' height='20' rx='4' fill='#131820' stroke='#a55eea' stroke-width='0.8'  />
-    <text x='175.0' y='209' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#a55eea' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>3</text>
-    <rect x='210.0' y='254.0' width='380' height='44' rx='6' fill='#e6394615' stroke='#e63946' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='289.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Le service démarre et crée un pipe nommé</text>
-    <line x1='400.0' y1='298.0' x2='400.0' y2='326.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='266' width='50' height='20' rx='4' fill='#131820' stroke='#e63946' stroke-width='0.8'  />
-    <text x='175.0' y='281' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e63946' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>4</text>
-    <rect x='210.0' y='326.0' width='380' height='44' rx='6' fill='#ff9f4315' stroke='#ff9f43' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='361.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Le client se connecte au pipe</text>
-    <line x1='400.0' y1='370.0' x2='400.0' y2='398.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='338' width='50' height='20' rx='4' fill='#131820' stroke='#ff9f43' stroke-width='0.8'  />
-    <text x='175.0' y='353' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#ff9f43' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>5</text>
-    <rect x='210.0' y='398.0' width='380' height='44' rx='6' fill='#54a0ff15' stroke='#54a0ff' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='433.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>Les commandes sont transmises via le pipe</text>
-    <line x1='400.0' y1='442.0' x2='400.0' y2='470.0' stroke='#e63946' stroke-width='1.8'  marker-end='url(#arrR)'/>
-    <rect x='150.0' y='410' width='50' height='20' rx='4' fill='#131820' stroke='#54a0ff' stroke-width='0.8'  />
-    <text x='175.0' y='425' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#54a0ff' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>6</text>
-    <rect x='210.0' y='470.0' width='380' height='44' rx='6' fill='#44d7b615' stroke='#44d7b6' stroke-width='1.5' filter='url(#shadow)' />
-    <text x='400.0' y='505.0' text-anchor='center' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#e6ecf3' font-size='13px'>La sortie est retournée via le pipe</text>
-    <rect x='150.0' y='482' width='50' height='20' rx='4' fill='#131820' stroke='#44d7b6' stroke-width='0.8'  />
-    <text x='175.0' y='497' text-anchor='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif' fill='#44d7b6' font-size='10px' font-family='Ubuntu Mono,Fira Code,monospace'>7</text>
+  <rect width='800' height='620' fill='#0a0e14' rx='10'/>
+  <text x="40" y="36" text-anchor="start" font-family='system-ui,-apple-system,Inter,sans-serif' font-weight="600" fill="#e6ecf3" font-size="20px">Fonctionnement technique de PsExec</text>
+    <line x1="40" y1="48" x2="280" y2="48" stroke="#e63946" stroke-width="2"/>
+    <rect x="210.0" y="38.0" width="380" height="44" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="69.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">PsExec se connecte à ADMIN$ via SMB</text>
+    <rect x="154.0" y="50" width="48" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="178.0" y="63" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">1</text>
+    <line x1="400.0" y1="82.0" x2="400.0" y2="110.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <rect x="210.0" y="110.0" width="380" height="44" rx="6" fill="#44d7b6" fill-opacity="0.12" stroke="#44d7b6" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="141.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Upload du binaire PSEXESVC.exe dans ADMIN$</text>
+    <rect x="154.0" y="122" width="48" height="18" rx="4" fill="#131820" stroke="#44d7b6" stroke-width="0.8"/>
+    <text x="178.0" y="135" text-anchor="middle" font-family='monospace' fill="#44d7b6" font-size="9px">2</text>
+    <line x1="400.0" y1="154.0" x2="400.0" y2="182.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aB)" />
+    <rect x="210.0" y="182.0" width="380" height="44" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="213.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Création d'un service Windows via SC Manager</text>
+    <rect x="154.0" y="194" width="48" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="178.0" y="207" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">3</text>
+    <line x1="400.0" y1="226.0" x2="400.0" y2="254.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aO)" />
+    <rect x="210.0" y="254.0" width="380" height="44" rx="6" fill="#e63946" fill-opacity="0.12" stroke="#e63946" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="285.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Le service démarre et crée un pipe nommé</text>
+    <rect x="154.0" y="266" width="48" height="18" rx="4" fill="#131820" stroke="#e63946" stroke-width="0.8"/>
+    <text x="178.0" y="279" text-anchor="middle" font-family='monospace' fill="#e63946" font-size="9px">4</text>
+    <line x1="400.0" y1="298.0" x2="400.0" y2="326.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aG)" />
+    <rect x="210.0" y="326.0" width="380" height="44" rx="6" fill="#ff9f43" fill-opacity="0.12" stroke="#ff9f43" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="357.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Le client se connecte au pipe</text>
+    <rect x="154.0" y="338" width="48" height="18" rx="4" fill="#131820" stroke="#ff9f43" stroke-width="0.8"/>
+    <text x="178.0" y="351" text-anchor="middle" font-family='monospace' fill="#ff9f43" font-size="9px">5</text>
+    <line x1="400.0" y1="370.0" x2="400.0" y2="398.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aP)" />
+    <rect x="210.0" y="398.0" width="380" height="44" rx="6" fill="#a55eea" fill-opacity="0.12" stroke="#a55eea" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="429.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">Les commandes sont transmises via le pipe</text>
+    <rect x="154.0" y="410" width="48" height="18" rx="4" fill="#131820" stroke="#a55eea" stroke-width="0.8"/>
+    <text x="178.0" y="423" text-anchor="middle" font-family='monospace' fill="#a55eea" font-size="9px">6</text>
+    <line x1="400.0" y1="442.0" x2="400.0" y2="470.0" stroke="#e63946" stroke-width="1.8" marker-end="url(#aR)" />
+    <rect x="210.0" y="470.0" width="380" height="44" rx="6" fill="#54a0ff" fill-opacity="0.12" stroke="#54a0ff" stroke-width="1.5" filter="url(#sd)"/>
+    <text x="400.0" y="501.0" text-anchor="middle" font-family='system-ui,-apple-system,Inter,sans-serif' fill="#e6ecf3" font-size="12px">La sortie est retournée via le pipe</text>
+    <rect x="154.0" y="482" width="48" height="18" rx="4" fill="#131820" stroke="#54a0ff" stroke-width="0.8"/>
+    <text x="178.0" y="495" text-anchor="middle" font-family='monospace' fill="#54a0ff" font-size="9px">7</text>
 </svg>
