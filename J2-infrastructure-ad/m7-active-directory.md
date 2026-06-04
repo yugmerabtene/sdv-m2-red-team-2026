@@ -5094,7 +5094,7 @@ echo "[+] Done! Check exports/auto/ for results."
 - **Active Directory Security** (Sean Metcalf) : https://adsecurity.org/
 - **Harmj0y's Blog** : http://blog.harmj0y.net/
 - **SpecterOps Blog** : https://posts.specterops.io/
-- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/
+- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview
 - **NIS2 Directive** : https://www.enisa.europa.eu/topics/cybersecurity-policy/nis2-directive
 
 #### Wordlists recommandées

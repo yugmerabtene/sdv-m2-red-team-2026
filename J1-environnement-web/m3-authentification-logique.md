@@ -2491,7 +2491,7 @@ T1068 ─ Exploitation for Privilege Escalation
 | PortSwigger — IDOR | https://portswigger.net/web-security/access-control/idor |
 | PortSwigger — JWT | https://portswigger.net/web-security/jwt |
 | PortSwigger — Race Conditions | https://portswigger.net/web-security/race-conditions |
-| OWASP — Business Logic | https://owasp.org/www-community/vulnerabilities/Business_Logic_Vulnerability |
+| OWASP — Business Logic | https://owasp.org/www-community/vulnerabilities/Business_logic_vulnerability |
 | jwt_tool | https://github.com/ticarpi/jwt_tool |
 | JWT.io | https://jwt.io |
 | Turbol Intruder (Burp) | https://portswigger.net/bappstore/9abaa233088242e8be252cd4ff534988 |

@@ -1935,7 +1935,7 @@ echo "[*] Pentest terminé. Résultats dans $OUTDIR/"
 ### 6.4 Applications vulnérables d'entraînement (niveau avancé)
 
 - **OVAA (Oversecured Vulnerable Android App)** : https://github.com/oversecured/ovaa
-- **Hera (Banking app vulnérable)** : https://github.com/erev0s/Hera
+- **Hera (Banking app vulnérable)** : https://github.com/sensepost/objection
 - **Vuldroid** : https://github.com/jaiswalakshansh/Vuldroid
 - **InjuredAndroid** : https://github.com/B3nac/InjuredAndroid
 - **Allsafe** : https://github.com/t0thkr1s/allsafe
@@ -1944,10 +1944,10 @@ echo "[*] Pentest terminé. Résultats dans $OUTDIR/"
 ### 6.5 Articles et techniques avancées
 
 - **Bypassing Android SSL Pinning** : https://mas.owasp.org/MASTG/techniques/android/MASTG-TECH-0012/
-- **Smali Modifications for Beginners** : https://apktool.org/docs/advanced/smali/
+- **Smali Modifications for Beginners** : https://apktool.org/
 - **Frida Tips & Tricks** : https://learnfrida.info/
 - **Android App Reverse Engineering 101** : https://maddiestone.github.io/AndroidAppRE/
-- **Mobile Hacking Workshop (BSides)** : https://github.com/OWASP/owasp-mstg/tree/master/Document/0x05c-Reverse-Engineering-and-Tampering.md
+- **Mobile Hacking Workshop (BSides)** : https://mas.owasp.org/MASTG/
 
 ### 6.6 Livres recommandés
 

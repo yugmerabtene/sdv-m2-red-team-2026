@@ -3798,9 +3798,9 @@ graph TD
 | PKINITtools | https://github.com/dirkjanm/PKINITtools |
 | PetitPotam | https://github.com/topotam/PetitPotam |
 | KrbRelayUp | https://github.com/Dec0ne/KrbRelayUp |
-| AD Security | https://github.com/rootsecdev/AD-security |
+| AD Security | https://github.com/leoloobeek/LAPSToolkit |
 | HackTricks AD | https://book.hacktricks.xyz/windows-hardening/active-directory-methodology |
-| The Hacker Recipes | https://www.thehacker.recipes/ad/ |
+| The Hacker Recipes | https://www.thehacker.recipes/ad/movement/ |
 
 ### 12.2 Commandes essentielles — Aide-mémoire
 

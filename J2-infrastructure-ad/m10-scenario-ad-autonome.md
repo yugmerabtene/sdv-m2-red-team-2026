@@ -2566,13 +2566,13 @@ if ($vulnerable) {
 
 | Guide | URL |
 |-------|-----|
-| Microsoft — Securing Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices |
-| ANSSI — Guide d'administration sécurisée d'Active Directory | https://www.ssi.gouv.fr/guide/recommandations-de-securite-relatives-a-active-directory/ |
-| ANSSI — Guide NIS2 | https://www.ssi.gouv.fr/entreprise/reglementation/nis-2/ |
+| Microsoft — Securing Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory |
+| ANSSI — Guide d'administration sécurisée d'Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory |
+| ANSSI — Guide NIS2 | https://eur-lex.europa.eu/eli/dir/2022/2555 |
 | CIS Benchmarks — Windows Server 2022 | https://www.cisecurity.org/benchmark/microsoft_windows_server/ |
 | Microsoft — LAPS Deployment | https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview |
 | Microsoft — Credential Guard | https://learn.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard |
-| Microsoft — Responder mitigation | https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/llmnr-not-supported-in-domain-environment |
+| Microsoft — Responder mitigation | (page Microsoft Learn retirée) |
 
 ### 10.4 Outils complémentaires pour l'approfondissement
 
@@ -2585,7 +2585,7 @@ if ($vulnerable) {
 | Certipy | AD Certificate Services exploitation | https://github.com/ly4k/Certipy |
 | PKINITtools | Kerberos PKINIT abuse | https://github.com/dirkjanm/PKINITtools |
 | Whisker | MS-DS-MachineAccountQuota exploitation | https://github.com/eladshamir/Whisker |
-| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/n00py/LAPSToolkit |
+| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/leoloobeek/LAPSToolkit |
 
 ### 10.5 Laboratoires et plateformes d'entraînement
 

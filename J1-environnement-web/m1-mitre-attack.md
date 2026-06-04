@@ -203,7 +203,7 @@ L'**Agence Nationale de la Sécurité des Systèmes d'Information (ANSSI)** int�
 **Liens utiles ANSSI :**
 
 - Guide d'hygiène : [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/)
-- Référentiel PASSI : [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/)
+- Référentiel PASSI : [https://cyber.gouv.fr/](https://cyber.gouv.fr/)
 
 ### 3.3 OTAN : Threat Intelligence partagée
 
@@ -1462,7 +1462,7 @@ Voici le fichier de couche correspondant à la correction de l'exercice :
 | ATT&CK Navigator | [https://github.com/mitre-attack/attack-navigator](https://github.com/mitre-attack/attack-navigator) |
 | Documentation STIX 2.1 | [https://oasis-open.github.io/cti-documentation/](https://oasis-open.github.io/cti-documentation/) |
 | ANSSI — Guide d'hygiène | [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/) |
-| ANSSI — PASSI | [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/) |
+| ANSSI — PASSI | [https://cyber.gouv.fr/](https://cyber.gouv.fr/) |
 | Directive NIS2 (EUR-Lex) | [https://eur-lex.europa.eu/eli/dir/2022/2555](https://eur-lex.europa.eu/eli/dir/2022/2555) |
 | MITRE ATT&CK pour Red Team | [https://attack.mitre.org/resources/getting-started/](https://attack.mitre.org/resources/getting-started/) |
 | Sigma Rules (détection) | [https://github.com/SigmaHQ/sigma](https://github.com/SigmaHQ/sigma) |

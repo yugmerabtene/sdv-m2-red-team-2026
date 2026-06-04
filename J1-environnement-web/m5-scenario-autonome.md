@@ -2260,7 +2260,7 @@ def admin_templates():
 
 #### Références
 
-- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection)
+- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection)
 - **PortSwigger** : [SSTI](https://portswigger.net/web-security/server-side-template-injection)
 - **PayloadsAllTheThings** : [Jinja2 SSTI](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection#jinja2)
 - **MITRE ATT&CK** : [T1059.003](https://attack.mitre.org/techniques/T1059/003/)

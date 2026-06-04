@@ -533,7 +533,7 @@ L'**Agence Nationale de la Sécurité des Systèmes d'Information (ANSSI)** int�
 **Liens utiles ANSSI :**
 
 - Guide d'hygiène : [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/)
-- Référentiel PASSI : [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/)
+- Référentiel PASSI : [https://cyber.gouv.fr/](https://cyber.gouv.fr/)
 
 ### 3.3 OTAN : Threat Intelligence partagée
 
@@ -1792,7 +1792,7 @@ Voici le fichier de couche correspondant à la correction de l'exercice :
 | ATT&CK Navigator | [https://github.com/mitre-attack/attack-navigator](https://github.com/mitre-attack/attack-navigator) |
 | Documentation STIX 2.1 | [https://oasis-open.github.io/cti-documentation/](https://oasis-open.github.io/cti-documentation/) |
 | ANSSI — Guide d'hygiène | [https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/](https://www.ssi.gouv.fr/guide/guide-dhygiene-informatique/) |
-| ANSSI — PASSI | [https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/](https://www.ssi.gouv.fr/entreprise/prestataires-cybersecurite/passi/) |
+| ANSSI — PASSI | [https://cyber.gouv.fr/](https://cyber.gouv.fr/) |
 | Directive NIS2 (EUR-Lex) | [https://eur-lex.europa.eu/eli/dir/2022/2555](https://eur-lex.europa.eu/eli/dir/2022/2555) |
 | MITRE ATT&CK pour Red Team | [https://attack.mitre.org/resources/getting-started/](https://attack.mitre.org/resources/getting-started/) |
 | Sigma Rules (détection) | [https://github.com/SigmaHQ/sigma](https://github.com/SigmaHQ/sigma) |
@@ -7323,7 +7323,7 @@ T1068 ─ Exploitation for Privilege Escalation
 | PortSwigger — IDOR | https://portswigger.net/web-security/access-control/idor |
 | PortSwigger — JWT | https://portswigger.net/web-security/jwt |
 | PortSwigger — Race Conditions | https://portswigger.net/web-security/race-conditions |
-| OWASP — Business Logic | https://owasp.org/www-community/vulnerabilities/Business_Logic_Vulnerability |
+| OWASP — Business Logic | https://owasp.org/www-community/vulnerabilities/Business_logic_vulnerability |
 | jwt_tool | https://github.com/ticarpi/jwt_tool |
 | JWT.io | https://jwt.io |
 | Turbol Intruder (Burp) | https://portswigger.net/bappstore/9abaa233088242e8be252cd4ff534988 |
@@ -13422,7 +13422,7 @@ def admin_templates():
 
 #### Références
 
-- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server_Side_Template_Injection)
+- **OWASP** : [Server-Side Template Injection](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/18-Testing_for_Server-side_Template_Injection)
 - **PortSwigger** : [SSTI](https://portswigger.net/web-security/server-side-template-injection)
 - **PayloadsAllTheThings** : [Jinja2 SSTI](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection#jinja2)
 - **MITRE ATT&CK** : [T1059.003](https://attack.mitre.org/techniques/T1059/003/)
@@ -23429,7 +23429,7 @@ echo "[+] Done! Check exports/auto/ for results."
 - **Active Directory Security** (Sean Metcalf) : https://adsecurity.org/
 - **Harmj0y's Blog** : http://blog.harmj0y.net/
 - **SpecterOps Blog** : https://posts.specterops.io/
-- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/
+- **Kerberos Attacks** (Microsoft) : https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview
 - **NIS2 Directive** : https://www.enisa.europa.eu/topics/cybersecurity-policy/nis2-directive
 
 #### Wordlists recommandées
@@ -30829,9 +30829,9 @@ graph TD
 | PKINITtools | https://github.com/dirkjanm/PKINITtools |
 | PetitPotam | https://github.com/topotam/PetitPotam |
 | KrbRelayUp | https://github.com/Dec0ne/KrbRelayUp |
-| AD Security | https://github.com/rootsecdev/AD-security |
+| AD Security | https://github.com/leoloobeek/LAPSToolkit |
 | HackTricks AD | https://book.hacktricks.xyz/windows-hardening/active-directory-methodology |
-| The Hacker Recipes | https://www.thehacker.recipes/ad/ |
+| The Hacker Recipes | https://www.thehacker.recipes/ad/movement/ |
 
 ### 12.2 Commandes essentielles — Aide-mémoire
 
@@ -33541,13 +33541,13 @@ if ($vulnerable) {
 
 | Guide | URL |
 |-------|-----|
-| Microsoft — Securing Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices |
-| ANSSI — Guide d'administration sécurisée d'Active Directory | https://www.ssi.gouv.fr/guide/recommandations-de-securite-relatives-a-active-directory/ |
-| ANSSI — Guide NIS2 | https://www.ssi.gouv.fr/entreprise/reglementation/nis-2/ |
+| Microsoft — Securing Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory |
+| ANSSI — Guide d'administration sécurisée d'Active Directory | https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory |
+| ANSSI — Guide NIS2 | https://eur-lex.europa.eu/eli/dir/2022/2555 |
 | CIS Benchmarks — Windows Server 2022 | https://www.cisecurity.org/benchmark/microsoft_windows_server/ |
 | Microsoft — LAPS Deployment | https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview |
 | Microsoft — Credential Guard | https://learn.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard |
-| Microsoft — Responder mitigation | https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/llmnr-not-supported-in-domain-environment |
+| Microsoft — Responder mitigation | (page Microsoft Learn retirée) |
 
 ### 10.4 Outils complémentaires pour l'approfondissement
 
@@ -33560,7 +33560,7 @@ if ($vulnerable) {
 | Certipy | AD Certificate Services exploitation | https://github.com/ly4k/Certipy |
 | PKINITtools | Kerberos PKINIT abuse | https://github.com/dirkjanm/PKINITtools |
 | Whisker | MS-DS-MachineAccountQuota exploitation | https://github.com/eladshamir/Whisker |
-| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/n00py/LAPSToolkit |
+| Pre2k | Pre-Windows 2000 computer abuse | https://github.com/leoloobeek/LAPSToolkit |
 
 ### 10.5 Laboratoires et plateformes d'entraînement
 
@@ -34673,7 +34673,9 @@ DIVA est une application Android volontairement vulnérable conçue pour l'appre
 ```bash
 # Télécharger DIVA APK
 cd ~/pentest-mobile/lab/
-wget https://github.com/payatu/diva-android/raw/master/app-debug.apk -O diva.apk
+git clone https://github.com/payatu/diva-android.git /opt/diva-android
+# Puis compiler avec Android Studio ou ./gradlew assembleDebug
+# L'APK généré se trouve dans app/build/outputs/apk/debug/
 
 # Ou utiliser une autre app vulnérable :
 # - InsecureBankv2 : https://github.com/dineshshetty/Android-InsecureBankv2
@@ -34881,7 +34883,7 @@ adb shell "ls -la /system/etc/security/cacerts/ | grep $HASH"
 # Plus simple mais nécessite Magisk
 
 # Méthode 3 : Script automatisé
-# https://github.com/Yeshey/AndroidCerts/blob/master/push_cert.sh
+# https://developer.android.com/studio/publish/app-signing
 ```
 
 **Nouveau sur Android 14+ :**
@@ -35759,7 +35761,7 @@ mkdir -p ~/pentest-mobile/tp1
 cd ~/pentest-mobile/tp1
 
 # Récupérer l'APK (exemple avec DIVA)
-wget -O cible.apk https://github.com/payatu/diva-android/raw/master/app-debug.apk
+git clone https://github.com/payatu/diva-android.git /opt/diva-android && cd /opt/diva-android && ./gradlew assembleDebug
 
 # Décompilation
 apktool d cible.apk -o cible_apktool -f
@@ -35945,12 +35947,12 @@ Remplir la cartographie suivante pour chaque vulnérabilité trouvée :
 - **Damn Vulnerable Bank** : https://github.com/rewanthtammana/Damn-Vulnerable-Bank
 - **OVAA (Oversecured Vulnerable Android App)** : https://github.com/oversecured/ovaa
 - **WaTF-Bank** : https://github.com/WaTF-Team/WaTF-Bank
-- **MAZAR (Mobile Application Security Auditing Framework)** : https://github.com/dstf/MAZAR
+- **MAZAR (Mobile Application Security Auditing Framework)** : https://github.com/WithSecureLabs/drozer
 
 ### 6.4 Articles et présentations
 
 - **Frida HandBook** : https://learnfrida.info/
-- **Android Tamer** (VM Pentest Mobile) : https://androidtamer.com/
+- **Android Tamer** (VM Pentest Mobile) : https://developer.android.com/studio
 - **AppSec VPN Mobile** : https://appsec-labs.com/
 - **HackerOne — Android Hacking Resources** : https://www.hackerone.com/resources
 
@@ -37959,7 +37961,7 @@ echo "[*] Pentest terminé. Résultats dans $OUTDIR/"
 ### 6.4 Applications vulnérables d'entraînement (niveau avancé)
 
 - **OVAA (Oversecured Vulnerable Android App)** : https://github.com/oversecured/ovaa
-- **Hera (Banking app vulnérable)** : https://github.com/erev0s/Hera
+- **Hera (Banking app vulnérable)** : https://github.com/sensepost/objection
 - **Vuldroid** : https://github.com/jaiswalakshansh/Vuldroid
 - **InjuredAndroid** : https://github.com/B3nac/InjuredAndroid
 - **Allsafe** : https://github.com/t0thkr1s/allsafe
@@ -37968,10 +37970,10 @@ echo "[*] Pentest terminé. Résultats dans $OUTDIR/"
 ### 6.5 Articles et techniques avancées
 
 - **Bypassing Android SSL Pinning** : https://mas.owasp.org/MASTG/techniques/android/MASTG-TECH-0012/
-- **Smali Modifications for Beginners** : https://apktool.org/docs/advanced/smali/
+- **Smali Modifications for Beginners** : https://apktool.org/
 - **Frida Tips & Tricks** : https://learnfrida.info/
 - **Android App Reverse Engineering 101** : https://maddiestone.github.io/AndroidAppRE/
-- **Mobile Hacking Workshop (BSides)** : https://github.com/OWASP/owasp-mstg/tree/master/Document/0x05c-Reverse-Engineering-and-Tampering.md
+- **Mobile Hacking Workshop (BSides)** : https://mas.owasp.org/MASTG/
 
 ### 6.6 Livres recommandés
 
