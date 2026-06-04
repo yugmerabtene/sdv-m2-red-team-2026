@@ -193,6 +193,15 @@ if ! samba-tool user show "nopreauth_user" &>/dev/null; then
     samba-tool user create nopreauth_user "NoPreAuth1!" \
         --given-name="NoPreAuth" --surname="User" \
         --description="Compte SANS pre-authentification Kerberos (AS-REP)"
+    # Set UF_DONT_REQUIRE_PREAUTH (4194304) + UF_NORMAL_ACCOUNT (512)
+    DN=$(ldbsearch -H /var/lib/samba/private/sam.ldb "sAMAccountName=nopreauth_user" dn 2>/dev/null | grep "^dn:" | head -1 | cut -d' ' -f2)
+    if [ -n "$DN" ]; then
+        echo "dn: $DN
+changetype: modify
+replace: userAccountControl
+userAccountControl: 4194816" | ldbmodify -H /var/lib/samba/private/sam.ldb
+        echo "[+] Pre-authentification Kerberos desactivee pour nopreauth_user"
+    fi
 fi
 
 # Add user to Domain Admins for some attack paths
@@ -212,8 +221,7 @@ echo 'flag{dcsync_golden_ticket}' > /srv/samba/it/Admin/flag6.txt
 # Store a fake NTDS hash hint
 echo "KRBTGT hash location: /var/lib/samba/private/sam.ldb" > /srv/samba/it/Admin/hint.txt
 
-# Set ACLs vulnerables sur le partage IT
-samba-tool ntacl set /srv/samba/data --use-ntvfs 2>/dev/null || true
+# Partages SMB pret — les flags sont lisibles via SMB anonyme
 
 echo ""
 echo "============================================================"

@@ -32,7 +32,6 @@ services:
     volumes:
       - samba_data:/var/lib/samba
       - samba_config:/etc/samba
-      - samba_krb5:/etc/krb5.conf
       - ./provision:/provision:ro
     networks:
       lab-ad-net:
@@ -74,5 +73,4 @@ networks:
 volumes:
   samba_data:
   samba_config:
-  samba_krb5:
   ws01_data:

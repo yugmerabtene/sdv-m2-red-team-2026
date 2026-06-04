@@ -51,17 +51,19 @@ L'ATT&CK Navigator est l'outil de visualisation officiel du framework MITRE ATT&
 | **Docker** | `docker pull mitreattack/attack-navigator` | Instance locale persistante |
 | **Application** | Release GitHub | Hors-ligne, embarqué dans les rapports |
 
-### 1.2 Installation locale avec Docker
+### 1.2 Installation locale
 
 ```bash
-# Téléchargement de l'image officielle
-docker pull mitreattack/attack-navigator
+# === METHODE 1 : NPM (recommandé) ===
+git clone https://github.com/mitre-attack/attack-navigator.git
+cd attack-navigator/nav-app
+npm install
+npm start
+# Puis ouvrir http://localhost:4200
 
-# Lancement du conteneur sur le port 4200
-docker run -d -p 4200:4200 --name attack-navigator mitreattack/attack-navigator
-
-# Vérification
-curl -s http://localhost:4200 | head -5
+# === METHODE 2 : Via le JSON directement ===
+# Importer le fichier JSON dans l'instance en ligne :
+# https://mitre-attack.github.io/attack-navigator/
 ```
 
 **Installation depuis les sources (recommandée pour la personnalisation) :**
@@ -818,6 +820,10 @@ détecté            (24h)               incident (72h)      (1 mois)
 ---
 
 ## 5. TP Guidé — Construire sa heat map
+
+> **Outil :** Utiliser l'instance ATT&CK Navigator locale (http://localhost:4200)  
+> ou l'instance en ligne (https://mitre-attack.github.io/attack-navigator/).  
+> Importer le fichier JSON généré ou créer une nouvelle couche manuellement.
 
 ### 5.1 Contexte
 

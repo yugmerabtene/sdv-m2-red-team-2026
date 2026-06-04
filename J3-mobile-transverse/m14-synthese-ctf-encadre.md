@@ -85,6 +85,22 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+```bash
+# === PRÉPARATION DU LAB ===
+# 1. Récupérer l'APK cible
+wget http://10.0.1.100:8080/PayVault_v2.1.3.apk -O PayVault_v2.1.3.apk
+# Alternative si le serveur HTTP n'est pas disponible :
+# scp etudiant@lab-server:/opt/lab/payvault/PayVault_v2.1.3.apk .
+
+# 2. Installer sur le device/émulateur connecté
+adb install PayVault_v2.1.3.apk
+
+# 3. Lancer le backend PayVault (dans un terminal séparé)
+docker run -d -p 9090:9090 --name payvault-backend registry.gitlab.com/sdv-m2/payvault-backend:latest
+# Vérifier que le backend répond :
+curl http://localhost:9090/health
+```
+
 ### 1.3 Les 5 Flags
 
 ```

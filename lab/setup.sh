@@ -135,14 +135,13 @@ case "${1:-start}" in
     reset)
         echo -e "${YELLOW}[*] Réinitialisation complète...${NC}"
         compose_cmd down -v
-        docker system prune -f
         check_docker
         check_ports
         build_lab
         start_lab
         verify_lab
         print_summary
-        ;;
+        ;;  
     status)
         compose_cmd ps
         echo ""

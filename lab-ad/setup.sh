@@ -125,7 +125,6 @@ case "${1:-start}" in
     reset)
         echo -e "${YELLOW}[*] Reinitialisation complete...${NC}"
         compose_cmd down -v
-        docker system prune -f
         check_docker
         start_lab
         ;;

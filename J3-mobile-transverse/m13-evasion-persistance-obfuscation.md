@@ -6,6 +6,17 @@
 
 ---
 
+## Environnement de lab
+> **⚠️ AVERTISSEMENT** — Les commandes de ce module manipulent des paramètres système critiques (Defender, AMSI, registre).  
+> **NE PAS** exécuter sur votre machine hôte ou sur le DC du lab AD.  
+> **Utiliser une VM Windows 10/11 dédiée** avec un snapshot de sécurité activé.
+>
+> ```bash
+> # Prérequis sur la VM Windows :
+> # - PowerShell en tant qu'Administrateur
+> # - Defender désactivé uniquement dans la VM isolée
+> ```
+
 ## Table des matières
 
 1. [Introduction et cadre réglementaire](#1-introduction-et-cadre-réglementaire)
@@ -187,6 +198,12 @@ wmic /node:localhost /namespace:\\root\Microsoft\Windows\Defender path MSFT_MpCo
 #### 2.2.2 Désactiver Windows Defender — Approche registre (nécessite SYSTEM)
 
 ```powershell
+# Vérifier les privilèges Administrateur
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "[-] Relancer PowerShell en tant qu'Administrateur" -ForegroundColor Red
+    exit 1
+}
+
 # ⚠️ NÉCESSITE DES PRIVILÈGES ÉLEVÉS (NT AUTHORITY\SYSTEM)
 # T1562.001 — Défense Evasion via désactivation Defender
 

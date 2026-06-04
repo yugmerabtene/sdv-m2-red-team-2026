@@ -1,0 +1,39 @@
+@page {
+  size: A4;
+  margin: 1in;
+  @bottom-center {
+    content: counter(page);
+    font-size: 9pt;
+    color: #666;
+  }
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 8.5pt;
+  line-height: 1.15;
+}
+
+code {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  font-size: 9pt;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  font-size: 8.5pt;
+  overflow-wrap: break-word;
+}
+
+td, th {
+  padding: 3px 4px;
+  vertical-align: top;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}

