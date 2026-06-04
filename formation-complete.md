@@ -857,9 +857,9 @@ echo -e "www\nadmin\napi\ndev\nmail" > subdomains.txt
 ffuf -u https://cible.com -w subdomains.txt -H "Host: FUZZ.cible.com" -fc 301
 
 # Découverte des endpoints API via gau (Get All URLs) et filtrage par grep
-# gau --o : interroge les bases OSINT (Wayback, AlienVault, etc.) pour ce domaine
+# gau : interroge les bases OSINT (Wayback, AlienVault, etc.) pour ce domaine
 # grep "/api/" : ne conserve que les lignes contenant "/api/" (endpoints d'API)
-gau --o cible.com | grep "/api/"
+gau cible.com | grep "/api/"
 ```
 
 **Explication des commandes :**
@@ -867,7 +867,7 @@ gau --o cible.com | grep "/api/"
 | Commande / Option | Rôle / Explication |
 |---|---|
 | `ffuf -u https://cible.com -w subdomains.txt -H "Host: FUZZ.cible.com" -fc 301` | Outil de fuzzing web ; `-u` = URL avec emplacement `FUZZ` ; `-w` = wordlist en entrée ; `-H` = en-tête HTTP personnalisé (ici `Host`) ; `-fc 301` = ignore les codes HTTP 301 (redirections) |
-| `gau --o cible.com` | Récupère toutes les URLs connues pour `cible.com` via l'OSINT passif (Wayback Machine, VirusTotal, AlienVault OTX, etc.) ; `--o` = mode sortie standard |
+| `gau cible.com` | Récupère toutes les URLs connues pour `cible.com` via l'OSINT passif (Wayback Machine, VirusTotal, AlienVault OTX, etc.) ; sans `--o`, la sortie se fait sur stdout par défaut |
 | `grep "/api/"` | Filtre les lignes contenant `/api/` pour ne conserver que les endpoints d'API REST |
 
 | Technique | Code | Description |
