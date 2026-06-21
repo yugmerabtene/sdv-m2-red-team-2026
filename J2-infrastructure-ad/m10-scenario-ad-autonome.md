@@ -13,7 +13,7 @@
 2. [Règles de l'exercice (ROE)](#2-règles-de-lexercice-roe)
 3. [Topologie réseau](#3-topologie-réseau)
 4. [Objectifs (Flags)](#4-objectifs-flags)
-5. [Solution pas à pas détaillée](#5-solution-pas-à-pas-détaillée)
+5. [Solution pas à pas détaillée](#5-solution--détaillée)
    - [5.1 — Flag 1 : Énumération AD via BloodHound](#51--flag-1--énumération-ad-via-bloodhound)
    - [5.2 — Flag 2 : Capture de hash NTLMv2 via Responder + Crack](#52--flag-2--capture-de-hash-ntlmv2-via-responder--crack)
    - [5.3 — Flag 3 : Dump de hashes via secretsdump (SAM/LSASS)](#53--flag-3--dump-de-hashes-via-secretsdump-samlsass)

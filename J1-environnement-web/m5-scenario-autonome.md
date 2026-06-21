@@ -18,7 +18,7 @@ echo "127.0.0.1 ecovault.local" | sudo tee -a /etc/hosts
 1. [Briefing de mission](#1-briefing-de-mission)
 2. [Règles de l'exercice (ROE)](#2-règles-de-lexercice-roe)
 3. [Objectifs — Flags](#3-objectifs--flags)
-4. [Solution pas à pas détaillée](#4-solution-pas-à-pas-détaillée)
+4. [Solution pas à pas détaillée](#4-solution--détaillée)
    - [Flag 1 — IDOR (T1548)](#41-flag-1--idor-t1548)
    - [Flag 2 — SQLi (T1190)](#42-flag-2--sqli-t1190)
    - [Flag 3 — Auth Bypass JWT (T1078)](#43-flag-3--auth-bypass-jwt-t1078)
